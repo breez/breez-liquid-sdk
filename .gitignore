@@ -1,0 +1,7 @@
+# Artifacts
+/target
+
+# Env variables
+.env
+.env.*
+!.env.example

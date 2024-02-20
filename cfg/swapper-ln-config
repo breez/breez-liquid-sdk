@@ -1,0 +1,11 @@
+alias=swapper
+network=regtest
+log-file=/tmp/.lightning/swapper/log
+lightning-dir=/tmp/.lightning/swapper
+pid-file=/tmp/.lightning/swapper/lightning.pid
+log-level=info
+addr=0.0.0.0:9736
+bind-addr=0.0.0.0:3001
+htlc-minimum-msat=0
+funding-confirms=1
+min-capacity-sat=1000

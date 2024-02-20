@@ -1,0 +1,11 @@
+alias=user
+network=regtest
+log-file=/tmp/.lightning/user/log
+lightning-dir=/tmp/.lightning/user
+pid-file=/tmp/.lightning/user/lightning.pid
+log-level=info
+addr=0.0.0.0:9735
+bind-addr=0.0.0.0:3000
+htlc-minimum-msat=0
+funding-confirms=1
+min-capacity-sat=1000
