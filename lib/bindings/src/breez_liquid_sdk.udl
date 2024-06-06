@@ -2,6 +2,7 @@
 enum LiquidSdkError {
     "AlreadyStarted",
     "Generic",
+    "ServiceConnectivity",
     "NotStarted",
 };
 

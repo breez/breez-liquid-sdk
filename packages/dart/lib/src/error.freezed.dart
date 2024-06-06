@@ -148,6 +148,80 @@ abstract class LiquidSdkError_Generic extends LiquidSdkError {
 }
 
 /// @nodoc
+abstract class _$$LiquidSdkError_ServiceConnectivityImplCopyWith<$Res> {
+  factory _$$LiquidSdkError_ServiceConnectivityImplCopyWith(_$LiquidSdkError_ServiceConnectivityImpl value,
+          $Res Function(_$LiquidSdkError_ServiceConnectivityImpl) then) =
+      __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String err});
+}
+
+/// @nodoc
+class __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl<$Res>
+    extends _$LiquidSdkErrorCopyWithImpl<$Res, _$LiquidSdkError_ServiceConnectivityImpl>
+    implements _$$LiquidSdkError_ServiceConnectivityImplCopyWith<$Res> {
+  __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl(_$LiquidSdkError_ServiceConnectivityImpl _value,
+      $Res Function(_$LiquidSdkError_ServiceConnectivityImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? err = null,
+  }) {
+    return _then(_$LiquidSdkError_ServiceConnectivityImpl(
+      err: null == err
+          ? _value.err
+          : err // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LiquidSdkError_ServiceConnectivityImpl extends LiquidSdkError_ServiceConnectivity {
+  const _$LiquidSdkError_ServiceConnectivityImpl({required this.err}) : super._();
+
+  @override
+  final String err;
+
+  @override
+  String toString() {
+    return 'LiquidSdkError.serviceConnectivity(err: $err)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LiquidSdkError_ServiceConnectivityImpl &&
+            (identical(other.err, err) || other.err == err));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, err);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LiquidSdkError_ServiceConnectivityImplCopyWith<_$LiquidSdkError_ServiceConnectivityImpl> get copyWith =>
+      __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl<_$LiquidSdkError_ServiceConnectivityImpl>(
+          this, _$identity);
+}
+
+abstract class LiquidSdkError_ServiceConnectivity extends LiquidSdkError {
+  const factory LiquidSdkError_ServiceConnectivity({required final String err}) =
+      _$LiquidSdkError_ServiceConnectivityImpl;
+  const LiquidSdkError_ServiceConnectivity._() : super._();
+
+  String get err;
+  @JsonKey(ignore: true)
+  _$$LiquidSdkError_ServiceConnectivityImplCopyWith<_$LiquidSdkError_ServiceConnectivityImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 abstract class _$$LiquidSdkError_NotStartedImplCopyWith<$Res> {
   factory _$$LiquidSdkError_NotStartedImplCopyWith(
           _$LiquidSdkError_NotStartedImpl value, $Res Function(_$LiquidSdkError_NotStartedImpl) then) =

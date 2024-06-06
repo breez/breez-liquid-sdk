@@ -621,8 +621,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       wireObj.kind.Generic.err = pre_err;
       return;
     }
-    if (apiObj is LiquidSdkError_NotStarted) {
+    if (apiObj is LiquidSdkError_ServiceConnectivity) {
+      var pre_err = cst_encode_String(apiObj.err);
       wireObj.tag = 2;
+      wireObj.kind.ServiceConnectivity.err = pre_err;
+      return;
+    }
+    if (apiObj is LiquidSdkError_NotStarted) {
+      wireObj.tag = 3;
       return;
     }
   }
@@ -1555,12 +1561,9 @@ class RustLibWire implements BaseWire {
       _dummy_method_to_enforce_bundlingPtr.asFunction<int Function()>();
 }
 
-typedef DartPostCObjectFnType = ffi.Pointer<ffi.NativeFunction<DartPostCObjectFnTypeFunction>>;
-typedef DartPostCObjectFnTypeFunction = ffi.Bool Function(DartPort port_id, ffi.Pointer<ffi.Void> message);
-typedef DartDartPostCObjectFnTypeFunction = bool Function(
-    DartDartPort port_id, ffi.Pointer<ffi.Void> message);
+typedef DartPostCObjectFnType
+    = ffi.Pointer<ffi.NativeFunction<ffi.Bool Function(DartPort port_id, ffi.Pointer<ffi.Void> message)>>;
 typedef DartPort = ffi.Int64;
-typedef DartDartPort = int;
 
 final class wire_cst_list_prim_u_8_strict extends ffi.Struct {
   external ffi.Pointer<ffi.Uint8> ptr;
@@ -1714,8 +1717,14 @@ final class wire_cst_LiquidSdkError_Generic extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
 
+final class wire_cst_LiquidSdkError_ServiceConnectivity extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
+}
+
 final class LiquidSdkErrorKind extends ffi.Union {
   external wire_cst_LiquidSdkError_Generic Generic;
+
+  external wire_cst_LiquidSdkError_ServiceConnectivity ServiceConnectivity;
 }
 
 final class wire_cst_liquid_sdk_error extends ffi.Struct {
@@ -1857,4 +1866,8 @@ final class wire_cst_send_payment_response extends ffi.Struct {
   external wire_cst_payment payment;
 }
 
-const double LIQUID_CLAIM_TX_FEERATE_MSAT = 100.0;
+const double LIQUID_SDK_ZERO_CONF_FEE_RATE_TESTNET = 0.1;
+
+const double LIQUID_SDK_ZERO_CONF_FEE_RATE_MAINNET = 0.01;
+
+const int LIQUID_SDK_ZERO_CONF_LIMIT_SAT = 1000;

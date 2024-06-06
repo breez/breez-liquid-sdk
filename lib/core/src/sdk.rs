@@ -21,6 +21,7 @@ use std::{
 use tokio::sync::{watch, RwLock};
 use tokio::time::MissedTickBehavior;
 
+use crate::chain::{ChainService, MempoolSpace};
 use crate::error::LiquidSdkError;
 use crate::model::PaymentState::*;
 use crate::send_swap::SendSwapStateHandler;
@@ -45,6 +46,7 @@ pub const DEFAULT_DATA_DIR: &str = ".data";
 pub struct LiquidSdk {
     config: Config,
     onchain_wallet: Arc<dyn OnchainWallet>,
+    chain_service: Arc<dyn ChainService>,
     persister: Arc<Persister>,
     event_manager: Arc<EventManager>,
     status_stream: Arc<dyn SwapperStatusStream>,
@@ -75,9 +77,12 @@ impl LiquidSdk {
         let swapper = Arc::new(BoltzSwapper::new(config.clone()));
         let status_stream = Arc::<dyn SwapperStatusStream>::from(swapper.create_status_stream());
 
+        let chain_service = MempoolSpace::new(config.network);
+
         let sdk = Arc::new(LiquidSdk {
             config: config.clone(),
             onchain_wallet: Arc::new(LiquidOnchainWallet::new(mnemonic, config)?),
+            chain_service: Arc::new(chain_service),
             persister: persister.clone(),
             event_manager,
             status_stream: status_stream.clone(),

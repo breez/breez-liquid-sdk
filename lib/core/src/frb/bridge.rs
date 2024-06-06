@@ -643,6 +643,10 @@ impl SseDecode for crate::error::LiquidSdkError {
                 return crate::error::LiquidSdkError::Generic { err: var_err };
             }
             2 => {
+                let mut var_err = <String>::sse_decode(deserializer);
+                return crate::error::LiquidSdkError::ServiceConnectivity { err: var_err };
+            }
+            3 => {
                 return crate::error::LiquidSdkError::NotStarted;
             }
             _ => {
@@ -1221,7 +1225,10 @@ impl flutter_rust_bridge::IntoDart for crate::error::LiquidSdkError {
             crate::error::LiquidSdkError::Generic { err } => {
                 [1.into_dart(), err.into_into_dart().into_dart()].into_dart()
             }
-            crate::error::LiquidSdkError::NotStarted => [2.into_dart()].into_dart(),
+            crate::error::LiquidSdkError::ServiceConnectivity { err } => {
+                [2.into_dart(), err.into_into_dart().into_dart()].into_dart()
+            }
+            crate::error::LiquidSdkError::NotStarted => [3.into_dart()].into_dart(),
         }
     }
 }
@@ -1705,8 +1712,12 @@ impl SseEncode for crate::error::LiquidSdkError {
                 <i32>::sse_encode(1, serializer);
                 <String>::sse_encode(err, serializer);
             }
-            crate::error::LiquidSdkError::NotStarted => {
+            crate::error::LiquidSdkError::ServiceConnectivity { err } => {
                 <i32>::sse_encode(2, serializer);
+                <String>::sse_encode(err, serializer);
+            }
+            crate::error::LiquidSdkError::NotStarted => {
+                <i32>::sse_encode(3, serializer);
             }
         }
     }

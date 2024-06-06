@@ -16,6 +16,9 @@ sealed class LiquidSdkError with _$LiquidSdkError implements FrbException {
   const factory LiquidSdkError.generic({
     required String err,
   }) = LiquidSdkError_Generic;
+  const factory LiquidSdkError.serviceConnectivity({
+    required String err,
+  }) = LiquidSdkError_ServiceConnectivity;
   const factory LiquidSdkError.notStarted() = LiquidSdkError_NotStarted;
 }
 

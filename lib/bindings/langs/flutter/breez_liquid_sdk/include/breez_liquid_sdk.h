@@ -15,10 +15,16 @@ void store_dart_post_cobject(DartPostCObjectFnType ptr);
 typedef struct _Dart_Handle* Dart_Handle;
 
 /**
- * Claim tx feerate, in sats per vbyte.
- * Since the  Liquid blocks are consistently empty for now, we hardcode the minimum feerate.
+ * The minimum acceptable fee rate when claiming using zero-conf
  */
-#define LIQUID_CLAIM_TX_FEERATE_MSAT 100.0
+#define LIQUID_SDK_ZERO_CONF_FEE_RATE_TESTNET 0.1
+
+#define LIQUID_SDK_ZERO_CONF_FEE_RATE_MAINNET 0.01
+
+/**
+ * The maximum acceptable amount in satoshi when claiming using zero-conf
+ */
+#define LIQUID_SDK_ZERO_CONF_LIMIT_SAT 1000
 
 typedef struct wire_cst_list_prim_u_8_strict {
   uint8_t *ptr;
@@ -121,8 +127,13 @@ typedef struct wire_cst_LiquidSdkError_Generic {
   struct wire_cst_list_prim_u_8_strict *err;
 } wire_cst_LiquidSdkError_Generic;
 
+typedef struct wire_cst_LiquidSdkError_ServiceConnectivity {
+  struct wire_cst_list_prim_u_8_strict *err;
+} wire_cst_LiquidSdkError_ServiceConnectivity;
+
 typedef union LiquidSdkErrorKind {
   struct wire_cst_LiquidSdkError_Generic Generic;
+  struct wire_cst_LiquidSdkError_ServiceConnectivity ServiceConnectivity;
 } LiquidSdkErrorKind;
 
 typedef struct wire_cst_liquid_sdk_error {

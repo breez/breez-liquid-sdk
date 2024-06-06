@@ -1,10 +1,12 @@
 use std::str::FromStr;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use anyhow::Result;
 use lwk_wollet::elements::{LockTime, LockTime::*};
+use log::debug;
+use anyhow::{anyhow, Result};
+use reqwest::StatusCode;
 
-use crate::error::PaymentError;
+use crate::error::{LiquidSdkError, PaymentError};
 
 pub(crate) fn now() -> u32 {
     SystemTime::now()
@@ -39,3 +41,48 @@ pub(crate) fn is_locktime_expired(current_locktime: LockTime, expiry_locktime: L
         _ => false, // Not using the same units
     }
 }
+
+pub(crate) fn get_reqwest_client() -> Result<reqwest::Client, LiquidSdkError> {
+    reqwest::Client::builder()
+        .timeout(Duration::from_secs(30))
+        .build()
+        .map_err(|e| LiquidSdkError::ServiceConnectivity { err: e.to_string() })
+}
+
+pub(crate) async fn get_and_log_response(
+    url: &str,
+) -> Result<(String, StatusCode), LiquidSdkError> {
+    debug!("Making GET request to: {url}");
+
+    let response = get_reqwest_client()?
+        .get(url)
+        .send()
+        .await
+        .map_err(|e| LiquidSdkError::ServiceConnectivity { err: e.to_string() })?;
+    let status = response.status();
+    let raw_body = response
+        .text()
+        .await
+        .map_err(|e| LiquidSdkError::ServiceConnectivity { err: e.to_string() })?;
+    debug!("Received response, status: {status}, raw response body: {raw_body}");
+
+    Ok((raw_body, status))
+}
+
+// pub(crate) async fn get_parse_and_log_response<T>(
+//     url: &str,
+//     enforce_status_check: bool,
+// ) -> Result<T, LiquidSdkError>
+// where
+//     for<'a> T: serde::de::Deserialize<'a>,
+// {
+//     let (raw_body, status) = get_and_log_response(url).await?;
+//     if enforce_status_check && !status.is_success() {
+//         let err = format!("GET request {url} failed with status: {status}");
+//         log::error!("{err}");
+//         return Err(LiquidSdkError::ServiceConnectivity { err });
+//     }
+//
+//     serde_json::from_str::<T>(&raw_body).map_err(Into::into)
+// }
+

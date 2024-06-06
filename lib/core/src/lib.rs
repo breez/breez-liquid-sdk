@@ -1,5 +1,6 @@
 #[cfg(feature = "frb")]
 pub mod bindings;
+pub(crate) mod chain;
 pub mod error;
 pub(crate) mod event;
 #[cfg(feature = "frb")]

@@ -20,6 +20,9 @@ pub enum LiquidSdkError {
     #[error("Error: {err}")]
     Generic { err: String },
 
+    #[error("Service connectivity: {err}")]
+    ServiceConnectivity { err: String },
+
     #[error("Liquid SDK instance is not running")]
     NotStarted,
 }
@@ -27,6 +30,14 @@ pub enum LiquidSdkError {
 impl From<anyhow::Error> for LiquidSdkError {
     fn from(e: Error) -> Self {
         LiquidSdkError::Generic { err: e.to_string() }
+    }
+}
+
+impl From<serde_json::Error> for LiquidSdkError {
+    fn from(err: serde_json::Error) -> Self {
+        Self::Generic {
+            err: err.to_string(),
+        }
     }
 }
 

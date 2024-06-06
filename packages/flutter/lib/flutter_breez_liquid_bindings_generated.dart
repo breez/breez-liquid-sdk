@@ -710,8 +710,14 @@ final class wire_cst_LiquidSdkError_Generic extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
 
+final class wire_cst_LiquidSdkError_ServiceConnectivity extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
+}
+
 final class LiquidSdkErrorKind extends ffi.Union {
   external wire_cst_LiquidSdkError_Generic Generic;
+
+  external wire_cst_LiquidSdkError_ServiceConnectivity ServiceConnectivity;
 }
 
 final class wire_cst_liquid_sdk_error extends ffi.Struct {
@@ -856,4 +862,8 @@ final class wire_cst_send_payment_response extends ffi.Struct {
 /// EXTRA BEGIN
 typedef WireSyncRust2DartDco = ffi.Pointer<DartCObject>;
 
-const double LIQUID_CLAIM_TX_FEERATE_MSAT = 100.0;
+const double LIQUID_SDK_ZERO_CONF_FEE_RATE_TESTNET = 0.1;
+
+const double LIQUID_SDK_ZERO_CONF_FEE_RATE_MAINNET = 0.01;
+
+const int LIQUID_SDK_ZERO_CONF_LIMIT_SAT = 1000;

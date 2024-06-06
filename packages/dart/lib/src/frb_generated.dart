@@ -727,6 +727,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           err: dco_decode_String(raw[1]),
         );
       case 2:
+        return LiquidSdkError_ServiceConnectivity(
+          err: dco_decode_String(raw[1]),
+        );
+      case 3:
         return LiquidSdkError_NotStarted();
       default:
         throw Exception("unreachable");
@@ -1235,6 +1239,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         var var_err = sse_decode_String(deserializer);
         return LiquidSdkError_Generic(err: var_err);
       case 2:
+        var var_err = sse_decode_String(deserializer);
+        return LiquidSdkError_ServiceConnectivity(err: var_err);
+      case 3:
         return LiquidSdkError_NotStarted();
       default:
         throw UnimplementedError('');
@@ -1819,8 +1826,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case LiquidSdkError_Generic(err: final err):
         sse_encode_i_32(1, serializer);
         sse_encode_String(err, serializer);
-      case LiquidSdkError_NotStarted():
+      case LiquidSdkError_ServiceConnectivity(err: final err):
         sse_encode_i_32(2, serializer);
+        sse_encode_String(err, serializer);
+      case LiquidSdkError_NotStarted():
+        sse_encode_i_32(3, serializer);
     }
   }
 

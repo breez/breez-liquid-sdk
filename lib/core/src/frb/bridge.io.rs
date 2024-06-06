@@ -208,7 +208,13 @@ impl CstDecode<crate::error::LiquidSdkError> for wire_cst_liquid_sdk_error {
                     err: ans.err.cst_decode(),
                 }
             }
-            2 => crate::error::LiquidSdkError::NotStarted,
+            2 => {
+                let ans = unsafe { self.kind.ServiceConnectivity };
+                crate::error::LiquidSdkError::ServiceConnectivity {
+                    err: ans.err.cst_decode(),
+                }
+            }
+            3 => crate::error::LiquidSdkError::NotStarted,
             _ => unreachable!(),
         }
     }
@@ -1070,11 +1076,17 @@ pub struct wire_cst_liquid_sdk_error {
 #[derive(Clone, Copy)]
 pub union LiquidSdkErrorKind {
     Generic: wire_cst_LiquidSdkError_Generic,
+    ServiceConnectivity: wire_cst_LiquidSdkError_ServiceConnectivity,
     nil__: (),
 }
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct wire_cst_LiquidSdkError_Generic {
+    err: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_LiquidSdkError_ServiceConnectivity {
     err: *mut wire_cst_list_prim_u_8_strict,
 }
 #[repr(C)]
