@@ -198,23 +198,23 @@ jobs:
 #      skip-tests: true
 #    secrets:
 #      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-#
-#  publish-golang:
-#    needs:
-#      - setup
-#      - build-bindings-android
-#      - build-bindings-windows
-#      - build-bindings-darwin
-#      - build-bindings-linux
-#      - build-language-bindings
-#    if: ${{ needs.setup.outputs.golang == 'true' }}
-#    uses: ./.github/workflows/publish-golang.yml
-#    with:
-#      ref: ${{ needs.setup.outputs.ref }}
-#      package-version: ${{ needs.setup.outputs.golang-package-version }}
-#      publish: ${{ needs.setup.outputs.publish == 'true' }}
-#    secrets:
-#      REPO_SSH_KEY: ${{ secrets.REPO_SSH_KEY }}
+
+  publish-golang:
+    needs:
+      - setup
+      - build-bindings-android
+      - build-bindings-windows
+      - build-bindings-darwin
+      - build-bindings-linux
+      - build-language-bindings
+    if: ${{ needs.setup.outputs.golang == 'true' }}
+    uses: ./.github/workflows/publish-golang.yml
+    with:
+      ref: ${{ needs.setup.outputs.ref }}
+      package-version: ${{ needs.setup.outputs.golang-package-version }}
+      publish: ${{ needs.setup.outputs.publish == 'true' }}
+    secrets:
+      REPO_SSH_KEY: ${{ secrets.REPO_SSH_KEY }}
   
   publish-maven:
     needs:
