@@ -119,20 +119,20 @@ jobs:
           name: bindings-python
           path: lib/bindings/ffi/python/breez_liquid_sdk.py
 
-#      - name: Build C# binding
-#        if: ${{ inputs.csharp }}
-#        working-directory: lib/bindings
-#        run: |
-#          cargo install uniffi-bindgen-cs --git https://github.com/breez/uniffi-bindgen-cs --branch namespace
-#          uniffi-bindgen-cs src/breez_liquid_sdk.udl -o ffi/csharp -c ./uniffi.toml
-#      
-#      - name: Archive C# binding
-#        if: ${{ inputs.csharp }}
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: bindings-csharp
-#          path: lib/bindings/ffi/csharp/breez_liquid_sdk.cs
-#    
+      - name: Build C# binding
+        if: ${{ inputs.csharp }}
+        working-directory: lib/bindings
+        run: |
+          cargo install uniffi-bindgen-cs --git https://github.com/NordSecurity/uniffi-bindgen-cs --tag v0.8.0+v0.25.0
+          uniffi-bindgen-cs src/breez_liquid_sdk.udl -o ffi/csharp -c ./uniffi.toml
+      
+      - name: Archive C# binding
+        if: ${{ inputs.csharp }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings-csharp
+          path: lib/bindings/ffi/csharp/breez_liquid_sdk.cs
+    
       - name: Build golang binding
         if: ${{ inputs.golang }}
         working-directory: lib/bindings
