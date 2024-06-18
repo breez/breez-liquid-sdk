@@ -181,23 +181,23 @@ jobs:
       python: ${{ needs.setup.outputs.python == 'true'}}
       swift: ${{ needs.setup.outputs.swift == 'true'}}
 
-#  publish-csharp:
-#    needs:
-#      - setup
-#      - build-bindings-windows
-#      - build-bindings-darwin
-#      - build-bindings-linux
-#      - build-language-bindings
-#    if: ${{ needs.setup.outputs.csharp == 'true' }}
-#    uses: ./.github/workflows/publish-csharp.yml
-#    with:
-#      repository: ${{ needs.setup.outputs.repository }}
-#      ref: ${{ needs.setup.outputs.csharp-ref }}
-#      package-version: ${{ needs.setup.outputs.csharp-package-version }}
-#      publish: ${{ needs.setup.outputs.publish == 'true' }}
-#      skip-tests: true
-#    secrets:
-#      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+  publish-csharp:
+    needs:
+      - setup
+      - build-bindings-windows
+      - build-bindings-darwin
+      - build-bindings-linux
+      - build-language-bindings
+    if: ${{ needs.setup.outputs.csharp == 'true' }}
+    uses: ./.github/workflows/publish-csharp.yml
+    with:
+      repository: ${{ needs.setup.outputs.repository }}
+      ref: ${{ needs.setup.outputs.csharp-ref }}
+      package-version: ${{ needs.setup.outputs.csharp-package-version }}
+      publish: ${{ needs.setup.outputs.publish == 'true' }}
+      skip-tests: true
+    secrets:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
   publish-golang:
     needs:

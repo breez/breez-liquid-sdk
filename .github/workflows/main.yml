@@ -51,6 +51,13 @@ jobs:
         working-directory: lib/bindings
         run: cargo build
 
+      - name: Build C# bindings
+        working-directory: lib/bindings       
+        run: |
+          cargo install uniffi-bindgen-cs --git https://github.com/NordSecurity/uniffi-bindgen-cs --tag v0.8.0+v0.25.0
+          uniffi-bindgen-cs src/breez_liquid_sdk.udl -o ffi/csharp -c ./uniffi.toml
+          cp ../target/debug/libbreez_liquid_sdk_bindings.so ffi/csharp
+
       - name: Build golang bindings
         working-directory: lib/bindings       
         run: |
