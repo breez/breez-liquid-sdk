@@ -7,7 +7,7 @@ import 'package:cli_script/cli_script.dart';
 
 import 'utils.dart';
 
-const libName = 'breez_liquid_sdk';
+const libName = 'breez_sdk_liquid';
 const linuxLibName = 'lib$libName.so';
 const windowsLibName = '$libName.dll';
 const buildDir = 'platform-build';

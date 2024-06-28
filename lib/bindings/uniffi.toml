@@ -1,12 +1,12 @@
 # https://mozilla.github.io/uniffi-rs/swift/configuration.html
 [bindings.swift]
-cdylib_name = "breez_liquid_sdk_bindings"
+cdylib_name = "breez_sdk_liquid_bindings"
 
 # https://mozilla.github.io/uniffi-rs/kotlin/configuration.html
 [bindings.kotlin]
-package_name = "breez_liquid_sdk"
-cdylib_name = "breez_liquid_sdk_bindings"
+package_name = "breez_sdk_liquid"
+cdylib_name = "breez_sdk_liquid_bindings"
 
 # https://mozilla.github.io/uniffi-rs/python/configuration.html
 [bindings.python]
-cdylib_name = "breez_liquid_sdk_bindings"
+cdylib_name = "breez_sdk_liquid_bindings"

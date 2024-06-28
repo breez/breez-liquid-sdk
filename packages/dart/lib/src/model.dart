@@ -150,31 +150,6 @@ enum LiquidNetwork {
 }
 
 @freezed
-sealed class LiquidSdkEvent with _$LiquidSdkEvent {
-  const LiquidSdkEvent._();
-
-  const factory LiquidSdkEvent.paymentFailed({
-    required Payment details,
-  }) = LiquidSdkEvent_PaymentFailed;
-  const factory LiquidSdkEvent.paymentPending({
-    required Payment details,
-  }) = LiquidSdkEvent_PaymentPending;
-  const factory LiquidSdkEvent.paymentRefunded({
-    required Payment details,
-  }) = LiquidSdkEvent_PaymentRefunded;
-  const factory LiquidSdkEvent.paymentRefundPending({
-    required Payment details,
-  }) = LiquidSdkEvent_PaymentRefundPending;
-  const factory LiquidSdkEvent.paymentSucceeded({
-    required Payment details,
-  }) = LiquidSdkEvent_PaymentSucceeded;
-  const factory LiquidSdkEvent.paymentWaitingConfirmation({
-    required Payment details,
-  }) = LiquidSdkEvent_PaymentWaitingConfirmation;
-  const factory LiquidSdkEvent.synced() = LiquidSdkEvent_Synced;
-}
-
-@freezed
 sealed class LnUrlPayResult with _$LnUrlPayResult {
   const LnUrlPayResult._();
 
@@ -749,6 +724,31 @@ class RestoreRequest {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is RestoreRequest && runtimeType == other.runtimeType && backupPath == other.backupPath;
+}
+
+@freezed
+sealed class SdkEvent with _$SdkEvent {
+  const SdkEvent._();
+
+  const factory SdkEvent.paymentFailed({
+    required Payment details,
+  }) = SdkEvent_PaymentFailed;
+  const factory SdkEvent.paymentPending({
+    required Payment details,
+  }) = SdkEvent_PaymentPending;
+  const factory SdkEvent.paymentRefunded({
+    required Payment details,
+  }) = SdkEvent_PaymentRefunded;
+  const factory SdkEvent.paymentRefundPending({
+    required Payment details,
+  }) = SdkEvent_PaymentRefundPending;
+  const factory SdkEvent.paymentSucceeded({
+    required Payment details,
+  }) = SdkEvent_PaymentSucceeded;
+  const factory SdkEvent.paymentWaitingConfirmation({
+    required Payment details,
+  }) = SdkEvent_PaymentWaitingConfirmation;
+  const factory SdkEvent.synced() = SdkEvent_Synced;
 }
 
 class SendPaymentResponse {

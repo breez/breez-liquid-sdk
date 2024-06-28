@@ -37,7 +37,7 @@ impl RNBindingGenerator {
     ) -> Result<()> {
         // Create the path
         let output_path =
-            base_output_path.join(Utf8Path::new("android/src/main/java/com/breezliquidsdk"));
+            base_output_path.join(Utf8Path::new("android/src/main/java/com/breezsdkliquid"));
         // Generate and write the binding to file
         let bindings_output = self::gen_kotlin::MapperGenerator::new(config.clone(), ci)
             .render()
@@ -46,7 +46,7 @@ impl RNBindingGenerator {
             .write_bindings(
                 &bindings_output,
                 &output_path,
-                Utf8Path::new("BreezLiquidSDKMapper.kt"),
+                Utf8Path::new("BreezSDKLiquidMapper.kt"),
             )
             .unwrap();
         // Lint binding
@@ -62,7 +62,7 @@ impl RNBindingGenerator {
     ) -> Result<()> {
         // Create the path
         let output_path =
-            base_output_path.join(Utf8Path::new("android/src/main/java/com/breezliquidsdk"));
+            base_output_path.join(Utf8Path::new("android/src/main/java/com/breezsdkliquid"));
         // Generate and write the binding to file
         let bindings_output = self::gen_kotlin::ModuleGenerator::new(config.clone(), ci)
             .render()
@@ -71,7 +71,7 @@ impl RNBindingGenerator {
             .write_bindings(
                 &bindings_output,
                 &output_path,
-                Utf8Path::new("BreezLiquidSDKModule.kt"),
+                Utf8Path::new("BreezSDKLiquidModule.kt"),
             )
             .unwrap();
         // Lint binding
@@ -105,7 +105,7 @@ impl RNBindingGenerator {
             .write_bindings(
                 &bindings_output,
                 &output_path,
-                Utf8Path::new("BreezLiquidSDKMapper.swift"),
+                Utf8Path::new("BreezSDKLiquidMapper.swift"),
             )
             .unwrap();
         // Lint binding
@@ -129,7 +129,7 @@ impl RNBindingGenerator {
             .write_bindings(
                 &bindings_output,
                 &output_path,
-                Utf8Path::new("RNBreezLiquidSDK.m"),
+                Utf8Path::new("RNBreezSDKLiquid.m"),
             )
             .unwrap();
         // Lint binding
@@ -153,7 +153,7 @@ impl RNBindingGenerator {
             .write_bindings(
                 &bindings_output,
                 &output_path,
-                Utf8Path::new("RNBreezLiquidSDK.swift"),
+                Utf8Path::new("RNBreezSDKLiquid.swift"),
             )
             .unwrap();
         // Lint binding

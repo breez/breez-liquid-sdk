@@ -67,7 +67,7 @@ jobs:
     - name: Copy build output
       run: |
         mkdir -p dist
-        cp lib/target/${{ matrix.target }}/release/libbreez_liquid_sdk_bindings.so dist
+        cp lib/target/${{ matrix.target }}/release/libbreez_sdk_liquid_bindings.so dist
 
     - name: Copy libc++_shared
       if: ${{ matrix.target == 'armv7-linux-androideabi'}}
@@ -129,7 +129,7 @@ jobs:
     steps:
       - name: Build Android ${{ matrix.target }} dummy
         run: |
-          touch libbreez_liquid_sdk_bindings.so
+          touch libbreez_sdk_liquid_bindings.so
           touch libc++_shared.so.so
 
       - name: Upload dummy Android ${{ matrix.target }} artifact

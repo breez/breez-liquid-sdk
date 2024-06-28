@@ -1,2 +1,2 @@
 #import "GeneratedPluginRegistrant.h"
-#import "breez_liquid_sdk.h"
+#import "breez_sdk_liquid.h"

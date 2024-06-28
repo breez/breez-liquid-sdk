@@ -3,6 +3,6 @@
 
 // BreezLiquid initApi({String? profile}) {
 //   return BreezLiquid.wasm(WasmModule.initialize(
-//     kind: const Modules.noModules(root: 'pkg/breez_liquid_sdk'),
+//     kind: const Modules.noModules(root: 'pkg/breez_sdk_liquid'),
 //   ));
 // }

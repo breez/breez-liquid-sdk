@@ -1,0 +1,546 @@
+//////////////////////////////////
+// BEGIN sdk-common mirror imports
+// These are structs defined in sdk-common, which we want to make available in this project's UDL bindings
+
+dictionary LNInvoice {
+    string bolt11;
+    Network network;
+    string payee_pubkey;
+    string payment_hash;
+    string? description;
+    string? description_hash;
+    u64? amount_msat;
+    u64 timestamp;
+    u64 expiry;
+    sequence<RouteHint> routing_hints;
+    sequence<u8> payment_secret;
+    u64 min_final_cltv_expiry_delta;
+};
+
+enum Network {
+    "Bitcoin",
+    "Testnet",
+    "Signet",
+    "Regtest",
+};
+
+dictionary RouteHint {
+    sequence<RouteHintHop> hops;
+};
+
+dictionary RouteHintHop {
+     string src_node_id;
+     u64 short_channel_id;
+     u32 fees_base_msat;
+     u32 fees_proportional_millionths;
+     u64 cltv_expiry_delta;
+     u64? htlc_minimum_msat;
+     u64? htlc_maximum_msat;
+};
+
+[Enum]
+interface InputType {
+    BitcoinAddress(BitcoinAddressData address);
+    Bolt11(LNInvoice invoice);
+    NodeId(string node_id);
+    Url(string url);
+    LnUrlPay(LnUrlPayRequestData data);
+    LnUrlWithdraw(LnUrlWithdrawRequestData data);
+    LnUrlAuth(LnUrlAuthRequestData data);
+    LnUrlError(LnUrlErrorData data);
+};
+
+dictionary BitcoinAddressData {
+    string address;
+    Network network;
+    u64? amount_sat;
+    string? label;
+    string? message;
+};
+
+dictionary LnUrlPayRequestData {
+    string callback;
+    u64 min_sendable;
+    u64 max_sendable;
+    string metadata_str;
+    u16 comment_allowed;
+    string domain;
+    boolean allows_nostr;
+    string? nostr_pubkey;
+    string? ln_address;
+};
+
+dictionary LnUrlWithdrawRequestData {
+    string callback;
+    string k1;
+    string default_description;
+    u64 min_withdrawable;
+    u64 max_withdrawable;
+};
+
+dictionary LnUrlAuthRequestData {
+    string k1;
+    string domain;
+    string url;
+    string? action = null;
+};
+
+dictionary LnUrlErrorData {
+    string reason;
+};
+
+[Enum]
+interface SuccessActionProcessed {
+    Aes(AesSuccessActionDataResult result);
+    Message(MessageSuccessActionData data);
+    Url(UrlSuccessActionData data);
+};
+
+[Enum]
+interface AesSuccessActionDataResult {
+    Decrypted(AesSuccessActionDataDecrypted data);
+    ErrorStatus(string reason);
+};
+
+dictionary AesSuccessActionDataDecrypted {
+    string description;
+    string plaintext;
+};
+
+dictionary MessageSuccessActionData {
+    string message;
+};
+
+dictionary UrlSuccessActionData {
+    string description;
+    string url;
+};
+
+dictionary LnUrlPayErrorData {
+    string payment_hash;
+    string reason;
+};
+
+dictionary LnUrlPayRequest {
+    LnUrlPayRequestData data;
+    u64 amount_msat;
+    string? comment = null;
+    string? payment_label = null;
+};
+
+[Error]
+interface LnUrlPayError {
+    AlreadyPaid();
+    Generic(string err);
+    InvalidAmount(string err);
+    InvalidInvoice(string err);
+    InvalidNetwork(string err);
+    InvalidUri(string err);
+    InvoiceExpired(string err);
+    PaymentFailed(string err);
+    PaymentTimeout(string err);
+    RouteNotFound(string err);
+    RouteTooExpensive(string err);
+    ServiceConnectivity(string err);
+};
+
+[Error]
+interface LnUrlWithdrawError {
+    Generic(string err);
+    InvalidAmount(string err);
+    InvalidInvoice(string err);
+    InvalidUri(string err);
+    ServiceConnectivity(string err);
+    InvoiceNoRoutingHints(string err);
+};
+
+[Enum]
+interface LnUrlWithdrawResult {
+    Ok(LnUrlWithdrawSuccessData data);
+    ErrorStatus(LnUrlErrorData data);
+};
+
+dictionary LnUrlWithdrawSuccessData {
+    LNInvoice invoice;
+};
+
+dictionary LnUrlWithdrawRequestData {
+    string callback;
+    string k1;
+    string default_description;
+    u64 min_withdrawable;
+    u64 max_withdrawable;
+};
+
+dictionary LnUrlWithdrawRequest {
+    LnUrlWithdrawRequestData data;
+    u64 amount_msat;
+    string? description = null;
+};
+
+[Enum]
+interface LnUrlCallbackStatus {
+    Ok();
+    ErrorStatus(LnUrlErrorData data);
+};
+
+[Error]
+interface LnUrlAuthError {
+    Generic(string err);
+    InvalidUri(string err);
+    ServiceConnectivity(string err);
+};
+
+dictionary Rate {
+    string coin;
+    f64 value;
+};
+
+dictionary FiatCurrency {
+    string id;
+    CurrencyInfo info;
+};
+
+dictionary Symbol {
+    string? grapheme;
+    string? template;
+    boolean? rtl;
+    u32? position;
+};
+
+dictionary LocaleOverrides {
+    string locale;
+    u32? spacing;
+    Symbol symbol;
+};
+
+dictionary LocalizedName {
+    string locale;
+    string name;
+};
+
+dictionary CurrencyInfo {
+    string name;
+    u32 fraction_size;
+    u32? spacing;
+    Symbol? symbol;
+    Symbol? uniq_symbol;
+    sequence<LocalizedName> localized_name;
+    sequence<LocaleOverrides> locale_overrides;
+};
+
+// END sdk-common mirror imports
+////////////////////////////////
+
+//////////////////////////////////
+// BEGIN sdk-common wrappers
+// These are connecting structures that glue relevant sdk-common structs to the SDK
+
+[Enum]
+interface LnUrlPayResult {
+    EndpointSuccess(LnUrlPaySuccessData data);
+    EndpointError(LnUrlErrorData data);
+    PayError(LnUrlPayErrorData data);
+};
+
+dictionary LnUrlPaySuccessData {
+    SuccessActionProcessed? success_action;
+    Payment payment;
+};
+
+// END sdk-common wrappers
+////////////////////////////////
+
+[Error]
+enum SdkError {
+    "AlreadyStarted",
+    "Generic",
+    "NotStarted",
+    "ServiceConnectivity",
+};
+
+[Error]
+enum PaymentError {
+    "AlreadyClaimed",
+    "AlreadyPaid",
+    "PaymentInProgress",
+    "AmountOutOfRange",
+    "Generic",
+    "InvalidOrExpiredFees",
+    "InsufficientFunds",
+    "InvalidInvoice",
+    "InvalidPreimage",
+    "LwkError",
+    "PairsNotFound",
+    "PaymentTimeout",
+    "PersistError",
+    "ReceiveError",
+    "Refunded",
+    "SelfTransferNotSupported",
+    "SendError",
+    "SignerError",
+};
+
+dictionary Config {
+    string liquid_electrum_url;
+    string bitcoin_electrum_url;
+    string working_dir;
+    LiquidNetwork network;
+    u64 payment_timeout_sec;
+    f32 zero_conf_min_fee_rate;
+    u64? zero_conf_max_amount_sat;
+};
+
+enum LiquidNetwork {
+    "Mainnet",
+    "Testnet",
+};
+
+dictionary ConnectRequest {
+    Config config;
+    string mnemonic;
+};
+
+dictionary GetInfoResponse {
+    u64 balance_sat;
+    u64 pending_send_sat;
+    u64 pending_receive_sat;
+    string pubkey;
+};
+
+dictionary PrepareSendRequest {
+    string invoice;
+};
+
+dictionary PrepareSendResponse {
+    string invoice;
+    u64 fees_sat;
+};
+
+dictionary SendPaymentResponse {
+    Payment payment;
+};
+
+dictionary PrepareReceiveRequest {
+    u64 payer_amount_sat;
+};
+
+dictionary PrepareReceiveResponse {
+    u64 payer_amount_sat;
+    u64 fees_sat;
+};
+
+dictionary ReceivePaymentResponse {
+    string id;
+    string invoice;
+};
+
+dictionary PreparePayOnchainRequest {
+    u64 receiver_amount_sat;
+};
+
+dictionary PreparePayOnchainResponse {
+    u64 receiver_amount_sat;
+    u64 fees_sat;
+};
+
+dictionary PayOnchainRequest {
+    string address;
+    PreparePayOnchainResponse prepare_res;
+};
+
+dictionary PrepareReceiveOnchainRequest {
+    u64 payer_amount_sat;
+};
+
+dictionary PrepareReceiveOnchainResponse {
+    u64 payer_amount_sat;
+    u64 fees_sat;
+};
+
+dictionary ReceiveOnchainResponse {
+    string address;
+    string bip21;
+};
+
+dictionary BackupRequest {
+    string? backup_path = null;
+};
+
+dictionary RestoreRequest {
+    string? backup_path = null;
+};
+
+dictionary Payment {
+    string? tx_id = null;
+    string? swap_id = null;
+    u32 timestamp;
+    u64 amount_sat;
+    u64 fees_sat;
+    string? preimage = null;
+    string? bolt11 = null;
+    string? refund_tx_id = null;
+    u64? refund_tx_amount_sat = null;
+    PaymentType payment_type;
+    PaymentState status;
+};
+
+enum PaymentType {
+    "Receive",
+    "Send",
+};
+
+enum PaymentState {
+    "Created",
+    "Pending",
+    "Complete",
+    "Failed",
+    "TimedOut",
+    "Refundable",
+    "RefundPending",
+};
+
+dictionary RefundableSwap {
+    string swap_address;
+    u32 timestamp;
+    u64 amount_sat;
+};
+
+dictionary PrepareRefundRequest {
+    string swap_address;
+    string refund_address;
+    u32 sat_per_vbyte;
+};
+
+dictionary PrepareRefundResponse {
+    u32 tx_vsize;
+    u64 tx_fee_sat;
+    string? refund_tx_id = null;
+};
+
+dictionary RefundRequest {
+    string swap_address;
+    string refund_address;
+    u32 sat_per_vbyte;
+};
+
+dictionary RefundResponse {
+    string refund_tx_id;
+};
+
+[Enum]
+interface SdkEvent {
+    PaymentFailed(Payment details);
+    PaymentPending(Payment details);
+    PaymentRefunded(Payment details);
+    PaymentRefundPending(Payment details);
+    PaymentSucceeded(Payment details);
+    PaymentWaitingConfirmation(Payment details);
+    Synced();
+};
+
+callback interface EventListener {    
+    void on_event(SdkEvent e);
+};
+
+callback interface Logger {
+    void log(LogEntry l);
+};
+
+dictionary LogEntry {
+    string line;
+    string level;
+};
+
+namespace breez_sdk_liquid {
+    [Throws=SdkError]
+    BindingLiquidSdk connect(ConnectRequest req);
+
+    [Throws=SdkError]
+    void set_logger(Logger logger);
+    
+    Config default_config(LiquidNetwork network);
+
+    [Throws=PaymentError]
+    InputType parse(string input);
+
+    [Throws=PaymentError]
+    LNInvoice parse_invoice(string input);
+};
+
+interface BindingLiquidSdk {
+    [Throws=SdkError]
+    string add_event_listener(EventListener listener);
+
+    [Throws=SdkError]
+    void remove_event_listener(string id);
+
+    [Throws=SdkError]
+    GetInfoResponse get_info();
+
+    [Throws=PaymentError]
+    PrepareSendResponse prepare_send_payment(PrepareSendRequest req);
+
+    [Throws=PaymentError]
+    SendPaymentResponse send_payment(PrepareSendResponse req);
+
+    [Throws=PaymentError]
+    PrepareReceiveResponse prepare_receive_payment(PrepareReceiveRequest req);
+
+    [Throws=PaymentError]
+    ReceivePaymentResponse receive_payment(PrepareReceiveResponse req);
+
+    [Throws=PaymentError]
+    PreparePayOnchainResponse prepare_pay_onchain(PreparePayOnchainRequest req);
+
+    [Throws=PaymentError]
+    SendPaymentResponse pay_onchain(PayOnchainRequest req);
+
+    [Throws=PaymentError]
+    PrepareReceiveOnchainResponse prepare_receive_onchain(PrepareReceiveOnchainRequest req);
+
+    [Throws=PaymentError]
+    ReceiveOnchainResponse receive_onchain(PrepareReceiveOnchainResponse req);
+
+    [Throws=PaymentError]
+    sequence<Payment> list_payments();
+
+    [Throws=SdkError]
+    sequence<RefundableSwap> list_refundables();
+
+    [Throws=SdkError]
+    PrepareRefundResponse prepare_refund(PrepareRefundRequest req);
+
+    [Throws=PaymentError]
+    RefundResponse refund(RefundRequest req);
+
+    [Throws=SdkError]
+    void rescan_onchain_swaps();
+
+    [Throws=SdkError]
+    void sync();
+
+    [Throws=SdkError]
+    void backup(BackupRequest req);
+
+    [Throws=SdkError]
+    void restore(RestoreRequest req);
+
+    [Throws=SdkError]
+    void disconnect();
+
+    [Throws=LnUrlPayError]
+    LnUrlPayResult lnurl_pay(LnUrlPayRequest req);
+
+    [Throws=LnUrlWithdrawError]
+    LnUrlWithdrawResult lnurl_withdraw(LnUrlWithdrawRequest req);
+
+    [Throws=LnUrlAuthError]
+    LnUrlCallbackStatus lnurl_auth(LnUrlAuthRequestData req_data);
+
+    [Throws=SdkError]
+    sequence<Rate> fetch_fiat_rates();
+
+    [Throws=SdkError]
+    sequence<FiatCurrency> list_fiat_currencies();
+};

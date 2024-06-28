@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_breez_liquid/flutter_breez_liquid.dart';
 import 'package:flutter_breez_liquid_example/routes/connect/restore_page.dart';
 import 'package:flutter_breez_liquid_example/routes/home/home_page.dart';
-import 'package:flutter_breez_liquid_example/services/breez_liquid_sdk.dart';
+import 'package:flutter_breez_liquid_example/services/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid_example/services/credentials_manager.dart';
 import 'package:flutter_breez_liquid_example/utils/config.dart';
 
 class ConnectPage extends StatefulWidget {
-  final BreezLiquidSDK liquidSDK;
+  final BreezSDKLiquid liquidSDK;
   final CredentialsManager credentialsManager;
   const ConnectPage({super.key, required this.liquidSDK, required this.credentialsManager});
 

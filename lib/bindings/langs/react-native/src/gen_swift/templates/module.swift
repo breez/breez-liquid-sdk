@@ -1,31 +1,31 @@
 import Foundation
-import BreezLiquidSDK
+import BreezSDKLiquid
 
-@objc(RNBreezLiquidSDK)
-class RNBreezLiquidSDK: RCTEventEmitter {
-    static let TAG: String = "BreezLiquidSDK"
+@objc(RNBreezSDKLiquid)
+class RNBreezSDKLiquid: RCTEventEmitter {
+    static let TAG: String = "BreezSDKLiquid"
     
     public static var emitter: RCTEventEmitter!
     public static var hasListeners: Bool = false
-    public static var supportedEvents: [String] = ["breezLiquidSdkLog"]
+    public static var supportedEvents: [String] = ["breezSdkLiquidLog"]
 
     private var bindingLiquidSdk: BindingLiquidSdk!
 
 
-    static var breezLiquidSdkDirectory: URL {
+    static var breezSdkLiquidDirectory: URL {
         let applicationDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let breezLiquidSdkDirectory = applicationDirectory.appendingPathComponent("breezLiquidSdk", isDirectory: true)
+        let breezSdkLiquidDirectory = applicationDirectory.appendingPathComponent("breezSdkLiquid", isDirectory: true)
         
-        if !FileManager.default.fileExists(atPath: breezLiquidSdkDirectory.path) {
-            try! FileManager.default.createDirectory(atPath: breezLiquidSdkDirectory.path, withIntermediateDirectories: true)
+        if !FileManager.default.fileExists(atPath: breezSdkLiquidDirectory.path) {
+            try! FileManager.default.createDirectory(atPath: breezSdkLiquidDirectory.path, withIntermediateDirectories: true)
         }
         
-        return breezLiquidSdkDirectory
+        return breezSdkLiquidDirectory
     }
     
     override init() {
         super.init()
-        RNBreezLiquidSDK.emitter = self
+        RNBreezSDKLiquid.emitter = self
     }
 
     @objc
@@ -34,19 +34,19 @@ class RNBreezLiquidSDK: RCTEventEmitter {
     }
 
     static func addSupportedEvent(name: String) {
-        RNBreezLiquidSDK.supportedEvents.append(name)
+        RNBreezSDKLiquid.supportedEvents.append(name)
     }
     
     override func supportedEvents() -> [String]! {
-        return RNBreezLiquidSDK.supportedEvents
+        return RNBreezSDKLiquid.supportedEvents
     }
     
     override func startObserving() {
-        RNBreezLiquidSDK.hasListeners = true
+        RNBreezSDKLiquid.hasListeners = true
     }
     
     override func stopObserving() {
-        RNBreezLiquidSDK.hasListeners = false
+        RNBreezSDKLiquid.hasListeners = false
     }
     
     @objc
@@ -59,7 +59,7 @@ class RNBreezLiquidSDK: RCTEventEmitter {
             return bindingLiquidSdk
         }
         
-        throw LiquidSdkError.Generic(message: "Not initialized")
+        throw SdkError.Generic(message: "Not initialized")
     }
         
     private func ensureWorkingDir(workingDir: String) throws {
@@ -68,11 +68,11 @@ class RNBreezLiquidSDK: RCTEventEmitter {
                 try FileManager.default.createDirectory(atPath: workingDir, withIntermediateDirectories: true)
             }
         } catch {
-            throw LiquidSdkError.Generic(message: "Mandatory field workingDir must contain a writable directory")
+            throw SdkError.Generic(message: "Mandatory field workingDir must contain a writable directory")
         }
     }
 
-    {% let obj_interface = "BreezLiquidSDK." -%}
+    {% let obj_interface = "BreezSDKLiquid." -%}
     {% for func in ci.function_definitions() %}
     {%- if func.name()|ignored_function == false -%}
     {% include "TopLevelFunctionTemplate.swift" %}
@@ -96,10 +96,10 @@ class RNBreezLiquidSDK: RCTEventEmitter {
         }
 
         do {
-            var connectRequest = try BreezLiquidSDKMapper.asConnectRequest(connectRequest: req)
+            var connectRequest = try BreezSDKLiquidMapper.asConnectRequest(connectRequest: req)
             try ensureWorkingDir(workingDir: connectRequest.config.workingDir)
 
-            bindingLiquidSdk = try BreezLiquidSDK.connect(req: connectRequest)
+            bindingLiquidSdk = try BreezSDKLiquid.connect(req: connectRequest)
             resolve(["status": "ok"])
         } catch let err {
             rejectErr(err: err, reject: reject)
@@ -109,7 +109,7 @@ class RNBreezLiquidSDK: RCTEventEmitter {
     @objc(addEventListener:reject:)
     func addEventListener(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            var eventListener = BreezLiquidSDKEventListener()
+            var eventListener = BreezSDKEventListener()
             var res = try getBindingLiquidSdk().addEventListener(listener: eventListener)
 
             eventListener.setId(id: res)

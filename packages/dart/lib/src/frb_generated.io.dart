@@ -42,10 +42,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       dynamic raw);
 
   @protected
-  RustStreamSink<LiquidSdkEvent> dco_decode_StreamSink_liquid_sdk_event_Dco(dynamic raw);
+  RustStreamSink<LogEntry> dco_decode_StreamSink_log_entry_Dco(dynamic raw);
 
   @protected
-  RustStreamSink<LogEntry> dco_decode_StreamSink_log_entry_Dco(dynamic raw);
+  RustStreamSink<SdkEvent> dco_decode_StreamSink_sdk_event_Dco(dynamic raw);
 
   @protected
   String dco_decode_String(dynamic raw);
@@ -88,9 +88,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ConnectRequest dco_decode_box_autoadd_connect_request(dynamic raw);
-
-  @protected
-  LiquidSdkEvent dco_decode_box_autoadd_liquid_sdk_event(dynamic raw);
 
   @protected
   LNInvoice dco_decode_box_autoadd_ln_invoice(dynamic raw);
@@ -162,6 +159,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RestoreRequest dco_decode_box_autoadd_restore_request(dynamic raw);
 
   @protected
+  SdkEvent dco_decode_box_autoadd_sdk_event(dynamic raw);
+
+  @protected
   SuccessActionProcessed dco_decode_box_autoadd_success_action_processed(dynamic raw);
 
   @protected
@@ -205,12 +205,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   LiquidNetwork dco_decode_liquid_network(dynamic raw);
-
-  @protected
-  LiquidSdkError dco_decode_liquid_sdk_error(dynamic raw);
-
-  @protected
-  LiquidSdkEvent dco_decode_liquid_sdk_event(dynamic raw);
 
   @protected
   List<FiatCurrency> dco_decode_list_fiat_currency(dynamic raw);
@@ -393,6 +387,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RouteHintHop dco_decode_route_hint_hop(dynamic raw);
 
   @protected
+  SdkError dco_decode_sdk_error(dynamic raw);
+
+  @protected
+  SdkEvent dco_decode_sdk_event(dynamic raw);
+
+  @protected
   SendPaymentResponse dco_decode_send_payment_response(dynamic raw);
 
   @protected
@@ -440,10 +440,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       SseDeserializer deserializer);
 
   @protected
-  RustStreamSink<LiquidSdkEvent> sse_decode_StreamSink_liquid_sdk_event_Dco(SseDeserializer deserializer);
+  RustStreamSink<LogEntry> sse_decode_StreamSink_log_entry_Dco(SseDeserializer deserializer);
 
   @protected
-  RustStreamSink<LogEntry> sse_decode_StreamSink_log_entry_Dco(SseDeserializer deserializer);
+  RustStreamSink<SdkEvent> sse_decode_StreamSink_sdk_event_Dco(SseDeserializer deserializer);
 
   @protected
   String sse_decode_String(SseDeserializer deserializer);
@@ -488,9 +488,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   ConnectRequest sse_decode_box_autoadd_connect_request(SseDeserializer deserializer);
-
-  @protected
-  LiquidSdkEvent sse_decode_box_autoadd_liquid_sdk_event(SseDeserializer deserializer);
 
   @protected
   LNInvoice sse_decode_box_autoadd_ln_invoice(SseDeserializer deserializer);
@@ -564,6 +561,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RestoreRequest sse_decode_box_autoadd_restore_request(SseDeserializer deserializer);
 
   @protected
+  SdkEvent sse_decode_box_autoadd_sdk_event(SseDeserializer deserializer);
+
+  @protected
   SuccessActionProcessed sse_decode_box_autoadd_success_action_processed(SseDeserializer deserializer);
 
   @protected
@@ -607,12 +607,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   LiquidNetwork sse_decode_liquid_network(SseDeserializer deserializer);
-
-  @protected
-  LiquidSdkError sse_decode_liquid_sdk_error(SseDeserializer deserializer);
-
-  @protected
-  LiquidSdkEvent sse_decode_liquid_sdk_event(SseDeserializer deserializer);
 
   @protected
   List<FiatCurrency> sse_decode_list_fiat_currency(SseDeserializer deserializer);
@@ -795,6 +789,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   RouteHintHop sse_decode_route_hint_hop(SseDeserializer deserializer);
 
   @protected
+  SdkError sse_decode_sdk_error(SseDeserializer deserializer);
+
+  @protected
+  SdkEvent sse_decode_sdk_event(SseDeserializer deserializer);
+
+  @protected
   SendPaymentResponse sse_decode_send_payment_response(SseDeserializer deserializer);
 
   @protected
@@ -831,23 +831,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
-  ffi.Pointer<wire_cst_list_prim_u_8_strict> cst_encode_StreamSink_liquid_sdk_event_Dco(
-      RustStreamSink<LiquidSdkEvent> raw) {
-    // Codec=Cst (C-struct based), see doc to use other codecs
-    return cst_encode_String(raw.setupAndSerialize(
-        codec: DcoCodec(
-      decodeSuccessData: dco_decode_liquid_sdk_event,
-      decodeErrorData: dco_decode_AnyhowException,
-    )));
-  }
-
-  @protected
   ffi.Pointer<wire_cst_list_prim_u_8_strict> cst_encode_StreamSink_log_entry_Dco(
       RustStreamSink<LogEntry> raw) {
     // Codec=Cst (C-struct based), see doc to use other codecs
     return cst_encode_String(raw.setupAndSerialize(
         codec: DcoCodec(
       decodeSuccessData: dco_decode_log_entry,
+      decodeErrorData: dco_decode_AnyhowException,
+    )));
+  }
+
+  @protected
+  ffi.Pointer<wire_cst_list_prim_u_8_strict> cst_encode_StreamSink_sdk_event_Dco(
+      RustStreamSink<SdkEvent> raw) {
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    return cst_encode_String(raw.setupAndSerialize(
+        codec: DcoCodec(
+      decodeSuccessData: dco_decode_sdk_event,
       decodeErrorData: dco_decode_AnyhowException,
     )));
   }
@@ -913,14 +913,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     // Codec=Cst (C-struct based), see doc to use other codecs
     final ptr = wire.cst_new_box_autoadd_connect_request();
     cst_api_fill_to_wire_connect_request(raw, ptr.ref);
-    return ptr;
-  }
-
-  @protected
-  ffi.Pointer<wire_cst_liquid_sdk_event> cst_encode_box_autoadd_liquid_sdk_event(LiquidSdkEvent raw) {
-    // Codec=Cst (C-struct based), see doc to use other codecs
-    final ptr = wire.cst_new_box_autoadd_liquid_sdk_event();
-    cst_api_fill_to_wire_liquid_sdk_event(raw, ptr.ref);
     return ptr;
   }
 
@@ -1122,6 +1114,14 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
     // Codec=Cst (C-struct based), see doc to use other codecs
     final ptr = wire.cst_new_box_autoadd_restore_request();
     cst_api_fill_to_wire_restore_request(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_cst_sdk_event> cst_encode_box_autoadd_sdk_event(SdkEvent raw) {
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    final ptr = wire.cst_new_box_autoadd_sdk_event();
+    cst_api_fill_to_wire_sdk_event(raw, ptr.ref);
     return ptr;
   }
 
@@ -1332,7 +1332,7 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   @protected
   void cst_api_fill_to_wire_binding_event_listener(
       BindingEventListener apiObj, wire_cst_binding_event_listener wireObj) {
-    wireObj.stream = cst_encode_StreamSink_liquid_sdk_event_Dco(apiObj.stream);
+    wireObj.stream = cst_encode_StreamSink_sdk_event_Dco(apiObj.stream);
   }
 
   @protected
@@ -1379,12 +1379,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void cst_api_fill_to_wire_box_autoadd_connect_request(
       ConnectRequest apiObj, ffi.Pointer<wire_cst_connect_request> wireObj) {
     cst_api_fill_to_wire_connect_request(apiObj, wireObj.ref);
-  }
-
-  @protected
-  void cst_api_fill_to_wire_box_autoadd_liquid_sdk_event(
-      LiquidSdkEvent apiObj, ffi.Pointer<wire_cst_liquid_sdk_event> wireObj) {
-    cst_api_fill_to_wire_liquid_sdk_event(apiObj, wireObj.ref);
   }
 
   @protected
@@ -1525,6 +1519,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  void cst_api_fill_to_wire_box_autoadd_sdk_event(SdkEvent apiObj, ffi.Pointer<wire_cst_sdk_event> wireObj) {
+    cst_api_fill_to_wire_sdk_event(apiObj, wireObj.ref);
+  }
+
+  @protected
   void cst_api_fill_to_wire_box_autoadd_success_action_processed(
       SuccessActionProcessed apiObj, ffi.Pointer<wire_cst_success_action_processed> wireObj) {
     cst_api_fill_to_wire_success_action_processed(apiObj, wireObj.ref);
@@ -1631,74 +1630,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       var pre_data = cst_encode_box_autoadd_ln_url_error_data(apiObj.data);
       wireObj.tag = 7;
       wireObj.kind.LnUrlError.data = pre_data;
-      return;
-    }
-  }
-
-  @protected
-  void cst_api_fill_to_wire_liquid_sdk_error(LiquidSdkError apiObj, wire_cst_liquid_sdk_error wireObj) {
-    if (apiObj is LiquidSdkError_AlreadyStarted) {
-      wireObj.tag = 0;
-      return;
-    }
-    if (apiObj is LiquidSdkError_Generic) {
-      var pre_err = cst_encode_String(apiObj.err);
-      wireObj.tag = 1;
-      wireObj.kind.Generic.err = pre_err;
-      return;
-    }
-    if (apiObj is LiquidSdkError_NotStarted) {
-      wireObj.tag = 2;
-      return;
-    }
-    if (apiObj is LiquidSdkError_ServiceConnectivity) {
-      var pre_err = cst_encode_String(apiObj.err);
-      wireObj.tag = 3;
-      wireObj.kind.ServiceConnectivity.err = pre_err;
-      return;
-    }
-  }
-
-  @protected
-  void cst_api_fill_to_wire_liquid_sdk_event(LiquidSdkEvent apiObj, wire_cst_liquid_sdk_event wireObj) {
-    if (apiObj is LiquidSdkEvent_PaymentFailed) {
-      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
-      wireObj.tag = 0;
-      wireObj.kind.PaymentFailed.details = pre_details;
-      return;
-    }
-    if (apiObj is LiquidSdkEvent_PaymentPending) {
-      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
-      wireObj.tag = 1;
-      wireObj.kind.PaymentPending.details = pre_details;
-      return;
-    }
-    if (apiObj is LiquidSdkEvent_PaymentRefunded) {
-      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
-      wireObj.tag = 2;
-      wireObj.kind.PaymentRefunded.details = pre_details;
-      return;
-    }
-    if (apiObj is LiquidSdkEvent_PaymentRefundPending) {
-      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
-      wireObj.tag = 3;
-      wireObj.kind.PaymentRefundPending.details = pre_details;
-      return;
-    }
-    if (apiObj is LiquidSdkEvent_PaymentSucceeded) {
-      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
-      wireObj.tag = 4;
-      wireObj.kind.PaymentSucceeded.details = pre_details;
-      return;
-    }
-    if (apiObj is LiquidSdkEvent_PaymentWaitingConfirmation) {
-      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
-      wireObj.tag = 5;
-      wireObj.kind.PaymentWaitingConfirmation.details = pre_details;
-      return;
-    }
-    if (apiObj is LiquidSdkEvent_Synced) {
-      wireObj.tag = 6;
       return;
     }
   }
@@ -2252,6 +2183,74 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  void cst_api_fill_to_wire_sdk_error(SdkError apiObj, wire_cst_sdk_error wireObj) {
+    if (apiObj is SdkError_AlreadyStarted) {
+      wireObj.tag = 0;
+      return;
+    }
+    if (apiObj is SdkError_Generic) {
+      var pre_err = cst_encode_String(apiObj.err);
+      wireObj.tag = 1;
+      wireObj.kind.Generic.err = pre_err;
+      return;
+    }
+    if (apiObj is SdkError_NotStarted) {
+      wireObj.tag = 2;
+      return;
+    }
+    if (apiObj is SdkError_ServiceConnectivity) {
+      var pre_err = cst_encode_String(apiObj.err);
+      wireObj.tag = 3;
+      wireObj.kind.ServiceConnectivity.err = pre_err;
+      return;
+    }
+  }
+
+  @protected
+  void cst_api_fill_to_wire_sdk_event(SdkEvent apiObj, wire_cst_sdk_event wireObj) {
+    if (apiObj is SdkEvent_PaymentFailed) {
+      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
+      wireObj.tag = 0;
+      wireObj.kind.PaymentFailed.details = pre_details;
+      return;
+    }
+    if (apiObj is SdkEvent_PaymentPending) {
+      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
+      wireObj.tag = 1;
+      wireObj.kind.PaymentPending.details = pre_details;
+      return;
+    }
+    if (apiObj is SdkEvent_PaymentRefunded) {
+      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
+      wireObj.tag = 2;
+      wireObj.kind.PaymentRefunded.details = pre_details;
+      return;
+    }
+    if (apiObj is SdkEvent_PaymentRefundPending) {
+      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
+      wireObj.tag = 3;
+      wireObj.kind.PaymentRefundPending.details = pre_details;
+      return;
+    }
+    if (apiObj is SdkEvent_PaymentSucceeded) {
+      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
+      wireObj.tag = 4;
+      wireObj.kind.PaymentSucceeded.details = pre_details;
+      return;
+    }
+    if (apiObj is SdkEvent_PaymentWaitingConfirmation) {
+      var pre_details = cst_encode_box_autoadd_payment(apiObj.details);
+      wireObj.tag = 5;
+      wireObj.kind.PaymentWaitingConfirmation.details = pre_details;
+      return;
+    }
+    if (apiObj is SdkEvent_Synced) {
+      wireObj.tag = 6;
+      return;
+    }
+  }
+
+  @protected
   void cst_api_fill_to_wire_send_payment_response(
       SendPaymentResponse apiObj, wire_cst_send_payment_response wireObj) {
     cst_api_fill_to_wire_payment(apiObj.payment, wireObj.payment);
@@ -2359,11 +2358,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       BindingLiquidSdk self, SseSerializer serializer);
 
   @protected
-  void sse_encode_StreamSink_liquid_sdk_event_Dco(
-      RustStreamSink<LiquidSdkEvent> self, SseSerializer serializer);
+  void sse_encode_StreamSink_log_entry_Dco(RustStreamSink<LogEntry> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_StreamSink_log_entry_Dco(RustStreamSink<LogEntry> self, SseSerializer serializer);
+  void sse_encode_StreamSink_sdk_event_Dco(RustStreamSink<SdkEvent> self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
@@ -2409,9 +2407,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_box_autoadd_connect_request(ConnectRequest self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_box_autoadd_liquid_sdk_event(LiquidSdkEvent self, SseSerializer serializer);
 
   @protected
   void sse_encode_box_autoadd_ln_invoice(LNInvoice self, SseSerializer serializer);
@@ -2489,6 +2484,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_restore_request(RestoreRequest self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_sdk_event(SdkEvent self, SseSerializer serializer);
+
+  @protected
   void sse_encode_box_autoadd_success_action_processed(SuccessActionProcessed self, SseSerializer serializer);
 
   @protected
@@ -2532,12 +2530,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_liquid_network(LiquidNetwork self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_liquid_sdk_error(LiquidSdkError self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_liquid_sdk_event(LiquidSdkEvent self, SseSerializer serializer);
 
   @protected
   void sse_encode_list_fiat_currency(List<FiatCurrency> self, SseSerializer serializer);
@@ -2721,6 +2713,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_route_hint_hop(RouteHintHop self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sdk_error(SdkError self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_sdk_event(SdkEvent self, SseSerializer serializer);
 
   @protected
   void sse_encode_send_payment_response(SendPaymentResponse self, SseSerializer serializer);
@@ -3252,7 +3250,7 @@ class RustLibWire implements BaseWire {
   void wire__crate__bindings__binding_event_listener_on_event(
     int port_,
     ffi.Pointer<wire_cst_binding_event_listener> that,
-    ffi.Pointer<wire_cst_liquid_sdk_event> e,
+    ffi.Pointer<wire_cst_sdk_event> e,
   ) {
     return _wire__crate__bindings__binding_event_listener_on_event(
       port_,
@@ -3263,13 +3261,13 @@ class RustLibWire implements BaseWire {
 
   late final _wire__crate__bindings__binding_event_listener_on_eventPtr = _lookup<
           ffi.NativeFunction<
-              ffi.Void Function(ffi.Int64, ffi.Pointer<wire_cst_binding_event_listener>,
-                  ffi.Pointer<wire_cst_liquid_sdk_event>)>>(
+              ffi.Void Function(
+                  ffi.Int64, ffi.Pointer<wire_cst_binding_event_listener>, ffi.Pointer<wire_cst_sdk_event>)>>(
       'frbgen_breez_liquid_wire__crate__bindings__binding_event_listener_on_event');
   late final _wire__crate__bindings__binding_event_listener_on_event =
       _wire__crate__bindings__binding_event_listener_on_eventPtr.asFunction<
           void Function(
-              int, ffi.Pointer<wire_cst_binding_event_listener>, ffi.Pointer<wire_cst_liquid_sdk_event>)>();
+              int, ffi.Pointer<wire_cst_binding_event_listener>, ffi.Pointer<wire_cst_sdk_event>)>();
 
   void wire__crate__bindings__breez_log_stream(
     int port_,
@@ -3455,16 +3453,6 @@ class RustLibWire implements BaseWire {
           'frbgen_breez_liquid_cst_new_box_autoadd_connect_request');
   late final _cst_new_box_autoadd_connect_request =
       _cst_new_box_autoadd_connect_requestPtr.asFunction<ffi.Pointer<wire_cst_connect_request> Function()>();
-
-  ffi.Pointer<wire_cst_liquid_sdk_event> cst_new_box_autoadd_liquid_sdk_event() {
-    return _cst_new_box_autoadd_liquid_sdk_event();
-  }
-
-  late final _cst_new_box_autoadd_liquid_sdk_eventPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<wire_cst_liquid_sdk_event> Function()>>(
-          'frbgen_breez_liquid_cst_new_box_autoadd_liquid_sdk_event');
-  late final _cst_new_box_autoadd_liquid_sdk_event = _cst_new_box_autoadd_liquid_sdk_eventPtr
-      .asFunction<ffi.Pointer<wire_cst_liquid_sdk_event> Function()>();
 
   ffi.Pointer<wire_cst_ln_invoice> cst_new_box_autoadd_ln_invoice() {
     return _cst_new_box_autoadd_ln_invoice();
@@ -3703,6 +3691,16 @@ class RustLibWire implements BaseWire {
           'frbgen_breez_liquid_cst_new_box_autoadd_restore_request');
   late final _cst_new_box_autoadd_restore_request =
       _cst_new_box_autoadd_restore_requestPtr.asFunction<ffi.Pointer<wire_cst_restore_request> Function()>();
+
+  ffi.Pointer<wire_cst_sdk_event> cst_new_box_autoadd_sdk_event() {
+    return _cst_new_box_autoadd_sdk_event();
+  }
+
+  late final _cst_new_box_autoadd_sdk_eventPtr =
+      _lookup<ffi.NativeFunction<ffi.Pointer<wire_cst_sdk_event> Function()>>(
+          'frbgen_breez_liquid_cst_new_box_autoadd_sdk_event');
+  late final _cst_new_box_autoadd_sdk_event =
+      _cst_new_box_autoadd_sdk_eventPtr.asFunction<ffi.Pointer<wire_cst_sdk_event> Function()>();
 
   ffi.Pointer<wire_cst_success_action_processed> cst_new_box_autoadd_success_action_processed() {
     return _cst_new_box_autoadd_success_action_processed();
@@ -4095,49 +4093,49 @@ final class wire_cst_payment extends ffi.Struct {
   external int status;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentFailed extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentFailed extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentPending extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentPending extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentRefunded extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentRefunded extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentRefundPending extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentRefundPending extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentSucceeded extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentSucceeded extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentWaitingConfirmation extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentWaitingConfirmation extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class LiquidSdkEventKind extends ffi.Union {
-  external wire_cst_LiquidSdkEvent_PaymentFailed PaymentFailed;
+final class SdkEventKind extends ffi.Union {
+  external wire_cst_SdkEvent_PaymentFailed PaymentFailed;
 
-  external wire_cst_LiquidSdkEvent_PaymentPending PaymentPending;
+  external wire_cst_SdkEvent_PaymentPending PaymentPending;
 
-  external wire_cst_LiquidSdkEvent_PaymentRefunded PaymentRefunded;
+  external wire_cst_SdkEvent_PaymentRefunded PaymentRefunded;
 
-  external wire_cst_LiquidSdkEvent_PaymentRefundPending PaymentRefundPending;
+  external wire_cst_SdkEvent_PaymentRefundPending PaymentRefundPending;
 
-  external wire_cst_LiquidSdkEvent_PaymentSucceeded PaymentSucceeded;
+  external wire_cst_SdkEvent_PaymentSucceeded PaymentSucceeded;
 
-  external wire_cst_LiquidSdkEvent_PaymentWaitingConfirmation PaymentWaitingConfirmation;
+  external wire_cst_SdkEvent_PaymentWaitingConfirmation PaymentWaitingConfirmation;
 }
 
-final class wire_cst_liquid_sdk_event extends ffi.Struct {
+final class wire_cst_sdk_event extends ffi.Struct {
   @ffi.Int32()
   external int tag;
 
-  external LiquidSdkEventKind kind;
+  external SdkEventKind kind;
 }
 
 final class wire_cst_config extends ffi.Struct {
@@ -4506,27 +4504,6 @@ final class wire_cst_input_type extends ffi.Struct {
   external InputTypeKind kind;
 }
 
-final class wire_cst_LiquidSdkError_Generic extends ffi.Struct {
-  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
-}
-
-final class wire_cst_LiquidSdkError_ServiceConnectivity extends ffi.Struct {
-  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
-}
-
-final class LiquidSdkErrorKind extends ffi.Union {
-  external wire_cst_LiquidSdkError_Generic Generic;
-
-  external wire_cst_LiquidSdkError_ServiceConnectivity ServiceConnectivity;
-}
-
-final class wire_cst_liquid_sdk_error extends ffi.Struct {
-  @ffi.Int32()
-  external int tag;
-
-  external LiquidSdkErrorKind kind;
-}
-
 final class wire_cst_LnUrlAuthError_Generic extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
@@ -4820,6 +4797,27 @@ final class wire_cst_receive_payment_response extends ffi.Struct {
 
 final class wire_cst_refund_response extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> refund_tx_id;
+}
+
+final class wire_cst_SdkError_Generic extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
+}
+
+final class wire_cst_SdkError_ServiceConnectivity extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
+}
+
+final class SdkErrorKind extends ffi.Union {
+  external wire_cst_SdkError_Generic Generic;
+
+  external wire_cst_SdkError_ServiceConnectivity ServiceConnectivity;
+}
+
+final class wire_cst_sdk_error extends ffi.Struct {
+  @ffi.Int32()
+  external int tag;
+
+  external SdkErrorKind kind;
 }
 
 final class wire_cst_send_payment_response extends ffi.Struct {

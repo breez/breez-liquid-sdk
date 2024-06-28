@@ -9,20 +9,6 @@ import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 part 'error.freezed.dart';
 
 @freezed
-sealed class LiquidSdkError with _$LiquidSdkError implements FrbException {
-  const LiquidSdkError._();
-
-  const factory LiquidSdkError.alreadyStarted() = LiquidSdkError_AlreadyStarted;
-  const factory LiquidSdkError.generic({
-    required String err,
-  }) = LiquidSdkError_Generic;
-  const factory LiquidSdkError.notStarted() = LiquidSdkError_NotStarted;
-  const factory LiquidSdkError.serviceConnectivity({
-    required String err,
-  }) = LiquidSdkError_ServiceConnectivity;
-}
-
-@freezed
 sealed class PaymentError with _$PaymentError implements FrbException {
   const PaymentError._();
 
@@ -59,4 +45,18 @@ sealed class PaymentError with _$PaymentError implements FrbException {
   const factory PaymentError.signerError({
     required String err,
   }) = PaymentError_SignerError;
+}
+
+@freezed
+sealed class SdkError with _$SdkError implements FrbException {
+  const SdkError._();
+
+  const factory SdkError.alreadyStarted() = SdkError_AlreadyStarted;
+  const factory SdkError.generic({
+    required String err,
+  }) = SdkError_Generic;
+  const factory SdkError.notStarted() = SdkError_NotStarted;
+  const factory SdkError.serviceConnectivity({
+    required String err,
+  }) = SdkError_ServiceConnectivity;
 }

@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 
-include(":breez-liquid-sdk-kmp")
+include(":breez-sdk-liquid-kmp")

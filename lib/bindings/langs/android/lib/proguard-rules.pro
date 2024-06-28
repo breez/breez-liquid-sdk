@@ -24,7 +24,7 @@
 -dontwarn java.awt.*
 -keep class com.sun.jna.** { *; }
 -keep class technology.breez.* { *; }
--keep class breez_liquid_sdk.** { *; }
+-keep class breez_sdk_liquid.** { *; }
 -keepclassmembers class * extends technology.breez.* { public *; }
--keepclassmembers class * extends breez_liquid_sdk.** { public *; }
+-keepclassmembers class * extends breez_sdk_liquid.** { public *; }
 -keepclassmembers class * extends com.sun.jna.** { public *; }

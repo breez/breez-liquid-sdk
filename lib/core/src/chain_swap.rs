@@ -12,7 +12,7 @@ use tokio::time::MissedTickBehavior;
 
 use crate::chain::bitcoin::BitcoinChainService;
 use crate::chain::liquid::LiquidChainService;
-use crate::error::{LiquidSdkError, LiquidSdkResult};
+use crate::error::{SdkError, SdkResult};
 use crate::model::PaymentState::{
     Complete, Created, Failed, Pending, RefundPending, Refundable, TimedOut,
 };
@@ -618,11 +618,11 @@ impl ChainSwapStateHandler {
         lockup_address: &str,
         output_address: &str,
         sat_per_vbyte: u32,
-    ) -> LiquidSdkResult<(u32, u64, Option<String>)> {
+    ) -> SdkResult<(u32, u64, Option<String>)> {
         let swap = self
             .persister
             .fetch_chain_swap_by_lockup_address(lockup_address)?
-            .ok_or(LiquidSdkError::Generic {
+            .ok_or(SdkError::Generic {
                 err: format!("Swap {} not found", lockup_address),
             })?;
         if let Some(refund_tx_id) = swap.refund_tx_id.clone() {

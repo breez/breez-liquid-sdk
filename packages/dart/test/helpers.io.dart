@@ -32,7 +32,7 @@ String dylibPath(String profile) => Uri.base
       '../../lib/target',
       if (Platform.isMacOS && hostTriple.startsWith('aarch64')) hostTriple,
       profile,
-      'breez_liquid_sdk'.dylib,
+      'breez_sdk_liquid'.dylib,
     ]))
     .toFilePath();
 

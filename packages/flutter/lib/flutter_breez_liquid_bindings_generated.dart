@@ -1418,49 +1418,49 @@ final class wire_cst_payment extends ffi.Struct {
   external int status;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentFailed extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentFailed extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentPending extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentPending extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentRefunded extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentRefunded extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentRefundPending extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentRefundPending extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentSucceeded extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentSucceeded extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class wire_cst_LiquidSdkEvent_PaymentWaitingConfirmation extends ffi.Struct {
+final class wire_cst_SdkEvent_PaymentWaitingConfirmation extends ffi.Struct {
   external ffi.Pointer<wire_cst_payment> details;
 }
 
-final class LiquidSdkEventKind extends ffi.Union {
-  external wire_cst_LiquidSdkEvent_PaymentFailed PaymentFailed;
+final class SdkEventKind extends ffi.Union {
+  external wire_cst_SdkEvent_PaymentFailed PaymentFailed;
 
-  external wire_cst_LiquidSdkEvent_PaymentPending PaymentPending;
+  external wire_cst_SdkEvent_PaymentPending PaymentPending;
 
-  external wire_cst_LiquidSdkEvent_PaymentRefunded PaymentRefunded;
+  external wire_cst_SdkEvent_PaymentRefunded PaymentRefunded;
 
-  external wire_cst_LiquidSdkEvent_PaymentRefundPending PaymentRefundPending;
+  external wire_cst_SdkEvent_PaymentRefundPending PaymentRefundPending;
 
-  external wire_cst_LiquidSdkEvent_PaymentSucceeded PaymentSucceeded;
+  external wire_cst_SdkEvent_PaymentSucceeded PaymentSucceeded;
 
-  external wire_cst_LiquidSdkEvent_PaymentWaitingConfirmation PaymentWaitingConfirmation;
+  external wire_cst_SdkEvent_PaymentWaitingConfirmation PaymentWaitingConfirmation;
 }
 
 final class wire_cst_liquid_sdk_event extends ffi.Struct {
   @ffi.Int32()
   external int tag;
 
-  external LiquidSdkEventKind kind;
+  external SdkEventKind kind;
 }
 
 final class wire_cst_config extends ffi.Struct {
@@ -1829,25 +1829,25 @@ final class wire_cst_input_type extends ffi.Struct {
   external InputTypeKind kind;
 }
 
-final class wire_cst_LiquidSdkError_Generic extends ffi.Struct {
+final class wire_cst_SdkError_Generic extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
 
-final class wire_cst_LiquidSdkError_ServiceConnectivity extends ffi.Struct {
+final class wire_cst_SdkError_ServiceConnectivity extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
 
-final class LiquidSdkErrorKind extends ffi.Union {
-  external wire_cst_LiquidSdkError_Generic Generic;
+final class SdkErrorKind extends ffi.Union {
+  external wire_cst_SdkError_Generic Generic;
 
-  external wire_cst_LiquidSdkError_ServiceConnectivity ServiceConnectivity;
+  external wire_cst_SdkError_ServiceConnectivity ServiceConnectivity;
 }
 
 final class wire_cst_liquid_sdk_error extends ffi.Struct {
   @ffi.Int32()
   external int tag;
 
-  external LiquidSdkErrorKind kind;
+  external SdkErrorKind kind;
 }
 
 final class wire_cst_LnUrlAuthError_Generic extends ffi.Struct {

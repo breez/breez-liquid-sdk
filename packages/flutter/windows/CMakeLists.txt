@@ -37,6 +37,6 @@ execute_process(
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
 set(flutter_breez_liquid_bundled_libraries
-  "${LibRoot}/${FLUTTER_TARGET_PLATFORM}/breez_liquid_sdk.dll"
+  "${LibRoot}/${FLUTTER_TARGET_PLATFORM}/breez_sdk_liquid.dll"
   PARENT_SCOPE
 )

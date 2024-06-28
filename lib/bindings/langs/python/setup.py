@@ -8,20 +8,20 @@ Python language bindings for the [Breez Liquid SDK](https://github.com/breez/bre
 ## Installing
 
 ```shell
-pip install breez_liquid_sdk
+pip install breez_sdk_liquid
 ```
 """
 
 setup(
-    name="breez_liquid_sdk",
+    name="breez_sdk_liquid",
     version="0.2.7.dev9",
     description="Python language bindings for the Breez Liquid SDK",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    packages=["breez_liquid_sdk"],
-    package_dir={"breez_liquid_sdk": "./src/breez_liquid_sdk"},
+    packages=["breez_sdk_liquid"],
+    package_dir={"breez_sdk_liquid": "./src/breez_sdk_liquid"},
     include_package_data=True,
-    package_data={"breez_liquid_sdk": ["*.dylib", "*.so", "*.dll"]},
+    package_data={"breez_sdk_liquid": ["*.dylib", "*.so", "*.dll"]},
     url="https://github.com/breez/breez-liquid-sdk",
     author="Breez <contact@breez.technology>",
     license="MIT",

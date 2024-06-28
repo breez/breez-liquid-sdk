@@ -24,14 +24,14 @@ use url::Url;
 
 use crate::chain::bitcoin::{self, BitcoinChainService};
 use crate::chain_swap::ChainSwapStateHandler;
-use crate::error::LiquidSdkError;
+use crate::error::SdkError;
 use crate::model::PaymentState::*;
 use crate::receive_swap::ReceiveSwapStateHandler;
 use crate::send_swap::SendSwapStateHandler;
 use crate::swapper::{BoltzSwapper, ReconnectHandler, Swapper, SwapperStatusStream};
 use crate::wallet::{LiquidOnchainWallet, OnchainWallet};
 use crate::{
-    error::{LiquidSdkResult, PaymentError},
+    error::{PaymentError, SdkResult},
     event::EventManager,
     model::*,
     persist::Persister,
@@ -157,7 +157,7 @@ impl LiquidSdk {
     ///
     /// Internal method. Should only be called once per instance.
     /// Should only be called as part of [LiquidSdk::connect].
-    async fn start(self: &Arc<LiquidSdk>) -> LiquidSdkResult<()> {
+    async fn start(self: &Arc<LiquidSdk>) -> SdkResult<()> {
         let mut is_started = self.is_started.write().await;
         let start_ts = Instant::now();
 
@@ -174,7 +174,7 @@ impl LiquidSdk {
     /// Starts background tasks.
     ///
     /// Internal method. Should only be used as part of [LiquidSdk::start].
-    async fn start_background_tasks(self: &Arc<LiquidSdk>) -> LiquidSdkResult<()> {
+    async fn start_background_tasks(self: &Arc<LiquidSdk>) -> SdkResult<()> {
         // Periodically run sync() in the background
         let sdk_clone = self.clone();
         let mut shutdown_rx_sync_loop = self.shutdown_receiver.clone();
@@ -210,20 +210,20 @@ impl LiquidSdk {
         Ok(())
     }
 
-    async fn ensure_is_started(&self) -> LiquidSdkResult<()> {
+    async fn ensure_is_started(&self) -> SdkResult<()> {
         let is_started = self.is_started.read().await;
-        ensure_sdk!(*is_started, LiquidSdkError::NotStarted);
+        ensure_sdk!(*is_started, SdkError::NotStarted);
         Ok(())
     }
 
     /// Trigger the stopping of background threads for this SDK instance.
-    pub async fn disconnect(&self) -> LiquidSdkResult<()> {
+    pub async fn disconnect(&self) -> SdkResult<()> {
         self.ensure_is_started().await?;
 
         let mut is_started = self.is_started.write().await;
         self.shutdown_sender
             .send(())
-            .map_err(|e| LiquidSdkError::Generic {
+            .map_err(|e| SdkError::Generic {
                 err: format!("Shutdown failed: {e}"),
             })?;
         *is_started = false;
@@ -391,19 +391,16 @@ impl LiquidSdk {
         Ok(())
     }
 
-    async fn notify_event_listeners(&self, e: LiquidSdkEvent) -> Result<()> {
+    async fn notify_event_listeners(&self, e: SdkEvent) -> Result<()> {
         self.event_manager.notify(e).await;
         Ok(())
     }
 
-    pub async fn add_event_listener(
-        &self,
-        listener: Box<dyn EventListener>,
-    ) -> LiquidSdkResult<String> {
+    pub async fn add_event_listener(&self, listener: Box<dyn EventListener>) -> SdkResult<String> {
         Ok(self.event_manager.add(listener).await?)
     }
 
-    pub async fn remove_event_listener(&self, id: String) -> LiquidSdkResult<()> {
+    pub async fn remove_event_listener(&self, id: String) -> SdkResult<()> {
         self.event_manager.remove(id).await;
         Ok(())
     }
@@ -414,7 +411,7 @@ impl LiquidSdk {
                 Some(payment) => {
                     match payment.status {
                         Complete => {
-                            self.notify_event_listeners(LiquidSdkEvent::PaymentSucceeded {
+                            self.notify_event_listeners(SdkEvent::PaymentSucceeded {
                                 details: payment,
                             })
                             .await?
@@ -429,7 +426,7 @@ impl LiquidSdk {
                                             Some(_) => {
                                                 // The claim tx has now been broadcast
                                                 self.notify_event_listeners(
-                                                    LiquidSdkEvent::PaymentWaitingConfirmation {
+                                                    SdkEvent::PaymentWaitingConfirmation {
                                                         details: payment,
                                                     },
                                                 )
@@ -438,9 +435,7 @@ impl LiquidSdk {
                                             None => {
                                                 // The lockup tx is in the mempool/confirmed
                                                 self.notify_event_listeners(
-                                                    LiquidSdkEvent::PaymentPending {
-                                                        details: payment,
-                                                    },
+                                                    SdkEvent::PaymentPending { details: payment },
                                                 )
                                                 .await?
                                             }
@@ -448,9 +443,9 @@ impl LiquidSdk {
                                     }
                                     Swap::Send(_) => {
                                         // The lockup tx is in the mempool/confirmed
-                                        self.notify_event_listeners(
-                                            LiquidSdkEvent::PaymentPending { details: payment },
-                                        )
+                                        self.notify_event_listeners(SdkEvent::PaymentPending {
+                                            details: payment,
+                                        })
                                         .await?
                                     }
                                 },
@@ -459,21 +454,21 @@ impl LiquidSdk {
                         }
                         RefundPending => {
                             // The swap state has changed to RefundPending
-                            self.notify_event_listeners(LiquidSdkEvent::PaymentRefundPending {
+                            self.notify_event_listeners(SdkEvent::PaymentRefundPending {
                                 details: payment,
                             })
                             .await?
                         }
                         Failed => match payment.payment_type {
                             PaymentType::Receive => {
-                                self.notify_event_listeners(LiquidSdkEvent::PaymentFailed {
+                                self.notify_event_listeners(SdkEvent::PaymentFailed {
                                     details: payment,
                                 })
                                 .await?
                             }
                             PaymentType::Send => {
                                 // The refund tx is confirmed
-                                self.notify_event_listeners(LiquidSdkEvent::PaymentRefunded {
+                                self.notify_event_listeners(SdkEvent::PaymentRefunded {
                                     details: payment,
                                 })
                                 .await?
@@ -1025,7 +1020,7 @@ impl LiquidSdk {
                     },
                 },
                 event = events_stream.recv() => match event {
-                    Ok(LiquidSdkEvent::PaymentPending { details }) => match details.swap_id.clone() {
+                    Ok(SdkEvent::PaymentPending { details }) => match details.swap_id.clone() {
                         Some(id) if id == swap_id => match accept_zero_conf {
                             true => {
                                 debug!("Received Send Payment pending event with zero-conf accepted");
@@ -1038,7 +1033,7 @@ impl LiquidSdk {
                         },
                         _ => error!("Received Send Payment pending event for payment without swap ID"),
                     },
-                    Ok(LiquidSdkEvent::PaymentSucceeded { details }) => match details.swap_id.clone()
+                    Ok(SdkEvent::PaymentSucceeded { details }) => match details.swap_id.clone()
                     {
                         Some(id) if id == swap_id => {
                             debug!("Received Send Payment succeed event");
@@ -1294,7 +1289,7 @@ impl LiquidSdk {
         Ok(ReceiveOnchainResponse { address, bip21 })
     }
 
-    pub async fn list_refundables(&self) -> LiquidSdkResult<Vec<RefundableSwap>> {
+    pub async fn list_refundables(&self) -> SdkResult<Vec<RefundableSwap>> {
         Ok(self
             .persister
             .list_refundable_chain_swaps()?
@@ -1306,7 +1301,7 @@ impl LiquidSdk {
     pub async fn prepare_refund(
         &self,
         req: &PrepareRefundRequest,
-    ) -> LiquidSdkResult<PrepareRefundResponse> {
+    ) -> SdkResult<PrepareRefundResponse> {
         let (tx_vsize, tx_fee_sat, refund_tx_id) = self.chain_swap_state_handler.prepare_refund(
             &req.swap_address,
             &req.refund_address,
@@ -1327,7 +1322,7 @@ impl LiquidSdk {
         Ok(RefundResponse { refund_tx_id })
     }
 
-    pub async fn rescan_onchain_swaps(&self) -> LiquidSdkResult<()> {
+    pub async fn rescan_onchain_swaps(&self) -> SdkResult<()> {
         self.chain_swap_state_handler
             .rescan_incoming_chain_swaps()
             .await?;
@@ -1439,7 +1434,7 @@ impl LiquidSdk {
     }
 
     /// Synchronize the DB with mempool and onchain data
-    pub async fn sync(&self) -> LiquidSdkResult<()> {
+    pub async fn sync(&self) -> SdkResult<()> {
         self.ensure_is_started().await?;
 
         let t0 = Instant::now();
@@ -1447,7 +1442,7 @@ impl LiquidSdk {
         let duration_ms = Instant::now().duration_since(t0).as_millis();
         info!("Synchronized with mempool and onchain data (t = {duration_ms} ms)");
 
-        self.notify_event_listeners(LiquidSdkEvent::Synced).await?;
+        self.notify_event_listeners(SdkEvent::Synced).await?;
         Ok(())
     }
 
@@ -1502,7 +1497,7 @@ impl LiquidSdk {
                                 let preimage_str = payment
                                     .preimage
                                     .clone()
-                                    .ok_or(LiquidSdkError::Generic {
+                                    .ok_or(SdkError::Generic {
                                         err: "Payment successful but no preimage found".to_string(),
                                     })
                                     .unwrap();
@@ -1591,13 +1586,13 @@ impl LiquidSdk {
     }
 
     /// Fetch live rates of fiat currencies, sorted by name
-    pub async fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, LiquidSdkError> {
+    pub async fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, SdkError> {
         self.fiat_api.fetch_fiat_rates().await.map_err(Into::into)
     }
 
     /// List all supported fiat currencies for which there is a known exchange rate.
     /// List is sorted by the canonical name of the currency
-    pub async fn list_fiat_currencies(&self) -> Result<Vec<FiatCurrency>, LiquidSdkError> {
+    pub async fn list_fiat_currencies(&self) -> Result<Vec<FiatCurrency>, SdkError> {
         self.fiat_api
             .list_fiat_currencies()
             .await

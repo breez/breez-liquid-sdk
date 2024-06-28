@@ -3,11 +3,11 @@
 ## Usage
 
 ```
-pip install breez_liquid_sdk
+pip install breez_sdk_liquid
 ```
 
 ``` python
-import breez_liquid_sdk
+import breez_sdk_liquid
 ```
 
 ## Python Package
@@ -34,4 +34,4 @@ make darwin # builds the package for macos
 make linux # builds the package for linux
 ```
 
-The artifacts will be placed in `src/breez_liquid_sdk/`.
+The artifacts will be placed in `src/breez_sdk_liquid/`.

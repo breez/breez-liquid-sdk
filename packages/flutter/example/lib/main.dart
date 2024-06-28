@@ -6,12 +6,12 @@ import 'package:flutter_breez_liquid_example/services/credentials_manager.dart';
 import 'package:flutter_breez_liquid_example/services/keychain.dart';
 import 'package:flutter_breez_liquid_example/utils/config.dart';
 
-import 'services/breez_liquid_sdk.dart';
+import 'services/breez_sdk_liquid.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialize();
-  final BreezLiquidSDK liquidSDK = BreezLiquidSDK();
+  final BreezSDKLiquid liquidSDK = BreezSDKLiquid();
   final credentialsManager = CredentialsManager(keyChain: KeyChain());
   final mnemonic = await credentialsManager.restoreMnemonic();
   if (mnemonic.isNotEmpty) {
@@ -21,7 +21,7 @@ void main() async {
 }
 
 Future<BindingLiquidSdk> reconnect({
-  required BreezLiquidSDK liquidSDK,
+  required BreezSDKLiquid liquidSDK,
   required String mnemonic,
   LiquidNetwork network = LiquidNetwork.mainnet,
 }) async {
@@ -35,7 +35,7 @@ Future<BindingLiquidSdk> reconnect({
 
 class App extends StatefulWidget {
   final CredentialsManager credentialsManager;
-  final BreezLiquidSDK liquidSDK;
+  final BreezSDKLiquid liquidSDK;
   const App({super.key, required this.credentialsManager, required this.liquidSDK});
 
   static const title = 'Breez Liquid SDK Demo';

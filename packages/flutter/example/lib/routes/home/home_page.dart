@@ -6,12 +6,12 @@ import 'package:flutter_breez_liquid_example/routes/home/widgets/bottom_app_bar.
 import 'package:flutter_breez_liquid_example/routes/home/widgets/drawer.dart';
 import 'package:flutter_breez_liquid_example/routes/home/widgets/payment_list/payment_list.dart';
 import 'package:flutter_breez_liquid_example/routes/home/widgets/qr_scan_action_button.dart';
-import 'package:flutter_breez_liquid_example/services/breez_liquid_sdk.dart';
+import 'package:flutter_breez_liquid_example/services/breez_sdk_liquid.dart';
 import 'package:flutter_breez_liquid_example/services/credentials_manager.dart';
 
 class HomePage extends StatefulWidget {
   final CredentialsManager credentialsManager;
-  final BreezLiquidSDK liquidSDK;
+  final BreezSDKLiquid liquidSDK;
 
   const HomePage({super.key, required this.credentialsManager, required this.liquidSDK});
 

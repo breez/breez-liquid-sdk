@@ -507,7 +507,7 @@ version = "0.0.1"
 dependencies = [
  "anyhow",
  "bip39",
- "breez-liquid-sdk",
+ "breez-sdk-liquid",
  "clap",
  "log",
  "qrcode-rs",
@@ -518,7 +518,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "breez-liquid-sdk"
+name = "breez-sdk-liquid"
 version = "0.0.1"
 dependencies = [
  "anyhow",

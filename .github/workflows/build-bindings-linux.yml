@@ -79,7 +79,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: bindings-${{ matrix.target }}
-        path: lib/target/${{ matrix.target }}/release/libbreez_liquid_sdk_bindings.so
+        path: lib/target/${{ matrix.target }}/release/libbreez_sdk_liquid_bindings.so
 
   build-dummies:
     if: ${{ inputs.use-dummy-binaries }}
@@ -94,7 +94,7 @@ jobs:
     steps:
       - name: Build dummy linux ${{ matrix.target }}
         run: |
-          touch libbreez_liquid_sdk_bindings.so
+          touch libbreez_sdk_liquid_bindings.so
 
       - name: Upload dummy linux ${{ matrix.target }} artifact
         uses: actions/upload-artifact@v3

@@ -68,7 +68,7 @@ publishing {
     }
     publications {
         create<MavenPublication>("maven") {
-            groupId = "breez_liquid_sdk"
+            groupId = "breez_sdk_liquid"
             artifactId = "bindings-android"
             version = libraryVersion
 

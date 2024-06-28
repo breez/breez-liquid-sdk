@@ -75,32 +75,32 @@ jobs:
 
       - name: Copy swift bindings
         run: |
-          mkdir -p build/lib/bindings/langs/swift/Sources/BreezLiquidSDK
-          cp swift/BreezLiquidSDK.swift build/lib/bindings/langs/swift/Sources/BreezLiquidSDK/BreezLiquidSDK.swift
-          cp swift/breez_liquid_sdkFFI.h build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework/ios-arm64/breez_liquid_sdkFFI.framework/Headers
-          cp swift/breez_liquid_sdkFFI.h build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework/ios-arm64_x86_64-simulator/breez_liquid_sdkFFI.framework/Headers
-          cp swift/breez_liquid_sdkFFI.h build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework/macos-arm64_x86_64/breez_liquid_sdkFFI.framework/Headers
-          cp aarch64-apple-ios/libbreez_liquid_sdk_bindings.a build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework/ios-arm64/breez_liquid_sdkFFI.framework/breez_liquid_sdkFFI
-          cp ios-universal-sim/libbreez_liquid_sdk_bindings.a build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework/ios-arm64_x86_64-simulator/breez_liquid_sdkFFI.framework/breez_liquid_sdkFFI
-          cp darwin-universal/libbreez_liquid_sdk_bindings.a build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework/macos-arm64_x86_64/breez_liquid_sdkFFI.framework/breez_liquid_sdkFFI
+          mkdir -p build/lib/bindings/langs/swift/Sources/BreezSDKLiquid
+          cp swift/BreezSDKLiquid.swift build/lib/bindings/langs/swift/Sources/BreezSDKLiquid/BreezSDKLiquid.swift
+          cp swift/breez_sdk_liquidFFI.h build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework/ios-arm64/breez_sdk_liquidFFI.framework/Headers
+          cp swift/breez_sdk_liquidFFI.h build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework/ios-arm64_x86_64-simulator/breez_sdk_liquidFFI.framework/Headers
+          cp swift/breez_sdk_liquidFFI.h build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework/macos-arm64_x86_64/breez_sdk_liquidFFI.framework/Headers
+          cp aarch64-apple-ios/libbreez_sdk_liquid_bindings.a build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework/ios-arm64/breez_sdk_liquidFFI.framework/breez_sdk_liquidFFI
+          cp ios-universal-sim/libbreez_sdk_liquid_bindings.a build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework/ios-arm64_x86_64-simulator/breez_sdk_liquidFFI.framework/breez_sdk_liquidFFI
+          cp darwin-universal/libbreez_sdk_liquid_bindings.a build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework/macos-arm64_x86_64/breez_sdk_liquidFFI.framework/breez_sdk_liquidFFI
 
       - name: Compress XCFramework
         working-directory: build/lib/bindings/langs/swift
         run: |
-          zip -9 -r breez_liquid_sdkFFI.xcframework.zip breez_liquid_sdkFFI.xcframework
-          echo "XCF_CHECKSUM=`swift package compute-checksum breez_liquid_sdkFFI.xcframework.zip`" >> $GITHUB_ENV
+          zip -9 -r breez_sdk_liquidFFI.xcframework.zip breez_sdk_liquidFFI.xcframework
+          echo "XCF_CHECKSUM=`swift package compute-checksum breez_sdk_liquidFFI.xcframework.zip`" >> $GITHUB_ENV
 
       - name: Update Swift Package definition
         working-directory: build/lib/bindings/langs/swift
         run: |
-          sed 's#.binaryTarget(name: "breez_liquid_sdkFFI", path: "./breez_liquid_sdkFFI.xcframework"),#.binaryTarget(name: "breez_liquid_sdkFFI", url: "https://github.com/breez/breez-liquid-sdk-swift/releases/download/${{ inputs.package-version || '0.0.1' }}/breez_liquid_sdkFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezLiquidSDKTests", dependencies: \["BreezLiquidSDK"\]),/d' Package.swift > ../../../../../dist/Package.swift
+          sed 's#.binaryTarget(name: "breez_sdk_liquidFFI", path: "./breez_sdk_liquidFFI.xcframework"),#.binaryTarget(name: "breez_sdk_liquidFFI", url: "https://github.com/breez/breez-liquid-sdk-swift/releases/download/${{ inputs.package-version || '0.0.1' }}/breez_sdk_liquidFFI.xcframework.zip", checksum: "${{ env.XCF_CHECKSUM }}"),#;/.testTarget(name: "BreezSDKLiquidTests", dependencies: \["BreezSDKLiquid"\]),/d' Package.swift > ../../../../../dist/Package.swift
           cp -r Sources ../../../../../dist
 
       - name: Update Cocoapods definitions
         working-directory: dist
         run: |
-          sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.package-version || '0.0.1' }}"#' breez_liquid_sdkFFI.podspec
-          sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.package-version || '0.0.1' }}"#' BreezLiquidSDK.podspec
+          sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.package-version || '0.0.1' }}"#' breez_sdk_liquidFFI.podspec
+          sed -i '' 's#^.\{2\}spec.version.*$#  spec.version                = "${{ inputs.package-version || '0.0.1' }}"#' BreezSDKLiquid.podspec
   
       - name: Tag the Swift bindings
         if: ${{ inputs.publish }}
@@ -110,8 +110,8 @@ jobs:
           git config --global user.email "no-reply@breez.technology"
           git add Package.swift
           git add Sources
-          git add breez_liquid_sdkFFI.podspec
-          git add BreezLiquidSDK.podspec
+          git add breez_sdk_liquidFFI.podspec
+          git add BreezSDKLiquid.podspec
           git commit -m "Update Swift bindings to version ${{ inputs.package-version || '0.0.1' }}"
           git push
           git tag ${{ inputs.package-version || '0.0.1' }} -m "${{ inputs.package-version || '0.0.1' }}"
@@ -123,7 +123,7 @@ jobs:
         with:
           repository: breez/breez-liquid-sdk-swift
           files: |
-            build/lib/bindings/langs/swift/breez_liquid_sdkFFI.xcframework.zip
+            build/lib/bindings/langs/swift/breez_sdk_liquidFFI.xcframework.zip
           tag_name: ${{ inputs.package-version || '0.0.1' }}
           generate_release_notes: false
           token: ${{ secrets.SWIFT_RELEASE_TOKEN }}
@@ -135,5 +135,5 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{secrets.COCOAPODS_TRUNK_TOKEN}}
         run: |
-          pod trunk push breez_liquid_sdkFFI.podspec --allow-warnings
-          pod trunk push BreezLiquidSDK.podspec --allow-warnings --synchronous
+          pod trunk push breez_sdk_liquidFFI.podspec --allow-warnings
+          pod trunk push BreezSDKLiquid.podspec --allow-warnings --synchronous

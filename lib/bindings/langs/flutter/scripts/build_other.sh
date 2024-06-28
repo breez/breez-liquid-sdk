@@ -35,7 +35,7 @@ win_build () {
 
 PROFILE=frb-min
 # Build all the dynamic libraries
-LIBNAME=breez_liquid_sdk
+LIBNAME=breez_sdk_liquid
 LINUX_LIBNAME=lib$LIBNAME.so
 zig_build aarch64-unknown-linux-gnu linux-arm64 $LINUX_LIBNAME $PROFILE
 zig_build x86_64-unknown-linux-gnu linux-x64 $LINUX_LIBNAME $PROFILE

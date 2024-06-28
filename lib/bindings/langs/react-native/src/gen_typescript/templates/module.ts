@@ -6,8 +6,8 @@ const LINKING_ERROR =
     "- You rebuilt the app after installing the package\n" +
     "- You are not using Expo managed workflow\n"
 
-const BreezLiquidSDK = NativeModules.RNBreezLiquidSDK
-    ? NativeModules.RNBreezLiquidSDK
+const BreezSDKLiquid = NativeModules.RNBreezSDKLiquid
+    ? NativeModules.RNBreezSDKLiquid
     : new Proxy(
           {},
           {
@@ -17,7 +17,7 @@ const BreezLiquidSDK = NativeModules.RNBreezLiquidSDK
           }
       )
 
-const BreezLiquidSDKEmitter = new NativeEventEmitter(BreezLiquidSDK)
+const BreezSDKLiquidEmitter = new NativeEventEmitter(BreezSDKLiquid)
 {%- import "macros.ts" as ts %}
 {%- include "Types.ts" %}
 {% include "Helpers.ts" %}

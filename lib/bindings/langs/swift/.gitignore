@@ -2,7 +2,7 @@
 .build/
 *.xcodeproj
 *.podspec
-Sources/BreezLiquidSDK/BreezLiquidSDK.swift
-**/breez_liquid_sdkFFI.h
-**/breez_liquid_sdkFFI
-**/breez_liquid_sdkFFI.modulemap
+Sources/BreezSDKLiquid/BreezSDKLiquid.swift
+**/breez_sdk_liquidFFI.h
+**/breez_sdk_liquidFFI
+**/breez_sdk_liquidFFI.modulemap

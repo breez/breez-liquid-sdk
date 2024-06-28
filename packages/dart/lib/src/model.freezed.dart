@@ -15,513 +15,6 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$LiquidSdkEvent {}
-
-/// @nodoc
-abstract class $LiquidSdkEventCopyWith<$Res> {
-  factory $LiquidSdkEventCopyWith(LiquidSdkEvent value, $Res Function(LiquidSdkEvent) then) =
-      _$LiquidSdkEventCopyWithImpl<$Res, LiquidSdkEvent>;
-}
-
-/// @nodoc
-class _$LiquidSdkEventCopyWithImpl<$Res, $Val extends LiquidSdkEvent>
-    implements $LiquidSdkEventCopyWith<$Res> {
-  _$LiquidSdkEventCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_PaymentFailedImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_PaymentFailedImplCopyWith(
-          _$LiquidSdkEvent_PaymentFailedImpl value, $Res Function(_$LiquidSdkEvent_PaymentFailedImpl) then) =
-      __$$LiquidSdkEvent_PaymentFailedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Payment details});
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_PaymentFailedImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_PaymentFailedImpl>
-    implements _$$LiquidSdkEvent_PaymentFailedImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_PaymentFailedImplCopyWithImpl(
-      _$LiquidSdkEvent_PaymentFailedImpl _value, $Res Function(_$LiquidSdkEvent_PaymentFailedImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? details = null,
-  }) {
-    return _then(_$LiquidSdkEvent_PaymentFailedImpl(
-      details: null == details
-          ? _value.details
-          : details // ignore: cast_nullable_to_non_nullable
-              as Payment,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_PaymentFailedImpl extends LiquidSdkEvent_PaymentFailed {
-  const _$LiquidSdkEvent_PaymentFailedImpl({required this.details}) : super._();
-
-  @override
-  final Payment details;
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.paymentFailed(details: $details)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkEvent_PaymentFailedImpl &&
-            (identical(other.details, details) || other.details == details));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, details);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkEvent_PaymentFailedImplCopyWith<_$LiquidSdkEvent_PaymentFailedImpl> get copyWith =>
-      __$$LiquidSdkEvent_PaymentFailedImplCopyWithImpl<_$LiquidSdkEvent_PaymentFailedImpl>(this, _$identity);
-}
-
-abstract class LiquidSdkEvent_PaymentFailed extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_PaymentFailed({required final Payment details}) =
-      _$LiquidSdkEvent_PaymentFailedImpl;
-  const LiquidSdkEvent_PaymentFailed._() : super._();
-
-  Payment get details;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkEvent_PaymentFailedImplCopyWith<_$LiquidSdkEvent_PaymentFailedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_PaymentPendingImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_PaymentPendingImplCopyWith(_$LiquidSdkEvent_PaymentPendingImpl value,
-          $Res Function(_$LiquidSdkEvent_PaymentPendingImpl) then) =
-      __$$LiquidSdkEvent_PaymentPendingImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Payment details});
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_PaymentPendingImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_PaymentPendingImpl>
-    implements _$$LiquidSdkEvent_PaymentPendingImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_PaymentPendingImplCopyWithImpl(
-      _$LiquidSdkEvent_PaymentPendingImpl _value, $Res Function(_$LiquidSdkEvent_PaymentPendingImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? details = null,
-  }) {
-    return _then(_$LiquidSdkEvent_PaymentPendingImpl(
-      details: null == details
-          ? _value.details
-          : details // ignore: cast_nullable_to_non_nullable
-              as Payment,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_PaymentPendingImpl extends LiquidSdkEvent_PaymentPending {
-  const _$LiquidSdkEvent_PaymentPendingImpl({required this.details}) : super._();
-
-  @override
-  final Payment details;
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.paymentPending(details: $details)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkEvent_PaymentPendingImpl &&
-            (identical(other.details, details) || other.details == details));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, details);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkEvent_PaymentPendingImplCopyWith<_$LiquidSdkEvent_PaymentPendingImpl> get copyWith =>
-      __$$LiquidSdkEvent_PaymentPendingImplCopyWithImpl<_$LiquidSdkEvent_PaymentPendingImpl>(
-          this, _$identity);
-}
-
-abstract class LiquidSdkEvent_PaymentPending extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_PaymentPending({required final Payment details}) =
-      _$LiquidSdkEvent_PaymentPendingImpl;
-  const LiquidSdkEvent_PaymentPending._() : super._();
-
-  Payment get details;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkEvent_PaymentPendingImplCopyWith<_$LiquidSdkEvent_PaymentPendingImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_PaymentRefundedImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_PaymentRefundedImplCopyWith(_$LiquidSdkEvent_PaymentRefundedImpl value,
-          $Res Function(_$LiquidSdkEvent_PaymentRefundedImpl) then) =
-      __$$LiquidSdkEvent_PaymentRefundedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Payment details});
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_PaymentRefundedImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_PaymentRefundedImpl>
-    implements _$$LiquidSdkEvent_PaymentRefundedImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_PaymentRefundedImplCopyWithImpl(
-      _$LiquidSdkEvent_PaymentRefundedImpl _value, $Res Function(_$LiquidSdkEvent_PaymentRefundedImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? details = null,
-  }) {
-    return _then(_$LiquidSdkEvent_PaymentRefundedImpl(
-      details: null == details
-          ? _value.details
-          : details // ignore: cast_nullable_to_non_nullable
-              as Payment,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_PaymentRefundedImpl extends LiquidSdkEvent_PaymentRefunded {
-  const _$LiquidSdkEvent_PaymentRefundedImpl({required this.details}) : super._();
-
-  @override
-  final Payment details;
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.paymentRefunded(details: $details)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkEvent_PaymentRefundedImpl &&
-            (identical(other.details, details) || other.details == details));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, details);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkEvent_PaymentRefundedImplCopyWith<_$LiquidSdkEvent_PaymentRefundedImpl> get copyWith =>
-      __$$LiquidSdkEvent_PaymentRefundedImplCopyWithImpl<_$LiquidSdkEvent_PaymentRefundedImpl>(
-          this, _$identity);
-}
-
-abstract class LiquidSdkEvent_PaymentRefunded extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_PaymentRefunded({required final Payment details}) =
-      _$LiquidSdkEvent_PaymentRefundedImpl;
-  const LiquidSdkEvent_PaymentRefunded._() : super._();
-
-  Payment get details;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkEvent_PaymentRefundedImplCopyWith<_$LiquidSdkEvent_PaymentRefundedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_PaymentRefundPendingImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_PaymentRefundPendingImplCopyWith(_$LiquidSdkEvent_PaymentRefundPendingImpl value,
-          $Res Function(_$LiquidSdkEvent_PaymentRefundPendingImpl) then) =
-      __$$LiquidSdkEvent_PaymentRefundPendingImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Payment details});
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_PaymentRefundPendingImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_PaymentRefundPendingImpl>
-    implements _$$LiquidSdkEvent_PaymentRefundPendingImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_PaymentRefundPendingImplCopyWithImpl(_$LiquidSdkEvent_PaymentRefundPendingImpl _value,
-      $Res Function(_$LiquidSdkEvent_PaymentRefundPendingImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? details = null,
-  }) {
-    return _then(_$LiquidSdkEvent_PaymentRefundPendingImpl(
-      details: null == details
-          ? _value.details
-          : details // ignore: cast_nullable_to_non_nullable
-              as Payment,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_PaymentRefundPendingImpl extends LiquidSdkEvent_PaymentRefundPending {
-  const _$LiquidSdkEvent_PaymentRefundPendingImpl({required this.details}) : super._();
-
-  @override
-  final Payment details;
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.paymentRefundPending(details: $details)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkEvent_PaymentRefundPendingImpl &&
-            (identical(other.details, details) || other.details == details));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, details);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkEvent_PaymentRefundPendingImplCopyWith<_$LiquidSdkEvent_PaymentRefundPendingImpl>
-      get copyWith =>
-          __$$LiquidSdkEvent_PaymentRefundPendingImplCopyWithImpl<_$LiquidSdkEvent_PaymentRefundPendingImpl>(
-              this, _$identity);
-}
-
-abstract class LiquidSdkEvent_PaymentRefundPending extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_PaymentRefundPending({required final Payment details}) =
-      _$LiquidSdkEvent_PaymentRefundPendingImpl;
-  const LiquidSdkEvent_PaymentRefundPending._() : super._();
-
-  Payment get details;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkEvent_PaymentRefundPendingImplCopyWith<_$LiquidSdkEvent_PaymentRefundPendingImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_PaymentSucceededImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_PaymentSucceededImplCopyWith(_$LiquidSdkEvent_PaymentSucceededImpl value,
-          $Res Function(_$LiquidSdkEvent_PaymentSucceededImpl) then) =
-      __$$LiquidSdkEvent_PaymentSucceededImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Payment details});
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_PaymentSucceededImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_PaymentSucceededImpl>
-    implements _$$LiquidSdkEvent_PaymentSucceededImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_PaymentSucceededImplCopyWithImpl(_$LiquidSdkEvent_PaymentSucceededImpl _value,
-      $Res Function(_$LiquidSdkEvent_PaymentSucceededImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? details = null,
-  }) {
-    return _then(_$LiquidSdkEvent_PaymentSucceededImpl(
-      details: null == details
-          ? _value.details
-          : details // ignore: cast_nullable_to_non_nullable
-              as Payment,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_PaymentSucceededImpl extends LiquidSdkEvent_PaymentSucceeded {
-  const _$LiquidSdkEvent_PaymentSucceededImpl({required this.details}) : super._();
-
-  @override
-  final Payment details;
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.paymentSucceeded(details: $details)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkEvent_PaymentSucceededImpl &&
-            (identical(other.details, details) || other.details == details));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, details);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkEvent_PaymentSucceededImplCopyWith<_$LiquidSdkEvent_PaymentSucceededImpl> get copyWith =>
-      __$$LiquidSdkEvent_PaymentSucceededImplCopyWithImpl<_$LiquidSdkEvent_PaymentSucceededImpl>(
-          this, _$identity);
-}
-
-abstract class LiquidSdkEvent_PaymentSucceeded extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_PaymentSucceeded({required final Payment details}) =
-      _$LiquidSdkEvent_PaymentSucceededImpl;
-  const LiquidSdkEvent_PaymentSucceeded._() : super._();
-
-  Payment get details;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkEvent_PaymentSucceededImplCopyWith<_$LiquidSdkEvent_PaymentSucceededImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWith(
-          _$LiquidSdkEvent_PaymentWaitingConfirmationImpl value,
-          $Res Function(_$LiquidSdkEvent_PaymentWaitingConfirmationImpl) then) =
-      __$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({Payment details});
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_PaymentWaitingConfirmationImpl>
-    implements _$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWithImpl(
-      _$LiquidSdkEvent_PaymentWaitingConfirmationImpl _value,
-      $Res Function(_$LiquidSdkEvent_PaymentWaitingConfirmationImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? details = null,
-  }) {
-    return _then(_$LiquidSdkEvent_PaymentWaitingConfirmationImpl(
-      details: null == details
-          ? _value.details
-          : details // ignore: cast_nullable_to_non_nullable
-              as Payment,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_PaymentWaitingConfirmationImpl extends LiquidSdkEvent_PaymentWaitingConfirmation {
-  const _$LiquidSdkEvent_PaymentWaitingConfirmationImpl({required this.details}) : super._();
-
-  @override
-  final Payment details;
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.paymentWaitingConfirmation(details: $details)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkEvent_PaymentWaitingConfirmationImpl &&
-            (identical(other.details, details) || other.details == details));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, details);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWith<_$LiquidSdkEvent_PaymentWaitingConfirmationImpl>
-      get copyWith => __$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWithImpl<
-          _$LiquidSdkEvent_PaymentWaitingConfirmationImpl>(this, _$identity);
-}
-
-abstract class LiquidSdkEvent_PaymentWaitingConfirmation extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_PaymentWaitingConfirmation({required final Payment details}) =
-      _$LiquidSdkEvent_PaymentWaitingConfirmationImpl;
-  const LiquidSdkEvent_PaymentWaitingConfirmation._() : super._();
-
-  Payment get details;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkEvent_PaymentWaitingConfirmationImplCopyWith<_$LiquidSdkEvent_PaymentWaitingConfirmationImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkEvent_SyncedImplCopyWith<$Res> {
-  factory _$$LiquidSdkEvent_SyncedImplCopyWith(
-          _$LiquidSdkEvent_SyncedImpl value, $Res Function(_$LiquidSdkEvent_SyncedImpl) then) =
-      __$$LiquidSdkEvent_SyncedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LiquidSdkEvent_SyncedImplCopyWithImpl<$Res>
-    extends _$LiquidSdkEventCopyWithImpl<$Res, _$LiquidSdkEvent_SyncedImpl>
-    implements _$$LiquidSdkEvent_SyncedImplCopyWith<$Res> {
-  __$$LiquidSdkEvent_SyncedImplCopyWithImpl(
-      _$LiquidSdkEvent_SyncedImpl _value, $Res Function(_$LiquidSdkEvent_SyncedImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$LiquidSdkEvent_SyncedImpl extends LiquidSdkEvent_Synced {
-  const _$LiquidSdkEvent_SyncedImpl() : super._();
-
-  @override
-  String toString() {
-    return 'LiquidSdkEvent.synced()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LiquidSdkEvent_SyncedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-}
-
-abstract class LiquidSdkEvent_Synced extends LiquidSdkEvent {
-  const factory LiquidSdkEvent_Synced() = _$LiquidSdkEvent_SyncedImpl;
-  const LiquidSdkEvent_Synced._() : super._();
-}
-
-/// @nodoc
 mixin _$LnUrlPayResult {
   Object get data => throw _privateConstructorUsedError;
 }
@@ -764,4 +257,499 @@ abstract class LnUrlPayResult_PayError extends LnUrlPayResult {
   @JsonKey(ignore: true)
   _$$LnUrlPayResult_PayErrorImplCopyWith<_$LnUrlPayResult_PayErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$SdkEvent {}
+
+/// @nodoc
+abstract class $SdkEventCopyWith<$Res> {
+  factory $SdkEventCopyWith(SdkEvent value, $Res Function(SdkEvent) then) =
+      _$SdkEventCopyWithImpl<$Res, SdkEvent>;
+}
+
+/// @nodoc
+class _$SdkEventCopyWithImpl<$Res, $Val extends SdkEvent> implements $SdkEventCopyWith<$Res> {
+  _$SdkEventCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_PaymentFailedImplCopyWith<$Res> {
+  factory _$$SdkEvent_PaymentFailedImplCopyWith(
+          _$SdkEvent_PaymentFailedImpl value, $Res Function(_$SdkEvent_PaymentFailedImpl) then) =
+      __$$SdkEvent_PaymentFailedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Payment details});
+}
+
+/// @nodoc
+class __$$SdkEvent_PaymentFailedImplCopyWithImpl<$Res>
+    extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_PaymentFailedImpl>
+    implements _$$SdkEvent_PaymentFailedImplCopyWith<$Res> {
+  __$$SdkEvent_PaymentFailedImplCopyWithImpl(
+      _$SdkEvent_PaymentFailedImpl _value, $Res Function(_$SdkEvent_PaymentFailedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? details = null,
+  }) {
+    return _then(_$SdkEvent_PaymentFailedImpl(
+      details: null == details
+          ? _value.details
+          : details // ignore: cast_nullable_to_non_nullable
+              as Payment,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkEvent_PaymentFailedImpl extends SdkEvent_PaymentFailed {
+  const _$SdkEvent_PaymentFailedImpl({required this.details}) : super._();
+
+  @override
+  final Payment details;
+
+  @override
+  String toString() {
+    return 'SdkEvent.paymentFailed(details: $details)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkEvent_PaymentFailedImpl &&
+            (identical(other.details, details) || other.details == details));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, details);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkEvent_PaymentFailedImplCopyWith<_$SdkEvent_PaymentFailedImpl> get copyWith =>
+      __$$SdkEvent_PaymentFailedImplCopyWithImpl<_$SdkEvent_PaymentFailedImpl>(this, _$identity);
+}
+
+abstract class SdkEvent_PaymentFailed extends SdkEvent {
+  const factory SdkEvent_PaymentFailed({required final Payment details}) = _$SdkEvent_PaymentFailedImpl;
+  const SdkEvent_PaymentFailed._() : super._();
+
+  Payment get details;
+  @JsonKey(ignore: true)
+  _$$SdkEvent_PaymentFailedImplCopyWith<_$SdkEvent_PaymentFailedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_PaymentPendingImplCopyWith<$Res> {
+  factory _$$SdkEvent_PaymentPendingImplCopyWith(
+          _$SdkEvent_PaymentPendingImpl value, $Res Function(_$SdkEvent_PaymentPendingImpl) then) =
+      __$$SdkEvent_PaymentPendingImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Payment details});
+}
+
+/// @nodoc
+class __$$SdkEvent_PaymentPendingImplCopyWithImpl<$Res>
+    extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_PaymentPendingImpl>
+    implements _$$SdkEvent_PaymentPendingImplCopyWith<$Res> {
+  __$$SdkEvent_PaymentPendingImplCopyWithImpl(
+      _$SdkEvent_PaymentPendingImpl _value, $Res Function(_$SdkEvent_PaymentPendingImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? details = null,
+  }) {
+    return _then(_$SdkEvent_PaymentPendingImpl(
+      details: null == details
+          ? _value.details
+          : details // ignore: cast_nullable_to_non_nullable
+              as Payment,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkEvent_PaymentPendingImpl extends SdkEvent_PaymentPending {
+  const _$SdkEvent_PaymentPendingImpl({required this.details}) : super._();
+
+  @override
+  final Payment details;
+
+  @override
+  String toString() {
+    return 'SdkEvent.paymentPending(details: $details)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkEvent_PaymentPendingImpl &&
+            (identical(other.details, details) || other.details == details));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, details);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkEvent_PaymentPendingImplCopyWith<_$SdkEvent_PaymentPendingImpl> get copyWith =>
+      __$$SdkEvent_PaymentPendingImplCopyWithImpl<_$SdkEvent_PaymentPendingImpl>(this, _$identity);
+}
+
+abstract class SdkEvent_PaymentPending extends SdkEvent {
+  const factory SdkEvent_PaymentPending({required final Payment details}) = _$SdkEvent_PaymentPendingImpl;
+  const SdkEvent_PaymentPending._() : super._();
+
+  Payment get details;
+  @JsonKey(ignore: true)
+  _$$SdkEvent_PaymentPendingImplCopyWith<_$SdkEvent_PaymentPendingImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_PaymentRefundedImplCopyWith<$Res> {
+  factory _$$SdkEvent_PaymentRefundedImplCopyWith(
+          _$SdkEvent_PaymentRefundedImpl value, $Res Function(_$SdkEvent_PaymentRefundedImpl) then) =
+      __$$SdkEvent_PaymentRefundedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Payment details});
+}
+
+/// @nodoc
+class __$$SdkEvent_PaymentRefundedImplCopyWithImpl<$Res>
+    extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_PaymentRefundedImpl>
+    implements _$$SdkEvent_PaymentRefundedImplCopyWith<$Res> {
+  __$$SdkEvent_PaymentRefundedImplCopyWithImpl(
+      _$SdkEvent_PaymentRefundedImpl _value, $Res Function(_$SdkEvent_PaymentRefundedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? details = null,
+  }) {
+    return _then(_$SdkEvent_PaymentRefundedImpl(
+      details: null == details
+          ? _value.details
+          : details // ignore: cast_nullable_to_non_nullable
+              as Payment,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkEvent_PaymentRefundedImpl extends SdkEvent_PaymentRefunded {
+  const _$SdkEvent_PaymentRefundedImpl({required this.details}) : super._();
+
+  @override
+  final Payment details;
+
+  @override
+  String toString() {
+    return 'SdkEvent.paymentRefunded(details: $details)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkEvent_PaymentRefundedImpl &&
+            (identical(other.details, details) || other.details == details));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, details);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkEvent_PaymentRefundedImplCopyWith<_$SdkEvent_PaymentRefundedImpl> get copyWith =>
+      __$$SdkEvent_PaymentRefundedImplCopyWithImpl<_$SdkEvent_PaymentRefundedImpl>(this, _$identity);
+}
+
+abstract class SdkEvent_PaymentRefunded extends SdkEvent {
+  const factory SdkEvent_PaymentRefunded({required final Payment details}) = _$SdkEvent_PaymentRefundedImpl;
+  const SdkEvent_PaymentRefunded._() : super._();
+
+  Payment get details;
+  @JsonKey(ignore: true)
+  _$$SdkEvent_PaymentRefundedImplCopyWith<_$SdkEvent_PaymentRefundedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_PaymentRefundPendingImplCopyWith<$Res> {
+  factory _$$SdkEvent_PaymentRefundPendingImplCopyWith(_$SdkEvent_PaymentRefundPendingImpl value,
+          $Res Function(_$SdkEvent_PaymentRefundPendingImpl) then) =
+      __$$SdkEvent_PaymentRefundPendingImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Payment details});
+}
+
+/// @nodoc
+class __$$SdkEvent_PaymentRefundPendingImplCopyWithImpl<$Res>
+    extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_PaymentRefundPendingImpl>
+    implements _$$SdkEvent_PaymentRefundPendingImplCopyWith<$Res> {
+  __$$SdkEvent_PaymentRefundPendingImplCopyWithImpl(
+      _$SdkEvent_PaymentRefundPendingImpl _value, $Res Function(_$SdkEvent_PaymentRefundPendingImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? details = null,
+  }) {
+    return _then(_$SdkEvent_PaymentRefundPendingImpl(
+      details: null == details
+          ? _value.details
+          : details // ignore: cast_nullable_to_non_nullable
+              as Payment,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkEvent_PaymentRefundPendingImpl extends SdkEvent_PaymentRefundPending {
+  const _$SdkEvent_PaymentRefundPendingImpl({required this.details}) : super._();
+
+  @override
+  final Payment details;
+
+  @override
+  String toString() {
+    return 'SdkEvent.paymentRefundPending(details: $details)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkEvent_PaymentRefundPendingImpl &&
+            (identical(other.details, details) || other.details == details));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, details);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkEvent_PaymentRefundPendingImplCopyWith<_$SdkEvent_PaymentRefundPendingImpl> get copyWith =>
+      __$$SdkEvent_PaymentRefundPendingImplCopyWithImpl<_$SdkEvent_PaymentRefundPendingImpl>(
+          this, _$identity);
+}
+
+abstract class SdkEvent_PaymentRefundPending extends SdkEvent {
+  const factory SdkEvent_PaymentRefundPending({required final Payment details}) =
+      _$SdkEvent_PaymentRefundPendingImpl;
+  const SdkEvent_PaymentRefundPending._() : super._();
+
+  Payment get details;
+  @JsonKey(ignore: true)
+  _$$SdkEvent_PaymentRefundPendingImplCopyWith<_$SdkEvent_PaymentRefundPendingImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_PaymentSucceededImplCopyWith<$Res> {
+  factory _$$SdkEvent_PaymentSucceededImplCopyWith(
+          _$SdkEvent_PaymentSucceededImpl value, $Res Function(_$SdkEvent_PaymentSucceededImpl) then) =
+      __$$SdkEvent_PaymentSucceededImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Payment details});
+}
+
+/// @nodoc
+class __$$SdkEvent_PaymentSucceededImplCopyWithImpl<$Res>
+    extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_PaymentSucceededImpl>
+    implements _$$SdkEvent_PaymentSucceededImplCopyWith<$Res> {
+  __$$SdkEvent_PaymentSucceededImplCopyWithImpl(
+      _$SdkEvent_PaymentSucceededImpl _value, $Res Function(_$SdkEvent_PaymentSucceededImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? details = null,
+  }) {
+    return _then(_$SdkEvent_PaymentSucceededImpl(
+      details: null == details
+          ? _value.details
+          : details // ignore: cast_nullable_to_non_nullable
+              as Payment,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkEvent_PaymentSucceededImpl extends SdkEvent_PaymentSucceeded {
+  const _$SdkEvent_PaymentSucceededImpl({required this.details}) : super._();
+
+  @override
+  final Payment details;
+
+  @override
+  String toString() {
+    return 'SdkEvent.paymentSucceeded(details: $details)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkEvent_PaymentSucceededImpl &&
+            (identical(other.details, details) || other.details == details));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, details);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkEvent_PaymentSucceededImplCopyWith<_$SdkEvent_PaymentSucceededImpl> get copyWith =>
+      __$$SdkEvent_PaymentSucceededImplCopyWithImpl<_$SdkEvent_PaymentSucceededImpl>(this, _$identity);
+}
+
+abstract class SdkEvent_PaymentSucceeded extends SdkEvent {
+  const factory SdkEvent_PaymentSucceeded({required final Payment details}) = _$SdkEvent_PaymentSucceededImpl;
+  const SdkEvent_PaymentSucceeded._() : super._();
+
+  Payment get details;
+  @JsonKey(ignore: true)
+  _$$SdkEvent_PaymentSucceededImplCopyWith<_$SdkEvent_PaymentSucceededImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_PaymentWaitingConfirmationImplCopyWith<$Res> {
+  factory _$$SdkEvent_PaymentWaitingConfirmationImplCopyWith(_$SdkEvent_PaymentWaitingConfirmationImpl value,
+          $Res Function(_$SdkEvent_PaymentWaitingConfirmationImpl) then) =
+      __$$SdkEvent_PaymentWaitingConfirmationImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Payment details});
+}
+
+/// @nodoc
+class __$$SdkEvent_PaymentWaitingConfirmationImplCopyWithImpl<$Res>
+    extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_PaymentWaitingConfirmationImpl>
+    implements _$$SdkEvent_PaymentWaitingConfirmationImplCopyWith<$Res> {
+  __$$SdkEvent_PaymentWaitingConfirmationImplCopyWithImpl(_$SdkEvent_PaymentWaitingConfirmationImpl _value,
+      $Res Function(_$SdkEvent_PaymentWaitingConfirmationImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? details = null,
+  }) {
+    return _then(_$SdkEvent_PaymentWaitingConfirmationImpl(
+      details: null == details
+          ? _value.details
+          : details // ignore: cast_nullable_to_non_nullable
+              as Payment,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkEvent_PaymentWaitingConfirmationImpl extends SdkEvent_PaymentWaitingConfirmation {
+  const _$SdkEvent_PaymentWaitingConfirmationImpl({required this.details}) : super._();
+
+  @override
+  final Payment details;
+
+  @override
+  String toString() {
+    return 'SdkEvent.paymentWaitingConfirmation(details: $details)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkEvent_PaymentWaitingConfirmationImpl &&
+            (identical(other.details, details) || other.details == details));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, details);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkEvent_PaymentWaitingConfirmationImplCopyWith<_$SdkEvent_PaymentWaitingConfirmationImpl>
+      get copyWith =>
+          __$$SdkEvent_PaymentWaitingConfirmationImplCopyWithImpl<_$SdkEvent_PaymentWaitingConfirmationImpl>(
+              this, _$identity);
+}
+
+abstract class SdkEvent_PaymentWaitingConfirmation extends SdkEvent {
+  const factory SdkEvent_PaymentWaitingConfirmation({required final Payment details}) =
+      _$SdkEvent_PaymentWaitingConfirmationImpl;
+  const SdkEvent_PaymentWaitingConfirmation._() : super._();
+
+  Payment get details;
+  @JsonKey(ignore: true)
+  _$$SdkEvent_PaymentWaitingConfirmationImplCopyWith<_$SdkEvent_PaymentWaitingConfirmationImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkEvent_SyncedImplCopyWith<$Res> {
+  factory _$$SdkEvent_SyncedImplCopyWith(
+          _$SdkEvent_SyncedImpl value, $Res Function(_$SdkEvent_SyncedImpl) then) =
+      __$$SdkEvent_SyncedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$SdkEvent_SyncedImplCopyWithImpl<$Res> extends _$SdkEventCopyWithImpl<$Res, _$SdkEvent_SyncedImpl>
+    implements _$$SdkEvent_SyncedImplCopyWith<$Res> {
+  __$$SdkEvent_SyncedImplCopyWithImpl(
+      _$SdkEvent_SyncedImpl _value, $Res Function(_$SdkEvent_SyncedImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$SdkEvent_SyncedImpl extends SdkEvent_Synced {
+  const _$SdkEvent_SyncedImpl() : super._();
+
+  @override
+  String toString() {
+    return 'SdkEvent.synced()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType && other is _$SdkEvent_SyncedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+abstract class SdkEvent_Synced extends SdkEvent {
+  const factory SdkEvent_Synced() = _$SdkEvent_SyncedImpl;
+  const SdkEvent_Synced._() : super._();
 }

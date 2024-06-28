@@ -16,11 +16,11 @@ pub use sdk_common::prelude::{
 use crate::{error::*, frb_generated::StreamSink, model::*, sdk::LiquidSdk};
 
 pub struct BindingEventListener {
-    pub stream: StreamSink<LiquidSdkEvent>,
+    pub stream: StreamSink<SdkEvent>,
 }
 
 impl EventListener for BindingEventListener {
-    fn on_event(&self, e: LiquidSdkEvent) {
+    fn on_event(&self, e: SdkEvent) {
         let _ = self.stream.add(e);
     }
 }
@@ -53,14 +53,14 @@ impl log::Log for DartBindingLogger {
     fn flush(&self) {}
 }
 
-pub async fn connect(req: ConnectRequest) -> Result<BindingLiquidSdk, LiquidSdkError> {
+pub async fn connect(req: ConnectRequest) -> Result<BindingLiquidSdk, SdkError> {
     let ln_sdk = LiquidSdk::connect(req).await?;
     Ok(BindingLiquidSdk { sdk: ln_sdk })
 }
 
 /// If used, this must be called before `connect`. It can only be called once.
 pub fn breez_log_stream(s: StreamSink<LogEntry>) -> Result<()> {
-    DartBindingLogger::init(s).map_err(|_| LiquidSdkError::Generic {
+    DartBindingLogger::init(s).map_err(|_| SdkError::Generic {
         err: "Log stream already created".into(),
     })?;
     Ok(())
@@ -85,14 +85,14 @@ pub struct BindingLiquidSdk {
 }
 
 impl BindingLiquidSdk {
-    pub async fn get_info(&self) -> Result<GetInfoResponse, LiquidSdkError> {
+    pub async fn get_info(&self) -> Result<GetInfoResponse, SdkError> {
         self.sdk.get_info().await.map_err(Into::into)
     }
 
     pub async fn add_event_listener(
         &self,
-        listener: StreamSink<LiquidSdkEvent>,
-    ) -> Result<String, LiquidSdkError> {
+        listener: StreamSink<SdkEvent>,
+    ) -> Result<String, SdkError> {
         self.sdk
             .add_event_listener(Box::new(BindingEventListener { stream: listener }))
             .await
@@ -187,22 +187,22 @@ impl BindingLiquidSdk {
             .map_err(Into::into)
     }
 
-    pub async fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, LiquidSdkError> {
+    pub async fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, SdkError> {
         self.sdk.fetch_fiat_rates().await
     }
 
-    pub async fn list_fiat_currencies(&self) -> Result<Vec<FiatCurrency>, LiquidSdkError> {
+    pub async fn list_fiat_currencies(&self) -> Result<Vec<FiatCurrency>, SdkError> {
         self.sdk.list_fiat_currencies().await
     }
 
-    pub async fn list_refundables(&self) -> Result<Vec<RefundableSwap>, LiquidSdkError> {
+    pub async fn list_refundables(&self) -> Result<Vec<RefundableSwap>, SdkError> {
         self.sdk.list_refundables().await
     }
 
     pub async fn prepare_refund(
         &self,
         req: PrepareRefundRequest,
-    ) -> Result<PrepareRefundResponse, LiquidSdkError> {
+    ) -> Result<PrepareRefundResponse, SdkError> {
         self.sdk.prepare_refund(&req).await
     }
 
@@ -210,30 +210,30 @@ impl BindingLiquidSdk {
         self.sdk.refund(&req).await
     }
 
-    pub async fn rescan_onchain_swaps(&self) -> Result<(), LiquidSdkError> {
+    pub async fn rescan_onchain_swaps(&self) -> Result<(), SdkError> {
         self.sdk.rescan_onchain_swaps().await
     }
 
-    pub async fn sync(&self) -> Result<(), LiquidSdkError> {
+    pub async fn sync(&self) -> Result<(), SdkError> {
         self.sdk.sync().await.map_err(Into::into)
     }
 
     #[frb(sync)]
-    pub fn empty_wallet_cache(&self) -> Result<(), LiquidSdkError> {
+    pub fn empty_wallet_cache(&self) -> Result<(), SdkError> {
         self.sdk.empty_wallet_cache().map_err(Into::into)
     }
 
     #[frb(sync)]
-    pub fn backup(&self, req: BackupRequest) -> Result<(), LiquidSdkError> {
+    pub fn backup(&self, req: BackupRequest) -> Result<(), SdkError> {
         self.sdk.backup(req).map_err(Into::into)
     }
 
     #[frb(sync)]
-    pub fn restore(&self, req: RestoreRequest) -> Result<(), LiquidSdkError> {
+    pub fn restore(&self, req: RestoreRequest) -> Result<(), SdkError> {
         self.sdk.restore(req).map_err(Into::into)
     }
 
-    pub async fn disconnect(&self) -> Result<(), LiquidSdkError> {
+    pub async fn disconnect(&self) -> Result<(), SdkError> {
         self.sdk.disconnect().await
     }
 }

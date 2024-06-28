@@ -1,4 +1,4 @@
-name: breez_liquid_sdk
+name: breez_sdk_liquid
 repository: https://github.com/breez/breez-liquid-sdk
 packages:
   - ../../../packages/**

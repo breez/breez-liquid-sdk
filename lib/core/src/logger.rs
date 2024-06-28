@@ -46,8 +46,8 @@ pub(super) fn init_logging(log_dir: &str, app_logger: Option<Box<dyn log::Log>>)
         .parse_filters(
             r#"
                 debug,
-                breez_liquid_sdk=debug,
-                breez_liquid_sdk::swapper::boltz_status_stream=info,
+                breez_sdk_liquid=debug,
+                breez_sdk_liquid::swapper::boltz_status_stream=info,
                 electrum_client::raw_client=warn,
                 lwk_wollet=info,
                 rustls=warn,

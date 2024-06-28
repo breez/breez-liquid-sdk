@@ -1,10 +1,10 @@
 [package]
-name = "breez-liquid-sdk"
+name = "breez-sdk-liquid"
 edition = "2021"
 version.workspace = true
 
 [lib]
-name = "breez_liquid_sdk"
+name = "breez_sdk_liquid"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [features]
