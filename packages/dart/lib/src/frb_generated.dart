@@ -55,7 +55,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.0.0';
 
   @override
-  int get rustContentHash => 1515195984;
+  int get rustContentHash => 1351340125;
 
   static const kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
     stem: 'breez_liquid_sdk',
@@ -74,6 +74,9 @@ abstract class RustLibApi extends BaseApi {
   void crateBindingsBindingLiquidSdkEmptyWalletCache({required BindingLiquidSdk that});
 
   Future<List<Rate>> crateBindingsBindingLiquidSdkFetchFiatRates({required BindingLiquidSdk that});
+
+  Future<OnchainPaymentLimitsResponse> crateBindingsBindingLiquidSdkFetchOnchainLimits(
+      {required BindingLiquidSdk that});
 
   Future<GetInfoResponse> crateBindingsBindingLiquidSdkGetInfo({required BindingLiquidSdk that});
 
@@ -278,6 +281,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateBindingsBindingLiquidSdkFetchFiatRatesConstMeta => const TaskConstMeta(
         debugName: "BindingLiquidSdk_fetch_fiat_rates",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<OnchainPaymentLimitsResponse> crateBindingsBindingLiquidSdkFetchOnchainLimits(
+      {required BindingLiquidSdk that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 =
+            cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBindingLiquidSdk(
+                that);
+        return wire.wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_onchain_payment_limits_response,
+        decodeErrorData: dco_decode_payment_error,
+      ),
+      constMeta: kCrateBindingsBindingLiquidSdkFetchOnchainLimitsConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBindingsBindingLiquidSdkFetchOnchainLimitsConstMeta => const TaskConstMeta(
+        debugName: "BindingLiquidSdk_fetch_onchain_limits",
         argNames: ["that"],
       );
 
@@ -1852,6 +1880,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  OnchainPaymentLimitsResponse dco_decode_onchain_payment_limits_response(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6) throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return OnchainPaymentLimitsResponse(
+      sendMinPayerAmountSat: dco_decode_u_64(arr[0]),
+      sendMaxPayerAmountSat: dco_decode_u_64(arr[1]),
+      sendMaxPayerAmountSatZeroConf: dco_decode_u_64(arr[2]),
+      receiveMinPayerAmountSat: dco_decode_u_64(arr[3]),
+      receiveMaxPayerAmountSat: dco_decode_u_64(arr[4]),
+      receiveMaxPayerAmountSatZeroConf: dco_decode_u_64(arr[5]),
+    );
+  }
+
+  @protected
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
@@ -3228,6 +3271,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  OnchainPaymentLimitsResponse sse_decode_onchain_payment_limits_response(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_sendMinPayerAmountSat = sse_decode_u_64(deserializer);
+    var var_sendMaxPayerAmountSat = sse_decode_u_64(deserializer);
+    var var_sendMaxPayerAmountSatZeroConf = sse_decode_u_64(deserializer);
+    var var_receiveMinPayerAmountSat = sse_decode_u_64(deserializer);
+    var var_receiveMaxPayerAmountSat = sse_decode_u_64(deserializer);
+    var var_receiveMaxPayerAmountSatZeroConf = sse_decode_u_64(deserializer);
+    return OnchainPaymentLimitsResponse(
+        sendMinPayerAmountSat: var_sendMinPayerAmountSat,
+        sendMaxPayerAmountSat: var_sendMaxPayerAmountSat,
+        sendMaxPayerAmountSatZeroConf: var_sendMaxPayerAmountSatZeroConf,
+        receiveMinPayerAmountSat: var_receiveMinPayerAmountSat,
+        receiveMaxPayerAmountSat: var_receiveMaxPayerAmountSat,
+        receiveMaxPayerAmountSatZeroConf: var_receiveMaxPayerAmountSatZeroConf);
+  }
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -4567,6 +4628,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_onchain_payment_limits_response(
+      OnchainPaymentLimitsResponse self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self.sendMinPayerAmountSat, serializer);
+    sse_encode_u_64(self.sendMaxPayerAmountSat, serializer);
+    sse_encode_u_64(self.sendMaxPayerAmountSatZeroConf, serializer);
+    sse_encode_u_64(self.receiveMinPayerAmountSat, serializer);
+    sse_encode_u_64(self.receiveMaxPayerAmountSat, serializer);
+    sse_encode_u_64(self.receiveMaxPayerAmountSatZeroConf, serializer);
+  }
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -4961,6 +5034,11 @@ class BindingLiquidSdkImpl extends RustOpaque implements BindingLiquidSdk {
       );
 
   Future<List<Rate>> fetchFiatRates() => RustLib.instance.api.crateBindingsBindingLiquidSdkFetchFiatRates(
+        that: this,
+      );
+
+  Future<OnchainPaymentLimitsResponse> fetchOnchainLimits() =>
+      RustLib.instance.api.crateBindingsBindingLiquidSdkFetchOnchainLimits(
         that: this,
       );
 

@@ -875,6 +875,31 @@ impl LiquidSdk {
             .map(|payment| SendPaymentResponse { payment })
     }
 
+    /// Fetch the current limits for Onchain Send and Receive swaps
+    pub async fn fetch_onchain_limits(&self) -> Result<OnchainPaymentLimitsResponse, PaymentError> {
+        self.ensure_is_started().await?;
+
+        let send_limits = self
+            .swapper
+            .get_chain_pairs(Direction::Outgoing)?
+            .ok_or(PaymentError::PairsNotFound)
+            .map(|pair| pair.limits)?;
+        let receive_limits = self
+            .swapper
+            .get_chain_pairs(Direction::Incoming)?
+            .ok_or(PaymentError::PairsNotFound)
+            .map(|pair| pair.limits)?;
+
+        Ok(OnchainPaymentLimitsResponse {
+            send_min_payer_amount_sat: send_limits.minimal,
+            send_max_payer_amount_sat: send_limits.maximal,
+            send_max_payer_amount_sat_zero_conf: send_limits.maximal_zero_conf,
+            receive_min_payer_amount_sat: receive_limits.minimal,
+            receive_max_payer_amount_sat: receive_limits.maximal,
+            receive_max_payer_amount_sat_zero_conf: receive_limits.maximal_zero_conf,
+        })
+    }
+
     pub async fn prepare_pay_onchain(
         &self,
         req: &PreparePayOnchainRequest,

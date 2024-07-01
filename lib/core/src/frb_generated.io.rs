@@ -1039,6 +1039,25 @@ impl CstDecode<crate::bindings::MessageSuccessActionData> for wire_cst_message_s
         }
     }
 }
+impl CstDecode<crate::model::OnchainPaymentLimitsResponse>
+    for wire_cst_onchain_payment_limits_response
+{
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    fn cst_decode(self) -> crate::model::OnchainPaymentLimitsResponse {
+        crate::model::OnchainPaymentLimitsResponse {
+            send_min_payer_amount_sat: self.send_min_payer_amount_sat.cst_decode(),
+            send_max_payer_amount_sat: self.send_max_payer_amount_sat.cst_decode(),
+            send_max_payer_amount_sat_zero_conf: self
+                .send_max_payer_amount_sat_zero_conf
+                .cst_decode(),
+            receive_min_payer_amount_sat: self.receive_min_payer_amount_sat.cst_decode(),
+            receive_max_payer_amount_sat: self.receive_max_payer_amount_sat.cst_decode(),
+            receive_max_payer_amount_sat_zero_conf: self
+                .receive_max_payer_amount_sat_zero_conf
+                .cst_decode(),
+        }
+    }
+}
 impl CstDecode<crate::model::PayOnchainRequest> for wire_cst_pay_onchain_request {
     // Codec=Cst (C-struct based), see doc to use other codecs
     fn cst_decode(self) -> crate::model::PayOnchainRequest {
@@ -1824,6 +1843,23 @@ impl Default for wire_cst_message_success_action_data {
         Self::new_with_null_ptr()
     }
 }
+impl NewWithNullPtr for wire_cst_onchain_payment_limits_response {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            send_min_payer_amount_sat: Default::default(),
+            send_max_payer_amount_sat: Default::default(),
+            send_max_payer_amount_sat_zero_conf: Default::default(),
+            receive_min_payer_amount_sat: Default::default(),
+            receive_max_payer_amount_sat: Default::default(),
+            receive_max_payer_amount_sat_zero_conf: Default::default(),
+        }
+    }
+}
+impl Default for wire_cst_onchain_payment_limits_response {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
 impl NewWithNullPtr for wire_cst_pay_onchain_request {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -2213,6 +2249,14 @@ pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fe
     that: usize,
 ) {
     wire__crate__bindings__BindingLiquidSdk_fetch_fiat_rates_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits(
+    port_: i64,
+    that: usize,
+) {
+    wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits_impl(port_, that)
 }
 
 #[no_mangle]
@@ -3443,6 +3487,16 @@ pub struct wire_cst_log_entry {
 #[derive(Clone, Copy)]
 pub struct wire_cst_message_success_action_data {
     message: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_onchain_payment_limits_response {
+    send_min_payer_amount_sat: u64,
+    send_max_payer_amount_sat: u64,
+    send_max_payer_amount_sat_zero_conf: u64,
+    receive_min_payer_amount_sat: u64,
+    receive_max_payer_amount_sat: u64,
+    receive_max_payer_amount_sat_zero_conf: u64,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]

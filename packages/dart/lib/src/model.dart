@@ -229,6 +229,56 @@ class LogEntry {
       other is LogEntry && runtimeType == other.runtimeType && line == other.line && level == other.level;
 }
 
+class OnchainPaymentLimitsResponse {
+  /// Minimum swap amount for a Send Swap to be valid
+  final BigInt sendMinPayerAmountSat;
+
+  /// Maximum swap amount for a Send Swap to be valid
+  final BigInt sendMaxPayerAmountSat;
+
+  /// Maximum swap amount which the swapper will accept for zero-conf Send Swaps
+  final BigInt sendMaxPayerAmountSatZeroConf;
+
+  /// Minimum swap amount for a Receive Swap to be valid
+  final BigInt receiveMinPayerAmountSat;
+
+  /// Maximum swap amount for a Receive Swap to be valid
+  final BigInt receiveMaxPayerAmountSat;
+
+  /// Maximum swap amount which the swapper will accept for zero-conf Receive Swaps
+  final BigInt receiveMaxPayerAmountSatZeroConf;
+
+  const OnchainPaymentLimitsResponse({
+    required this.sendMinPayerAmountSat,
+    required this.sendMaxPayerAmountSat,
+    required this.sendMaxPayerAmountSatZeroConf,
+    required this.receiveMinPayerAmountSat,
+    required this.receiveMaxPayerAmountSat,
+    required this.receiveMaxPayerAmountSatZeroConf,
+  });
+
+  @override
+  int get hashCode =>
+      sendMinPayerAmountSat.hashCode ^
+      sendMaxPayerAmountSat.hashCode ^
+      sendMaxPayerAmountSatZeroConf.hashCode ^
+      receiveMinPayerAmountSat.hashCode ^
+      receiveMaxPayerAmountSat.hashCode ^
+      receiveMaxPayerAmountSatZeroConf.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OnchainPaymentLimitsResponse &&
+          runtimeType == other.runtimeType &&
+          sendMinPayerAmountSat == other.sendMinPayerAmountSat &&
+          sendMaxPayerAmountSat == other.sendMaxPayerAmountSat &&
+          sendMaxPayerAmountSatZeroConf == other.sendMaxPayerAmountSatZeroConf &&
+          receiveMinPayerAmountSat == other.receiveMinPayerAmountSat &&
+          receiveMaxPayerAmountSat == other.receiveMaxPayerAmountSat &&
+          receiveMaxPayerAmountSatZeroConf == other.receiveMaxPayerAmountSatZeroConf;
+}
+
 class PayOnchainRequest {
   final String address;
   final PreparePayOnchainResponse prepareRes;

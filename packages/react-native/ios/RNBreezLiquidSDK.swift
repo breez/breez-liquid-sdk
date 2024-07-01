@@ -208,6 +208,16 @@ class RNBreezLiquidSDK: RCTEventEmitter {
         }
     }
 
+    @objc(fetchOnchainLimits:reject:)
+    func fetchOnchainLimits(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        do {
+            var res = try getBindingLiquidSdk().fetchOnchainLimits()
+            resolve(BreezLiquidSDKMapper.dictionaryOf(onchainPaymentLimitsResponse: res))
+        } catch let err {
+            rejectErr(err: err, reject: reject)
+        }
+    }
+
     @objc(preparePayOnchain:resolve:reject:)
     func preparePayOnchain(_ req: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {

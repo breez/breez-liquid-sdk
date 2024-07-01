@@ -259,6 +259,18 @@ class BreezLiquidSDKModule(
     }
 
     @ReactMethod
+    fun fetchOnchainLimits(promise: Promise) {
+        executor.execute {
+            try {
+                val res = getBindingLiquidSdk().fetchOnchainLimits()
+                promise.resolve(readableMapOf(res))
+            } catch (e: Exception) {
+                promise.reject(e.javaClass.simpleName.replace("Exception", "Error"), e.message, e)
+            }
+        }
+    }
+
+    @ReactMethod
     fun preparePayOnchain(
         req: ReadableMap,
         promise: Promise,

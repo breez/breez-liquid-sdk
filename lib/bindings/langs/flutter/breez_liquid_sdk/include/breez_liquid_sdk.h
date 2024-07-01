@@ -660,6 +660,15 @@ typedef struct wire_cst_log_entry {
   struct wire_cst_list_prim_u_8_strict *level;
 } wire_cst_log_entry;
 
+typedef struct wire_cst_onchain_payment_limits_response {
+  uint64_t send_min_payer_amount_sat;
+  uint64_t send_max_payer_amount_sat;
+  uint64_t send_max_payer_amount_sat_zero_conf;
+  uint64_t receive_min_payer_amount_sat;
+  uint64_t receive_max_payer_amount_sat;
+  uint64_t receive_max_payer_amount_sat_zero_conf;
+} wire_cst_onchain_payment_limits_response;
+
 typedef struct wire_cst_PaymentError_Generic {
   struct wire_cst_list_prim_u_8_strict *err;
 } wire_cst_PaymentError_Generic;
@@ -742,6 +751,9 @@ WireSyncRust2DartDco frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk
 
 void frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_fiat_rates(int64_t port_,
                                                                                   uintptr_t that);
+
+void frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits(int64_t port_,
+                                                                                      uintptr_t that);
 
 void frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_get_info(int64_t port_,
                                                                           uintptr_t that);
@@ -980,6 +992,7 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_disconnect);
     dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_empty_wallet_cache);
     dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_fiat_rates);
+    dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits);
     dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_get_info);
     dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_list_fiat_currencies);
     dummy_var ^= ((int64_t) (void*) frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_list_payments);

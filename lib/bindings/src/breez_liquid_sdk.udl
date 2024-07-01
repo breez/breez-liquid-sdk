@@ -335,6 +335,15 @@ dictionary ReceivePaymentResponse {
     string invoice;
 };
 
+dictionary OnchainPaymentLimitsResponse {
+    u64 send_min_payer_amount_sat;
+    u64 send_max_payer_amount_sat;
+    u64 send_max_payer_amount_sat_zero_conf;
+    u64 receive_min_payer_amount_sat;
+    u64 receive_max_payer_amount_sat;
+    u64 receive_max_payer_amount_sat_zero_conf;
+};
+
 dictionary PreparePayOnchainRequest {
     u64 receiver_amount_sat;
 };
@@ -489,6 +498,9 @@ interface BindingLiquidSdk {
 
     [Throws=PaymentError]
     ReceivePaymentResponse receive_payment(PrepareReceiveResponse req);
+
+    [Throws=PaymentError]
+    OnchainPaymentLimitsResponse fetch_onchain_limits();
 
     [Throws=PaymentError]
     PreparePayOnchainResponse prepare_pay_onchain(PreparePayOnchainRequest req);

@@ -303,6 +303,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Network dco_decode_network(dynamic raw);
 
   @protected
+  OnchainPaymentLimitsResponse dco_decode_onchain_payment_limits_response(dynamic raw);
+
+  @protected
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
@@ -703,6 +706,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Network sse_decode_network(SseDeserializer deserializer);
+
+  @protected
+  OnchainPaymentLimitsResponse sse_decode_onchain_payment_limits_response(SseDeserializer deserializer);
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
@@ -2010,6 +2016,17 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   }
 
   @protected
+  void cst_api_fill_to_wire_onchain_payment_limits_response(
+      OnchainPaymentLimitsResponse apiObj, wire_cst_onchain_payment_limits_response wireObj) {
+    wireObj.send_min_payer_amount_sat = cst_encode_u_64(apiObj.sendMinPayerAmountSat);
+    wireObj.send_max_payer_amount_sat = cst_encode_u_64(apiObj.sendMaxPayerAmountSat);
+    wireObj.send_max_payer_amount_sat_zero_conf = cst_encode_u_64(apiObj.sendMaxPayerAmountSatZeroConf);
+    wireObj.receive_min_payer_amount_sat = cst_encode_u_64(apiObj.receiveMinPayerAmountSat);
+    wireObj.receive_max_payer_amount_sat = cst_encode_u_64(apiObj.receiveMaxPayerAmountSat);
+    wireObj.receive_max_payer_amount_sat_zero_conf = cst_encode_u_64(apiObj.receiveMaxPayerAmountSatZeroConf);
+  }
+
+  @protected
   void cst_api_fill_to_wire_pay_onchain_request(
       PayOnchainRequest apiObj, wire_cst_pay_onchain_request wireObj) {
     wireObj.address = cst_encode_String(apiObj.address);
@@ -2630,6 +2647,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_network(Network self, SseSerializer serializer);
 
   @protected
+  void sse_encode_onchain_payment_limits_response(
+      OnchainPaymentLimitsResponse self, SseSerializer serializer);
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
@@ -2872,6 +2893,22 @@ class RustLibWire implements BaseWire {
           'frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_fiat_rates');
   late final _wire__crate__bindings__BindingLiquidSdk_fetch_fiat_rates =
       _wire__crate__bindings__BindingLiquidSdk_fetch_fiat_ratesPtr.asFunction<void Function(int, int)>();
+
+  void wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits(
+    int port_,
+    int that,
+  ) {
+    return _wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limitsPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.UintPtr)>>(
+          'frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits');
+  late final _wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limits =
+      _wire__crate__bindings__BindingLiquidSdk_fetch_onchain_limitsPtr.asFunction<void Function(int, int)>();
 
   void wire__crate__bindings__BindingLiquidSdk_get_info(
     int port_,
@@ -4741,6 +4778,26 @@ final class wire_cst_log_entry extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> line;
 
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> level;
+}
+
+final class wire_cst_onchain_payment_limits_response extends ffi.Struct {
+  @ffi.Uint64()
+  external int send_min_payer_amount_sat;
+
+  @ffi.Uint64()
+  external int send_max_payer_amount_sat;
+
+  @ffi.Uint64()
+  external int send_max_payer_amount_sat_zero_conf;
+
+  @ffi.Uint64()
+  external int receive_min_payer_amount_sat;
+
+  @ffi.Uint64()
+  external int receive_max_payer_amount_sat;
+
+  @ffi.Uint64()
+  external int receive_max_payer_amount_sat_zero_conf;
 }
 
 final class wire_cst_PaymentError_Generic extends ffi.Struct {
