@@ -17,7 +17,7 @@ zig_build () {
     local LIBNAME="$3"
     local PROFILE="$4"
     rustup target add "$TARGET"
-    cargo zigbuild --package breez-liquid-sdk --target "$TARGET" --profile $PROFILE
+    cargo zigbuild --package breez-sdk-liquid --target "$TARGET" --profile $PROFILE
     mkdir -p "$PLATFORM_NAME"
     cp "../../../../target/$TARGET/$PROFILE/$LIBNAME" "$PLATFORM_NAME/"
 }
@@ -28,7 +28,7 @@ win_build () {
     local LIBNAME="$3"
     local PROFILE="$4"
     rustup target add "$TARGET"
-    cargo xwin build --package breez-liquid-sdk --target "$TARGET" --profile $PROFILE
+    cargo xwin build --package breez-sdk-liquid --target "$TARGET" --profile $PROFILE
     mkdir -p "$PLATFORM_NAME"
     cp "../../../../target/$TARGET/$PROFILE/$LIBNAME" "$PLATFORM_NAME/"
 }

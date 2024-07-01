@@ -41,7 +41,7 @@ ffigen:
 
 # Builds the local library for testing
 build *args:
-	cargo build --package breez-liquid-sdk --manifest-path ../../../core/Cargo.toml --features frb {{args}}
+	cargo build --package breez-sdk-liquid --manifest-path ../../../core/Cargo.toml --features frb {{args}}
 
 build-apple profile='frb-min':
 	dart scripts/build_apple.dart --profile {{profile}}
