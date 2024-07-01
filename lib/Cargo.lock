@@ -622,7 +622,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "breez-liquid-sdk"
+name = "breez-sdk-liquid"
 version = "0.0.1"
 dependencies = [
  "anyhow",
@@ -661,11 +661,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "breez-liquid-sdk-bindings"
+name = "breez-sdk-liquid-bindings"
 version = "0.0.1"
 dependencies = [
  "anyhow",
- "breez-liquid-sdk",
+ "breez-sdk-liquid",
  "camino",
  "glob",
  "log",

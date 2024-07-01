@@ -7,9 +7,9 @@ description: |
 output: 'lib/flutter_breez_liquid_bindings_generated.dart'
 headers:
   entry-points:
-    - 'ios/Classes/breez_liquid_sdk.h'
+    - 'ios/Classes/breez_sdk_liquid.h'
   include-directives:
-    - 'ios/Classes/breez_liquid_sdk.h'
+    - 'ios/Classes/breez_sdk_liquid.h'
 preamble: |
   // ignore_for_file: always_specify_types
   // ignore_for_file: camel_case_types

@@ -1,0 +1,6 @@
+framework module breez_sdk_liquidFFI {
+  umbrella header "breez_sdk_liquidFFI-umbrella.h"
+
+  export *
+  module * { export * }
+}

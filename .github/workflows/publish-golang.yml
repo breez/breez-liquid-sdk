@@ -34,52 +34,52 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: bindings-golang
-          path: breez_liquid_sdk
+          path: breez_sdk_liquid
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-i686-linux-android
-          path: breez_liquid_sdk/lib/android-386
+          path: breez_sdk_liquid/lib/android-386
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-armv7-linux-androideabi
-          path: breez_liquid_sdk/lib/android-aarch
+          path: breez_sdk_liquid/lib/android-aarch
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-linux-android
-          path: breez_liquid_sdk/lib/android-aarch64
+          path: breez_sdk_liquid/lib/android-aarch64
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-linux-android
-          path: breez_liquid_sdk/lib/android-amd64
+          path: breez_sdk_liquid/lib/android-amd64
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-apple-darwin
-          path: breez_liquid_sdk/lib/darwin-aarch64
+          path: breez_sdk_liquid/lib/darwin-aarch64
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-apple-darwin
-          path: breez_liquid_sdk/lib/darwin-amd64
+          path: breez_sdk_liquid/lib/darwin-amd64
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-unknown-linux-gnu
-          path: breez_liquid_sdk/lib/linux-aarch64
+          path: breez_sdk_liquid/lib/linux-aarch64
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-gnu
-          path: breez_liquid_sdk/lib/linux-amd64
+          path: breez_sdk_liquid/lib/linux-amd64
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-pc-windows-msvc
-          path: breez_liquid_sdk/lib/windows-amd64
+          path: breez_sdk_liquid/lib/windows-amd64
 
       - name: Archive Go release
         uses: actions/upload-artifact@v3
@@ -94,22 +94,22 @@ jobs:
         run: |
           git config --global user.email github-actions@github.com
           git config --global user.name github-actions
-          git add breez_liquid_sdk/breez_liquid_sdk.h
-          git add breez_liquid_sdk/breez_liquid_sdk.c
-          git add breez_liquid_sdk/breez_liquid_sdk.go
-          git add breez_liquid_sdk/lib/android-386/libbreez_liquid_sdk_bindings.so
-          git add breez_liquid_sdk/lib/android-386/libc++_shared.so
-          git add breez_liquid_sdk/lib/android-aarch/libbreez_liquid_sdk_bindings.so
-          git add breez_liquid_sdk/lib/android-aarch/libc++_shared.so
-          git add breez_liquid_sdk/lib/android-aarch64/libbreez_liquid_sdk_bindings.so
-          git add breez_liquid_sdk/lib/android-aarch64/libc++_shared.so
-          git add breez_liquid_sdk/lib/android-amd64/libbreez_liquid_sdk_bindings.so
-          git add breez_liquid_sdk/lib/android-amd64/libc++_shared.so
-          git add breez_liquid_sdk/lib/darwin-aarch64/libbreez_liquid_sdk_bindings.dylib
-          git add breez_liquid_sdk/lib/darwin-amd64/libbreez_liquid_sdk_bindings.dylib
-          git add breez_liquid_sdk/lib/linux-aarch64/libbreez_liquid_sdk_bindings.so
-          git add breez_liquid_sdk/lib/linux-amd64/libbreez_liquid_sdk_bindings.so
-          git add breez_liquid_sdk/lib/windows-amd64/breez_liquid_sdk_bindings.dll
+          git add breez_sdk_liquid/breez_sdk_liquid.h
+          git add breez_sdk_liquid/breez_sdk_liquid.c
+          git add breez_sdk_liquid/breez_sdk_liquid.go
+          git add breez_sdk_liquid/lib/android-386/libbreez_sdk_liquid_bindings.so
+          git add breez_sdk_liquid/lib/android-386/libc++_shared.so
+          git add breez_sdk_liquid/lib/android-aarch/libbreez_sdk_liquid_bindings.so
+          git add breez_sdk_liquid/lib/android-aarch/libc++_shared.so
+          git add breez_sdk_liquid/lib/android-aarch64/libbreez_sdk_liquid_bindings.so
+          git add breez_sdk_liquid/lib/android-aarch64/libc++_shared.so
+          git add breez_sdk_liquid/lib/android-amd64/libbreez_sdk_liquid_bindings.so
+          git add breez_sdk_liquid/lib/android-amd64/libc++_shared.so
+          git add breez_sdk_liquid/lib/darwin-aarch64/libbreez_sdk_liquid_bindings.dylib
+          git add breez_sdk_liquid/lib/darwin-amd64/libbreez_sdk_liquid_bindings.dylib
+          git add breez_sdk_liquid/lib/linux-aarch64/libbreez_sdk_liquid_bindings.so
+          git add breez_sdk_liquid/lib/linux-amd64/libbreez_sdk_liquid_bindings.so
+          git add breez_sdk_liquid/lib/windows-amd64/breez_sdk_liquid_bindings.dll
           git commit -m "Update Go bindings to version v${{ inputs.package-version }}"
           git push
           git tag v${{ inputs.package-version }} -m "v${{ inputs.package-version }}"

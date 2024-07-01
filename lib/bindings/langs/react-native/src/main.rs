@@ -19,7 +19,7 @@ fn main() {
     let cli_binding_dir = cli.binding_dir.unwrap_or("../../".into());
     let cli_out_dir = cli.out_dir.unwrap_or("./".into());
     let binding_dir = Utf8Path::new(cli_binding_dir.as_str());
-    let udl_file = binding_dir.join(Utf8Path::new("src/breez_liquid_sdk.udl"));
+    let udl_file = binding_dir.join(Utf8Path::new("src/breez_sdk_liquid.udl"));
     let config = binding_dir.join(Utf8Path::new("uniffi.toml"));
     let out_dir = Utf8Path::new(cli_out_dir.as_str());
 

@@ -54,7 +54,7 @@ jobs:
           rm -r android
           rm -r lib
           cp -r ../build/lib/bindings/langs/flutter/ios .
-          mv ios/breez_liquid_sdk.podspec.production ios/breez_liquid_sdk.podspec
+          mv ios/breez_sdk_liquid.podspec.production ios/breez_sdk_liquid.podspec
           cp -r ../build/lib/bindings/langs/flutter/android .
           mv langs/android/build.gradle.production langs/android/build.gradle
           cp -r ../build/lib/bindings/langs/flutter/lib .
@@ -70,17 +70,17 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: bindings-swift
-          path: dist/ios/bindings-swift/Sources/BreezLiquidSDK/
+          path: dist/ios/bindings-swift/Sources/BreezSDKLiquid/
 
       - name: Set package version
         working-directory: dist
         run: |
           sed -i.bak -e 's/version:.*/version: ${{ inputs.package-version }}/' pubspec.yaml
           sed -i.bak -e "s/^version .*/version '${{ inputs.package-version }}'/" langs/android/build.gradle
-          sed -i.bak -e "s/^tag_version = .*/tag_version = '${{ inputs.package-version }}'/" ios/breez_liquid_sdk.podspec
+          sed -i.bak -e "s/^tag_version = .*/tag_version = '${{ inputs.package-version }}'/" ios/breez_sdk_liquid.podspec
           rm pubspec.yaml.bak
           rm langs/android/build.gradle.bak
-          rm ios/breez_liquid_sdk.podspec.bak
+          rm ios/breez_sdk_liquid.podspec.bak
 
       - name: Archive flutter release
         uses: actions/upload-artifact@v3

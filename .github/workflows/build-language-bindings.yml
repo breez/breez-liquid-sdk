@@ -82,14 +82,14 @@ jobs:
         if: ${{ inputs.kotlin }}
         working-directory: lib/bindings
         run: |
-          cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/breez_liquid_sdk.udl --language kotlin -o ffi/kotlin
+          cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/breez_sdk_liquid.udl --language kotlin -o ffi/kotlin
   
       - name: Archive Kotlin binding
         if: ${{ inputs.kotlin }}
         uses: actions/upload-artifact@v3
         with:
           name: bindings-kotlin
-          path: lib/bindings/ffi/kotlin/breez_liquid_sdk/breez_liquid_sdk.kt
+          path: lib/bindings/ffi/kotlin/breez_sdk_liquid/breez_sdk_liquid.kt
 
       - name: Archive Kotlin multiplatform binding
         if: ${{ inputs.kotlin }}
@@ -102,53 +102,53 @@ jobs:
         if: ${{ inputs.swift }}
         working-directory: lib/bindings
         run: |
-          cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/breez_liquid_sdk.udl --no-format --language swift --out-dir langs/swift/Sources/BreezLiquidSDK
-          mv langs/swift/Sources/BreezLiquidSDK/breez_liquid_sdk.swift langs/swift/Sources/BreezLiquidSDK/BreezLiquidSDK.swift
+          cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/breez_sdk_liquid.udl --no-format --language swift --out-dir langs/swift/Sources/BreezSDKLiquid
+          mv langs/swift/Sources/BreezSDKLiquid/breez_sdk_liquid.swift langs/swift/Sources/BreezSDKLiquid/BreezSDKLiquid.swift
       
       - name: Archive Swift binding
         if: ${{ inputs.swift }}
         uses: actions/upload-artifact@v3
         with:
           name: bindings-swift
-          path: lib/bindings/langs/swift/Sources/BreezLiquidSDK/*
+          path: lib/bindings/langs/swift/Sources/BreezSDKLiquid/*
       
       - name: Build Python binding
         if: ${{ inputs.python }}
         working-directory: lib/bindings
         run: |
-            cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/breez_liquid_sdk.udl --language python -o ffi/python
+            cargo run --features=uniffi/cli --bin uniffi-bindgen generate src/breez_sdk_liquid.udl --language python -o ffi/python
     
       - name: Archive Python binding
         if: ${{ inputs.python }}
         uses: actions/upload-artifact@v3
         with:
           name: bindings-python
-          path: lib/bindings/ffi/python/breez_liquid_sdk.py
+          path: lib/bindings/ffi/python/breez_sdk_liquid.py
 
 #      - name: Build C# binding
 #        if: ${{ inputs.csharp }}
 #        working-directory: lib/bindings
 #        run: |
 #          cargo install uniffi-bindgen-cs --git https://github.com/breez/uniffi-bindgen-cs --branch namespace
-#          uniffi-bindgen-cs src/breez_liquid_sdk.udl -o ffi/csharp -c ./uniffi.toml
+#          uniffi-bindgen-cs src/breez_sdk_liquid.udl -o ffi/csharp -c ./uniffi.toml
 #      
 #      - name: Archive C# binding
 #        if: ${{ inputs.csharp }}
 #        uses: actions/upload-artifact@v3
 #        with:
 #          name: bindings-csharp
-#          path: lib/bindings/ffi/csharp/breez_liquid_sdk.cs
+#          path: lib/bindings/ffi/csharp/breez_sdk_liquid.cs
 #    
 #      - name: Build golang binding
 #        if: ${{ inputs.golang }}
 #        working-directory: lib/bindings
 #        run: |
 #          cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --tag v0.1.5+v0.23.0
-#          uniffi-bindgen-go src/breez_liquid_sdk.udl -o ffi/golang -c ./uniffi.toml
+#          uniffi-bindgen-go src/breez_sdk_liquid.udl -o ffi/golang -c ./uniffi.toml
 #  
 #      - name: Archive golang binding
 #        if: ${{ inputs.golang }}
 #        uses: actions/upload-artifact@v3
 #        with:
 #          name: bindings-golang
-#          path: lib/bindings/ffi/golang/breez/breez_liquid_sdk/breez_liquid_sdk.*
+#          path: lib/bindings/ffi/golang/breez/breez_sdk_liquid/breez_sdk_liquid.*

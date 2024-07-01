@@ -2,7 +2,7 @@ use anyhow::Error;
 use lwk_wollet::secp256k1;
 use sdk_common::prelude::LnUrlAuthError;
 
-pub type LiquidSdkResult<T, E = LiquidSdkError> = Result<T, E>;
+pub type SdkResult<T, E = SdkError> = Result<T, E>;
 
 #[macro_export]
 macro_rules! ensure_sdk {
@@ -15,7 +15,7 @@ macro_rules! ensure_sdk {
 
 // TODO Unify error enum
 #[derive(Debug, thiserror::Error)]
-pub enum LiquidSdkError {
+pub enum SdkError {
     #[error("Liquid SDK instance is already running")]
     AlreadyStarted,
 
@@ -29,28 +29,28 @@ pub enum LiquidSdkError {
     ServiceConnectivity { err: String },
 }
 
-impl From<anyhow::Error> for LiquidSdkError {
+impl From<anyhow::Error> for SdkError {
     fn from(e: Error) -> Self {
-        LiquidSdkError::Generic { err: e.to_string() }
+        SdkError::Generic { err: e.to_string() }
     }
 }
 
-impl From<boltz_client::error::Error> for LiquidSdkError {
+impl From<boltz_client::error::Error> for SdkError {
     fn from(err: boltz_client::error::Error) -> Self {
         match err {
-            boltz_client::error::Error::HTTP(e) => LiquidSdkError::Generic {
+            boltz_client::error::Error::HTTP(e) => SdkError::Generic {
                 err: format!("Could not contact servers: {e:?}"),
             },
-            _ => LiquidSdkError::Generic {
+            _ => SdkError::Generic {
                 err: format!("{err:?}"),
             },
         }
     }
 }
 
-impl From<secp256k1::Error> for LiquidSdkError {
+impl From<secp256k1::Error> for SdkError {
     fn from(err: secp256k1::Error) -> Self {
-        LiquidSdkError::Generic {
+        SdkError::Generic {
             err: format!("{err:?}"),
         }
     }
@@ -165,8 +165,8 @@ impl From<anyhow::Error> for PaymentError {
     }
 }
 
-impl From<LiquidSdkError> for PaymentError {
-    fn from(err: LiquidSdkError) -> Self {
+impl From<SdkError> for PaymentError {
+    fn from(err: SdkError) -> Self {
         Self::Generic {
             err: err.to_string(),
         }

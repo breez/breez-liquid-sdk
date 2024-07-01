@@ -58,14 +58,14 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   int get rustContentHash => 1515195984;
 
   static const kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
-    stem: 'breez_liquid_sdk',
+    stem: 'breez_sdk_liquid',
     ioDirectory: '../../lib/core/target/release/',
     webPrefix: 'pkg/',
   );
 }
 
 abstract class RustLibApi extends BaseApi {
-  Stream<LiquidSdkEvent> crateBindingsBindingLiquidSdkAddEventListener({required BindingLiquidSdk that});
+  Stream<SdkEvent> crateBindingsBindingLiquidSdkAddEventListener({required BindingLiquidSdk that});
 
   void crateBindingsBindingLiquidSdkBackup({required BindingLiquidSdk that, required BackupRequest req});
 
@@ -130,7 +130,7 @@ abstract class RustLibApi extends BaseApi {
   Future<void> crateBindingsBindingLiquidSdkSync({required BindingLiquidSdk that});
 
   Future<void> crateBindingsBindingEventListenerOnEvent(
-      {required BindingEventListener that, required LiquidSdkEvent e});
+      {required BindingEventListener that, required SdkEvent e});
 
   Stream<LogEntry> crateBindingsBreezLogStream();
 
@@ -158,19 +158,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Stream<LiquidSdkEvent> crateBindingsBindingLiquidSdkAddEventListener({required BindingLiquidSdk that}) {
-    final listener = RustStreamSink<LiquidSdkEvent>();
+  Stream<SdkEvent> crateBindingsBindingLiquidSdkAddEventListener({required BindingLiquidSdk that}) {
+    final listener = RustStreamSink<SdkEvent>();
     unawaited(handler.executeNormal(NormalTask(
       callFfi: (port_) {
         var arg0 =
             cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBindingLiquidSdk(
                 that);
-        var arg1 = cst_encode_StreamSink_liquid_sdk_event_Dco(listener);
+        var arg1 = cst_encode_StreamSink_sdk_event_Dco(listener);
         return wire.wire__crate__bindings__BindingLiquidSdk_add_event_listener(port_, arg0, arg1);
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_String,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkAddEventListenerConstMeta,
       argValues: [that, listener],
@@ -196,7 +196,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkBackupConstMeta,
       argValues: [that, req],
@@ -220,7 +220,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkDisconnectConstMeta,
       argValues: [that],
@@ -244,7 +244,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkEmptyWalletCacheConstMeta,
       argValues: [that],
@@ -268,7 +268,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_list_rate,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkFetchFiatRatesConstMeta,
       argValues: [that],
@@ -292,7 +292,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_get_info_response,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkGetInfoConstMeta,
       argValues: [that],
@@ -317,7 +317,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_list_fiat_currency,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkListFiatCurrenciesConstMeta,
       argValues: [that],
@@ -366,7 +366,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_list_refundable_swap,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkListRefundablesConstMeta,
       argValues: [that],
@@ -574,7 +574,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_prepare_refund_response,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkPrepareRefundConstMeta,
       argValues: [that, req],
@@ -702,7 +702,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkRescanOnchainSwapsConstMeta,
       argValues: [that],
@@ -727,7 +727,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkRestoreConstMeta,
       argValues: [that, req],
@@ -777,7 +777,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       },
       codec: DcoCodec(
         decodeSuccessData: dco_decode_unit,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsBindingLiquidSdkSyncConstMeta,
       argValues: [that],
@@ -792,11 +792,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<void> crateBindingsBindingEventListenerOnEvent(
-      {required BindingEventListener that, required LiquidSdkEvent e}) {
+      {required BindingEventListener that, required SdkEvent e}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         var arg0 = cst_encode_box_autoadd_binding_event_listener(that);
-        var arg1 = cst_encode_box_autoadd_liquid_sdk_event(e);
+        var arg1 = cst_encode_box_autoadd_sdk_event(e);
         return wire.wire__crate__bindings__binding_event_listener_on_event(port_, arg0, arg1);
       },
       codec: DcoCodec(
@@ -848,7 +848,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       codec: DcoCodec(
         decodeSuccessData:
             dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBindingLiquidSdk,
-        decodeErrorData: dco_decode_liquid_sdk_error,
+        decodeErrorData: dco_decode_sdk_error,
       ),
       constMeta: kCrateBindingsConnectConstMeta,
       argValues: [req],
@@ -963,13 +963,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<LiquidSdkEvent> dco_decode_StreamSink_liquid_sdk_event_Dco(dynamic raw) {
+  RustStreamSink<LogEntry> dco_decode_StreamSink_log_entry_Dco(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
   }
 
   @protected
-  RustStreamSink<LogEntry> dco_decode_StreamSink_log_entry_Dco(dynamic raw) {
+  RustStreamSink<SdkEvent> dco_decode_StreamSink_sdk_event_Dco(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
   }
@@ -1024,7 +1024,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     final arr = raw as List<dynamic>;
     if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
     return BindingEventListener(
-      stream: dco_decode_StreamSink_liquid_sdk_event_Dco(arr[0]),
+      stream: dco_decode_StreamSink_sdk_event_Dco(arr[0]),
     );
   }
 
@@ -1088,12 +1088,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ConnectRequest dco_decode_box_autoadd_connect_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_connect_request(raw);
-  }
-
-  @protected
-  LiquidSdkEvent dco_decode_box_autoadd_liquid_sdk_event(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_liquid_sdk_event(raw);
   }
 
   @protected
@@ -1232,6 +1226,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RestoreRequest dco_decode_box_autoadd_restore_request(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_restore_request(raw);
+  }
+
+  @protected
+  SdkEvent dco_decode_box_autoadd_sdk_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_sdk_event(raw);
   }
 
   @protected
@@ -1394,62 +1394,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   LiquidNetwork dco_decode_liquid_network(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return LiquidNetwork.values[raw as int];
-  }
-
-  @protected
-  LiquidSdkError dco_decode_liquid_sdk_error(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return LiquidSdkError_AlreadyStarted();
-      case 1:
-        return LiquidSdkError_Generic(
-          err: dco_decode_String(raw[1]),
-        );
-      case 2:
-        return LiquidSdkError_NotStarted();
-      case 3:
-        return LiquidSdkError_ServiceConnectivity(
-          err: dco_decode_String(raw[1]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
-  }
-
-  @protected
-  LiquidSdkEvent dco_decode_liquid_sdk_event(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return LiquidSdkEvent_PaymentFailed(
-          details: dco_decode_box_autoadd_payment(raw[1]),
-        );
-      case 1:
-        return LiquidSdkEvent_PaymentPending(
-          details: dco_decode_box_autoadd_payment(raw[1]),
-        );
-      case 2:
-        return LiquidSdkEvent_PaymentRefunded(
-          details: dco_decode_box_autoadd_payment(raw[1]),
-        );
-      case 3:
-        return LiquidSdkEvent_PaymentRefundPending(
-          details: dco_decode_box_autoadd_payment(raw[1]),
-        );
-      case 4:
-        return LiquidSdkEvent_PaymentSucceeded(
-          details: dco_decode_box_autoadd_payment(raw[1]),
-        );
-      case 5:
-        return LiquidSdkEvent_PaymentWaitingConfirmation(
-          details: dco_decode_box_autoadd_payment(raw[1]),
-        );
-      case 6:
-        return LiquidSdkEvent_Synced();
-      default:
-        throw Exception("unreachable");
-    }
   }
 
   @protected
@@ -2202,6 +2146,62 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SdkError dco_decode_sdk_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SdkError_AlreadyStarted();
+      case 1:
+        return SdkError_Generic(
+          err: dco_decode_String(raw[1]),
+        );
+      case 2:
+        return SdkError_NotStarted();
+      case 3:
+        return SdkError_ServiceConnectivity(
+          err: dco_decode_String(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
+  SdkEvent dco_decode_sdk_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return SdkEvent_PaymentFailed(
+          details: dco_decode_box_autoadd_payment(raw[1]),
+        );
+      case 1:
+        return SdkEvent_PaymentPending(
+          details: dco_decode_box_autoadd_payment(raw[1]),
+        );
+      case 2:
+        return SdkEvent_PaymentRefunded(
+          details: dco_decode_box_autoadd_payment(raw[1]),
+        );
+      case 3:
+        return SdkEvent_PaymentRefundPending(
+          details: dco_decode_box_autoadd_payment(raw[1]),
+        );
+      case 4:
+        return SdkEvent_PaymentSucceeded(
+          details: dco_decode_box_autoadd_payment(raw[1]),
+        );
+      case 5:
+        return SdkEvent_PaymentWaitingConfirmation(
+          details: dco_decode_box_autoadd_payment(raw[1]),
+        );
+      case 6:
+        return SdkEvent_Synced();
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  @protected
   SendPaymentResponse dco_decode_send_payment_response(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2326,13 +2326,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<LiquidSdkEvent> sse_decode_StreamSink_liquid_sdk_event_Dco(SseDeserializer deserializer) {
+  RustStreamSink<LogEntry> sse_decode_StreamSink_log_entry_Dco(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
   }
 
   @protected
-  RustStreamSink<LogEntry> sse_decode_StreamSink_log_entry_Dco(SseDeserializer deserializer) {
+  RustStreamSink<SdkEvent> sse_decode_StreamSink_sdk_event_Dco(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
   }
@@ -2379,7 +2379,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   BindingEventListener sse_decode_binding_event_listener(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_stream = sse_decode_StreamSink_liquid_sdk_event_Dco(deserializer);
+    var var_stream = sse_decode_StreamSink_sdk_event_Dco(deserializer);
     return BindingEventListener(stream: var_stream);
   }
 
@@ -2447,12 +2447,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   ConnectRequest sse_decode_box_autoadd_connect_request(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_connect_request(deserializer));
-  }
-
-  @protected
-  LiquidSdkEvent sse_decode_box_autoadd_liquid_sdk_event(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_liquid_sdk_event(deserializer));
   }
 
   @protected
@@ -2593,6 +2587,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   RestoreRequest sse_decode_box_autoadd_restore_request(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_restore_request(deserializer));
+  }
+
+  @protected
+  SdkEvent sse_decode_box_autoadd_sdk_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_sdk_event(deserializer));
   }
 
   @protected
@@ -2753,58 +2753,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
     return LiquidNetwork.values[inner];
-  }
-
-  @protected
-  LiquidSdkError sse_decode_liquid_sdk_error(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        return LiquidSdkError_AlreadyStarted();
-      case 1:
-        var var_err = sse_decode_String(deserializer);
-        return LiquidSdkError_Generic(err: var_err);
-      case 2:
-        return LiquidSdkError_NotStarted();
-      case 3:
-        var var_err = sse_decode_String(deserializer);
-        return LiquidSdkError_ServiceConnectivity(err: var_err);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
-  LiquidSdkEvent sse_decode_liquid_sdk_event(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        var var_details = sse_decode_box_autoadd_payment(deserializer);
-        return LiquidSdkEvent_PaymentFailed(details: var_details);
-      case 1:
-        var var_details = sse_decode_box_autoadd_payment(deserializer);
-        return LiquidSdkEvent_PaymentPending(details: var_details);
-      case 2:
-        var var_details = sse_decode_box_autoadd_payment(deserializer);
-        return LiquidSdkEvent_PaymentRefunded(details: var_details);
-      case 3:
-        var var_details = sse_decode_box_autoadd_payment(deserializer);
-        return LiquidSdkEvent_PaymentRefundPending(details: var_details);
-      case 4:
-        var var_details = sse_decode_box_autoadd_payment(deserializer);
-        return LiquidSdkEvent_PaymentSucceeded(details: var_details);
-      case 5:
-        var var_details = sse_decode_box_autoadd_payment(deserializer);
-        return LiquidSdkEvent_PaymentWaitingConfirmation(details: var_details);
-      case 6:
-        return LiquidSdkEvent_Synced();
-      default:
-        throw UnimplementedError('');
-    }
   }
 
   @protected
@@ -3562,6 +3510,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  SdkError sse_decode_sdk_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        return SdkError_AlreadyStarted();
+      case 1:
+        var var_err = sse_decode_String(deserializer);
+        return SdkError_Generic(err: var_err);
+      case 2:
+        return SdkError_NotStarted();
+      case 3:
+        var var_err = sse_decode_String(deserializer);
+        return SdkError_ServiceConnectivity(err: var_err);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  SdkEvent sse_decode_sdk_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_details = sse_decode_box_autoadd_payment(deserializer);
+        return SdkEvent_PaymentFailed(details: var_details);
+      case 1:
+        var var_details = sse_decode_box_autoadd_payment(deserializer);
+        return SdkEvent_PaymentPending(details: var_details);
+      case 2:
+        var var_details = sse_decode_box_autoadd_payment(deserializer);
+        return SdkEvent_PaymentRefunded(details: var_details);
+      case 3:
+        var var_details = sse_decode_box_autoadd_payment(deserializer);
+        return SdkEvent_PaymentRefundPending(details: var_details);
+      case 4:
+        var var_details = sse_decode_box_autoadd_payment(deserializer);
+        return SdkEvent_PaymentSucceeded(details: var_details);
+      case 5:
+        var var_details = sse_decode_box_autoadd_payment(deserializer);
+        return SdkEvent_PaymentWaitingConfirmation(details: var_details);
+      case 6:
+        return SdkEvent_Synced();
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   SendPaymentResponse sse_decode_send_payment_response(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_payment = sse_decode_payment(deserializer);
@@ -3765,25 +3765,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_StreamSink_liquid_sdk_event_Dco(
-      RustStreamSink<LiquidSdkEvent> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(
-        self.setupAndSerialize(
-            codec: DcoCodec(
-          decodeSuccessData: dco_decode_liquid_sdk_event,
-          decodeErrorData: dco_decode_AnyhowException,
-        )),
-        serializer);
-  }
-
-  @protected
   void sse_encode_StreamSink_log_entry_Dco(RustStreamSink<LogEntry> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(
         self.setupAndSerialize(
             codec: DcoCodec(
           decodeSuccessData: dco_decode_log_entry,
+          decodeErrorData: dco_decode_AnyhowException,
+        )),
+        serializer);
+  }
+
+  @protected
+  void sse_encode_StreamSink_sdk_event_Dco(RustStreamSink<SdkEvent> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+        self.setupAndSerialize(
+            codec: DcoCodec(
+          decodeSuccessData: dco_decode_sdk_event,
           decodeErrorData: dco_decode_AnyhowException,
         )),
         serializer);
@@ -3827,7 +3826,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_binding_event_listener(BindingEventListener self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_StreamSink_liquid_sdk_event_Dco(self.stream, serializer);
+    sse_encode_StreamSink_sdk_event_Dco(self.stream, serializer);
   }
 
   @protected
@@ -3888,12 +3887,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_connect_request(ConnectRequest self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_connect_request(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_liquid_sdk_event(LiquidSdkEvent self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_liquid_sdk_event(self, serializer);
   }
 
   @protected
@@ -4042,6 +4035,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_sdk_event(SdkEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_sdk_event(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_success_action_processed(
       SuccessActionProcessed self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -4174,54 +4173,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_liquid_network(LiquidNetwork self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
-  }
-
-  @protected
-  void sse_encode_liquid_sdk_error(LiquidSdkError self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case LiquidSdkError_AlreadyStarted():
-        sse_encode_i_32(0, serializer);
-      case LiquidSdkError_Generic(err: final err):
-        sse_encode_i_32(1, serializer);
-        sse_encode_String(err, serializer);
-      case LiquidSdkError_NotStarted():
-        sse_encode_i_32(2, serializer);
-      case LiquidSdkError_ServiceConnectivity(err: final err):
-        sse_encode_i_32(3, serializer);
-        sse_encode_String(err, serializer);
-      default:
-        throw UnimplementedError('');
-    }
-  }
-
-  @protected
-  void sse_encode_liquid_sdk_event(LiquidSdkEvent self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case LiquidSdkEvent_PaymentFailed(details: final details):
-        sse_encode_i_32(0, serializer);
-        sse_encode_box_autoadd_payment(details, serializer);
-      case LiquidSdkEvent_PaymentPending(details: final details):
-        sse_encode_i_32(1, serializer);
-        sse_encode_box_autoadd_payment(details, serializer);
-      case LiquidSdkEvent_PaymentRefunded(details: final details):
-        sse_encode_i_32(2, serializer);
-        sse_encode_box_autoadd_payment(details, serializer);
-      case LiquidSdkEvent_PaymentRefundPending(details: final details):
-        sse_encode_i_32(3, serializer);
-        sse_encode_box_autoadd_payment(details, serializer);
-      case LiquidSdkEvent_PaymentSucceeded(details: final details):
-        sse_encode_i_32(4, serializer);
-        sse_encode_box_autoadd_payment(details, serializer);
-      case LiquidSdkEvent_PaymentWaitingConfirmation(details: final details):
-        sse_encode_i_32(5, serializer);
-        sse_encode_box_autoadd_payment(details, serializer);
-      case LiquidSdkEvent_Synced():
-        sse_encode_i_32(6, serializer);
-      default:
-        throw UnimplementedError('');
-    }
   }
 
   @protected
@@ -4853,6 +4804,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_sdk_error(SdkError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SdkError_AlreadyStarted():
+        sse_encode_i_32(0, serializer);
+      case SdkError_Generic(err: final err):
+        sse_encode_i_32(1, serializer);
+        sse_encode_String(err, serializer);
+      case SdkError_NotStarted():
+        sse_encode_i_32(2, serializer);
+      case SdkError_ServiceConnectivity(err: final err):
+        sse_encode_i_32(3, serializer);
+        sse_encode_String(err, serializer);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
+  void sse_encode_sdk_event(SdkEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case SdkEvent_PaymentFailed(details: final details):
+        sse_encode_i_32(0, serializer);
+        sse_encode_box_autoadd_payment(details, serializer);
+      case SdkEvent_PaymentPending(details: final details):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_payment(details, serializer);
+      case SdkEvent_PaymentRefunded(details: final details):
+        sse_encode_i_32(2, serializer);
+        sse_encode_box_autoadd_payment(details, serializer);
+      case SdkEvent_PaymentRefundPending(details: final details):
+        sse_encode_i_32(3, serializer);
+        sse_encode_box_autoadd_payment(details, serializer);
+      case SdkEvent_PaymentSucceeded(details: final details):
+        sse_encode_i_32(4, serializer);
+        sse_encode_box_autoadd_payment(details, serializer);
+      case SdkEvent_PaymentWaitingConfirmation(details: final details):
+        sse_encode_i_32(5, serializer);
+        sse_encode_box_autoadd_payment(details, serializer);
+      case SdkEvent_Synced():
+        sse_encode_i_32(6, serializer);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   void sse_encode_send_payment_response(SendPaymentResponse self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_payment(self.payment, serializer);
@@ -4944,8 +4943,7 @@ class BindingLiquidSdkImpl extends RustOpaque implements BindingLiquidSdk {
     rustArcDecrementStrongCountPtr: RustLib.instance.api.rust_arc_decrement_strong_count_BindingLiquidSdkPtr,
   );
 
-  Stream<LiquidSdkEvent> addEventListener() =>
-      RustLib.instance.api.crateBindingsBindingLiquidSdkAddEventListener(
+  Stream<SdkEvent> addEventListener() => RustLib.instance.api.crateBindingsBindingLiquidSdkAddEventListener(
         that: this,
       );
 

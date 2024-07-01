@@ -18,12 +18,12 @@ make react-native
 
 ### Generated artifacts
 * Android
- >* android/src/main/java/com/breezliquidsdk/BreezLiquidSDKMapper.kt
- >* android/src/main/java/com/breezliquidsdk/BreezLiquidSDKModule.kt
+ >* android/src/main/java/com/breezsdkliquid/BreezSDKLiquidMapper.kt
+ >* android/src/main/java/com/breezsdkliquid/BreezSDKLiquidModule.kt
 * iOS
- >* ios/BreezLiquidSDKMapper.swift
- >* ios/BreezLiquidSDK.m
- >* ios/BreezLiquidSDK.swift
+ >* ios/BreezSDKLiquidMapper.swift
+ >* ios/BreezSDKLiquid.m
+ >* ios/BreezSDKLiquid.swift
 * Typescript
  >* src/index.ts
 

@@ -24,7 +24,7 @@ use serde_json::Value;
 use tokio::sync::{broadcast, watch};
 use url::Url;
 
-use crate::error::{LiquidSdkError, PaymentError};
+use crate::error::{PaymentError, SdkError};
 use crate::model::{
     ChainSwap, Config, Direction, LiquidNetwork, ReceiveSwap, SendSwap, SwapScriptV2, SwapTxV2,
 };
@@ -71,7 +71,7 @@ pub trait Swapper: Send + Sync {
         swap: &ChainSwap,
         output_address: &str,
         sat_per_vbyte: f32,
-    ) -> Result<(u32, u64), LiquidSdkError>;
+    ) -> Result<(u32, u64), SdkError>;
 
     /// Refund a cooperatively chain swap  
     fn refund_chain_swap_cooperative(
@@ -217,7 +217,7 @@ impl BoltzSwapper {
         swap_id: String,
         swap_script: SwapScriptV2,
         refund_address: &String,
-    ) -> Result<SwapTxV2, LiquidSdkError> {
+    ) -> Result<SwapTxV2, SdkError> {
         let swap_tx = match swap_script {
             SwapScriptV2::Bitcoin(swap_script) => SwapTxV2::Bitcoin(BtcSwapTxV2::new_refund(
                 swap_script.clone(),
@@ -522,7 +522,7 @@ impl Swapper for BoltzSwapper {
         swap: &ChainSwap,
         output_address: &str,
         sat_per_vbyte: f32,
-    ) -> Result<(u32, u64), LiquidSdkError> {
+    ) -> Result<(u32, u64), SdkError> {
         let refund_keypair = swap.get_refund_keypair()?;
         let preimage = Preimage::from_str(&swap.preimage)?;
         let swap_script = swap.get_lockup_swap_script()?;

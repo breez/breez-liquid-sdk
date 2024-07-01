@@ -1,4 +1,4 @@
-name: breez_liquid_sdk_workspace
+name: breez_sdk_liquid_workspace
 
 environment:
   sdk: '>=3.4.0 <4.0.0'

@@ -49,7 +49,7 @@ fun as{{ type_name }}List(arr: ReadableArray): List<{{ type_name }}> {
 {%- else %}
             is ReadableMap -> list.add(as{{ type_name }}(value)!!)            
 {%- endif %}
-            else -> throw LiquidSdkException.Generic(errUnexpectedType("${value::class.java.name}"))
+            else -> throw SdkException.Generic(errUnexpectedType("${value::class.java.name}"))
         }
     }
     return list

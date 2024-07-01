@@ -15,254 +15,6 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$LiquidSdkError {}
-
-/// @nodoc
-abstract class $LiquidSdkErrorCopyWith<$Res> {
-  factory $LiquidSdkErrorCopyWith(LiquidSdkError value, $Res Function(LiquidSdkError) then) =
-      _$LiquidSdkErrorCopyWithImpl<$Res, LiquidSdkError>;
-}
-
-/// @nodoc
-class _$LiquidSdkErrorCopyWithImpl<$Res, $Val extends LiquidSdkError>
-    implements $LiquidSdkErrorCopyWith<$Res> {
-  _$LiquidSdkErrorCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkError_AlreadyStartedImplCopyWith<$Res> {
-  factory _$$LiquidSdkError_AlreadyStartedImplCopyWith(_$LiquidSdkError_AlreadyStartedImpl value,
-          $Res Function(_$LiquidSdkError_AlreadyStartedImpl) then) =
-      __$$LiquidSdkError_AlreadyStartedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LiquidSdkError_AlreadyStartedImplCopyWithImpl<$Res>
-    extends _$LiquidSdkErrorCopyWithImpl<$Res, _$LiquidSdkError_AlreadyStartedImpl>
-    implements _$$LiquidSdkError_AlreadyStartedImplCopyWith<$Res> {
-  __$$LiquidSdkError_AlreadyStartedImplCopyWithImpl(
-      _$LiquidSdkError_AlreadyStartedImpl _value, $Res Function(_$LiquidSdkError_AlreadyStartedImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$LiquidSdkError_AlreadyStartedImpl extends LiquidSdkError_AlreadyStarted {
-  const _$LiquidSdkError_AlreadyStartedImpl() : super._();
-
-  @override
-  String toString() {
-    return 'LiquidSdkError.alreadyStarted()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LiquidSdkError_AlreadyStartedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-}
-
-abstract class LiquidSdkError_AlreadyStarted extends LiquidSdkError {
-  const factory LiquidSdkError_AlreadyStarted() = _$LiquidSdkError_AlreadyStartedImpl;
-  const LiquidSdkError_AlreadyStarted._() : super._();
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkError_GenericImplCopyWith<$Res> {
-  factory _$$LiquidSdkError_GenericImplCopyWith(
-          _$LiquidSdkError_GenericImpl value, $Res Function(_$LiquidSdkError_GenericImpl) then) =
-      __$$LiquidSdkError_GenericImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String err});
-}
-
-/// @nodoc
-class __$$LiquidSdkError_GenericImplCopyWithImpl<$Res>
-    extends _$LiquidSdkErrorCopyWithImpl<$Res, _$LiquidSdkError_GenericImpl>
-    implements _$$LiquidSdkError_GenericImplCopyWith<$Res> {
-  __$$LiquidSdkError_GenericImplCopyWithImpl(
-      _$LiquidSdkError_GenericImpl _value, $Res Function(_$LiquidSdkError_GenericImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? err = null,
-  }) {
-    return _then(_$LiquidSdkError_GenericImpl(
-      err: null == err
-          ? _value.err
-          : err // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkError_GenericImpl extends LiquidSdkError_Generic {
-  const _$LiquidSdkError_GenericImpl({required this.err}) : super._();
-
-  @override
-  final String err;
-
-  @override
-  String toString() {
-    return 'LiquidSdkError.generic(err: $err)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkError_GenericImpl &&
-            (identical(other.err, err) || other.err == err));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, err);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkError_GenericImplCopyWith<_$LiquidSdkError_GenericImpl> get copyWith =>
-      __$$LiquidSdkError_GenericImplCopyWithImpl<_$LiquidSdkError_GenericImpl>(this, _$identity);
-}
-
-abstract class LiquidSdkError_Generic extends LiquidSdkError {
-  const factory LiquidSdkError_Generic({required final String err}) = _$LiquidSdkError_GenericImpl;
-  const LiquidSdkError_Generic._() : super._();
-
-  String get err;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkError_GenericImplCopyWith<_$LiquidSdkError_GenericImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkError_NotStartedImplCopyWith<$Res> {
-  factory _$$LiquidSdkError_NotStartedImplCopyWith(
-          _$LiquidSdkError_NotStartedImpl value, $Res Function(_$LiquidSdkError_NotStartedImpl) then) =
-      __$$LiquidSdkError_NotStartedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LiquidSdkError_NotStartedImplCopyWithImpl<$Res>
-    extends _$LiquidSdkErrorCopyWithImpl<$Res, _$LiquidSdkError_NotStartedImpl>
-    implements _$$LiquidSdkError_NotStartedImplCopyWith<$Res> {
-  __$$LiquidSdkError_NotStartedImplCopyWithImpl(
-      _$LiquidSdkError_NotStartedImpl _value, $Res Function(_$LiquidSdkError_NotStartedImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$LiquidSdkError_NotStartedImpl extends LiquidSdkError_NotStarted {
-  const _$LiquidSdkError_NotStartedImpl() : super._();
-
-  @override
-  String toString() {
-    return 'LiquidSdkError.notStarted()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LiquidSdkError_NotStartedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-}
-
-abstract class LiquidSdkError_NotStarted extends LiquidSdkError {
-  const factory LiquidSdkError_NotStarted() = _$LiquidSdkError_NotStartedImpl;
-  const LiquidSdkError_NotStarted._() : super._();
-}
-
-/// @nodoc
-abstract class _$$LiquidSdkError_ServiceConnectivityImplCopyWith<$Res> {
-  factory _$$LiquidSdkError_ServiceConnectivityImplCopyWith(_$LiquidSdkError_ServiceConnectivityImpl value,
-          $Res Function(_$LiquidSdkError_ServiceConnectivityImpl) then) =
-      __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String err});
-}
-
-/// @nodoc
-class __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl<$Res>
-    extends _$LiquidSdkErrorCopyWithImpl<$Res, _$LiquidSdkError_ServiceConnectivityImpl>
-    implements _$$LiquidSdkError_ServiceConnectivityImplCopyWith<$Res> {
-  __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl(_$LiquidSdkError_ServiceConnectivityImpl _value,
-      $Res Function(_$LiquidSdkError_ServiceConnectivityImpl) _then)
-      : super(_value, _then);
-
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? err = null,
-  }) {
-    return _then(_$LiquidSdkError_ServiceConnectivityImpl(
-      err: null == err
-          ? _value.err
-          : err // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$LiquidSdkError_ServiceConnectivityImpl extends LiquidSdkError_ServiceConnectivity {
-  const _$LiquidSdkError_ServiceConnectivityImpl({required this.err}) : super._();
-
-  @override
-  final String err;
-
-  @override
-  String toString() {
-    return 'LiquidSdkError.serviceConnectivity(err: $err)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LiquidSdkError_ServiceConnectivityImpl &&
-            (identical(other.err, err) || other.err == err));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, err);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LiquidSdkError_ServiceConnectivityImplCopyWith<_$LiquidSdkError_ServiceConnectivityImpl> get copyWith =>
-      __$$LiquidSdkError_ServiceConnectivityImplCopyWithImpl<_$LiquidSdkError_ServiceConnectivityImpl>(
-          this, _$identity);
-}
-
-abstract class LiquidSdkError_ServiceConnectivity extends LiquidSdkError {
-  const factory LiquidSdkError_ServiceConnectivity({required final String err}) =
-      _$LiquidSdkError_ServiceConnectivityImpl;
-  const LiquidSdkError_ServiceConnectivity._() : super._();
-
-  String get err;
-  @JsonKey(ignore: true)
-  _$$LiquidSdkError_ServiceConnectivityImplCopyWith<_$LiquidSdkError_ServiceConnectivityImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$PaymentError {}
 
 /// @nodoc
@@ -1245,5 +997,248 @@ abstract class PaymentError_SignerError extends PaymentError {
   String get err;
   @JsonKey(ignore: true)
   _$$PaymentError_SignerErrorImplCopyWith<_$PaymentError_SignerErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$SdkError {}
+
+/// @nodoc
+abstract class $SdkErrorCopyWith<$Res> {
+  factory $SdkErrorCopyWith(SdkError value, $Res Function(SdkError) then) =
+      _$SdkErrorCopyWithImpl<$Res, SdkError>;
+}
+
+/// @nodoc
+class _$SdkErrorCopyWithImpl<$Res, $Val extends SdkError> implements $SdkErrorCopyWith<$Res> {
+  _$SdkErrorCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+}
+
+/// @nodoc
+abstract class _$$SdkError_AlreadyStartedImplCopyWith<$Res> {
+  factory _$$SdkError_AlreadyStartedImplCopyWith(
+          _$SdkError_AlreadyStartedImpl value, $Res Function(_$SdkError_AlreadyStartedImpl) then) =
+      __$$SdkError_AlreadyStartedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$SdkError_AlreadyStartedImplCopyWithImpl<$Res>
+    extends _$SdkErrorCopyWithImpl<$Res, _$SdkError_AlreadyStartedImpl>
+    implements _$$SdkError_AlreadyStartedImplCopyWith<$Res> {
+  __$$SdkError_AlreadyStartedImplCopyWithImpl(
+      _$SdkError_AlreadyStartedImpl _value, $Res Function(_$SdkError_AlreadyStartedImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$SdkError_AlreadyStartedImpl extends SdkError_AlreadyStarted {
+  const _$SdkError_AlreadyStartedImpl() : super._();
+
+  @override
+  String toString() {
+    return 'SdkError.alreadyStarted()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$SdkError_AlreadyStartedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+abstract class SdkError_AlreadyStarted extends SdkError {
+  const factory SdkError_AlreadyStarted() = _$SdkError_AlreadyStartedImpl;
+  const SdkError_AlreadyStarted._() : super._();
+}
+
+/// @nodoc
+abstract class _$$SdkError_GenericImplCopyWith<$Res> {
+  factory _$$SdkError_GenericImplCopyWith(
+          _$SdkError_GenericImpl value, $Res Function(_$SdkError_GenericImpl) then) =
+      __$$SdkError_GenericImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String err});
+}
+
+/// @nodoc
+class __$$SdkError_GenericImplCopyWithImpl<$Res> extends _$SdkErrorCopyWithImpl<$Res, _$SdkError_GenericImpl>
+    implements _$$SdkError_GenericImplCopyWith<$Res> {
+  __$$SdkError_GenericImplCopyWithImpl(
+      _$SdkError_GenericImpl _value, $Res Function(_$SdkError_GenericImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? err = null,
+  }) {
+    return _then(_$SdkError_GenericImpl(
+      err: null == err
+          ? _value.err
+          : err // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkError_GenericImpl extends SdkError_Generic {
+  const _$SdkError_GenericImpl({required this.err}) : super._();
+
+  @override
+  final String err;
+
+  @override
+  String toString() {
+    return 'SdkError.generic(err: $err)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkError_GenericImpl &&
+            (identical(other.err, err) || other.err == err));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, err);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkError_GenericImplCopyWith<_$SdkError_GenericImpl> get copyWith =>
+      __$$SdkError_GenericImplCopyWithImpl<_$SdkError_GenericImpl>(this, _$identity);
+}
+
+abstract class SdkError_Generic extends SdkError {
+  const factory SdkError_Generic({required final String err}) = _$SdkError_GenericImpl;
+  const SdkError_Generic._() : super._();
+
+  String get err;
+  @JsonKey(ignore: true)
+  _$$SdkError_GenericImplCopyWith<_$SdkError_GenericImpl> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SdkError_NotStartedImplCopyWith<$Res> {
+  factory _$$SdkError_NotStartedImplCopyWith(
+          _$SdkError_NotStartedImpl value, $Res Function(_$SdkError_NotStartedImpl) then) =
+      __$$SdkError_NotStartedImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$SdkError_NotStartedImplCopyWithImpl<$Res>
+    extends _$SdkErrorCopyWithImpl<$Res, _$SdkError_NotStartedImpl>
+    implements _$$SdkError_NotStartedImplCopyWith<$Res> {
+  __$$SdkError_NotStartedImplCopyWithImpl(
+      _$SdkError_NotStartedImpl _value, $Res Function(_$SdkError_NotStartedImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$SdkError_NotStartedImpl extends SdkError_NotStarted {
+  const _$SdkError_NotStartedImpl() : super._();
+
+  @override
+  String toString() {
+    return 'SdkError.notStarted()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType && other is _$SdkError_NotStartedImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+}
+
+abstract class SdkError_NotStarted extends SdkError {
+  const factory SdkError_NotStarted() = _$SdkError_NotStartedImpl;
+  const SdkError_NotStarted._() : super._();
+}
+
+/// @nodoc
+abstract class _$$SdkError_ServiceConnectivityImplCopyWith<$Res> {
+  factory _$$SdkError_ServiceConnectivityImplCopyWith(
+          _$SdkError_ServiceConnectivityImpl value, $Res Function(_$SdkError_ServiceConnectivityImpl) then) =
+      __$$SdkError_ServiceConnectivityImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String err});
+}
+
+/// @nodoc
+class __$$SdkError_ServiceConnectivityImplCopyWithImpl<$Res>
+    extends _$SdkErrorCopyWithImpl<$Res, _$SdkError_ServiceConnectivityImpl>
+    implements _$$SdkError_ServiceConnectivityImplCopyWith<$Res> {
+  __$$SdkError_ServiceConnectivityImplCopyWithImpl(
+      _$SdkError_ServiceConnectivityImpl _value, $Res Function(_$SdkError_ServiceConnectivityImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? err = null,
+  }) {
+    return _then(_$SdkError_ServiceConnectivityImpl(
+      err: null == err
+          ? _value.err
+          : err // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SdkError_ServiceConnectivityImpl extends SdkError_ServiceConnectivity {
+  const _$SdkError_ServiceConnectivityImpl({required this.err}) : super._();
+
+  @override
+  final String err;
+
+  @override
+  String toString() {
+    return 'SdkError.serviceConnectivity(err: $err)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SdkError_ServiceConnectivityImpl &&
+            (identical(other.err, err) || other.err == err));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, err);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SdkError_ServiceConnectivityImplCopyWith<_$SdkError_ServiceConnectivityImpl> get copyWith =>
+      __$$SdkError_ServiceConnectivityImplCopyWithImpl<_$SdkError_ServiceConnectivityImpl>(this, _$identity);
+}
+
+abstract class SdkError_ServiceConnectivity extends SdkError {
+  const factory SdkError_ServiceConnectivity({required final String err}) =
+      _$SdkError_ServiceConnectivityImpl;
+  const SdkError_ServiceConnectivity._() : super._();
+
+  String get err;
+  @JsonKey(ignore: true)
+  _$$SdkError_ServiceConnectivityImplCopyWith<_$SdkError_ServiceConnectivityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

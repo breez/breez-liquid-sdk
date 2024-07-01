@@ -31,7 +31,7 @@ LNInvoice parseInvoice({required String input}) =>
 
 // Rust type: RustOpaqueNom<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BindingLiquidSdk>>
 abstract class BindingLiquidSdk implements RustOpaqueInterface {
-  Stream<LiquidSdkEvent> addEventListener();
+  Stream<SdkEvent> addEventListener();
 
   void backup({required BackupRequest req});
 
@@ -116,13 +116,13 @@ sealed class AesSuccessActionDataResult with _$AesSuccessActionDataResult {
 }
 
 class BindingEventListener {
-  final RustStreamSink<LiquidSdkEvent> stream;
+  final RustStreamSink<SdkEvent> stream;
 
   const BindingEventListener({
     required this.stream,
   });
 
-  Future<void> onEvent({required LiquidSdkEvent e}) =>
+  Future<void> onEvent({required SdkEvent e}) =>
       RustLib.instance.api.crateBindingsBindingEventListenerOnEvent(that: this, e: e);
 
   @override

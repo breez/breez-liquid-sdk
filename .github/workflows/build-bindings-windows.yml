@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: bindings-${{ matrix.target }}
-        path: lib/target/${{ matrix.target }}/release/breez_liquid_sdk_bindings.dll
+        path: lib/target/${{ matrix.target }}/release/breez_sdk_liquid_bindings.dll
 
   build-dummies:
     if: ${{ inputs.use-dummy-binaries }}
@@ -79,7 +79,7 @@ jobs:
     steps:
       - name: Build dummy windows ${{ matrix.target }}
         run: |
-          touch breez_liquid_sdk_bindings.dll
+          touch breez_sdk_liquid_bindings.dll
 
       - name: Upload dummy windows ${{ matrix.target }} artifact
         uses: actions/upload-artifact@v3

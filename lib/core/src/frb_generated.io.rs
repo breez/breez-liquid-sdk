@@ -49,20 +49,6 @@ impl
         unsafe { decode_rust_opaque_nom(self as _) }
     }
 }
-impl
-    CstDecode<
-        StreamSink<crate::model::LiquidSdkEvent, flutter_rust_bridge::for_generated::DcoCodec>,
-    > for *mut wire_cst_list_prim_u_8_strict
-{
-    // Codec=Cst (C-struct based), see doc to use other codecs
-    fn cst_decode(
-        self,
-    ) -> StreamSink<crate::model::LiquidSdkEvent, flutter_rust_bridge::for_generated::DcoCodec>
-    {
-        let raw: String = self.cst_decode();
-        StreamSink::deserialize(raw)
-    }
-}
 impl CstDecode<StreamSink<crate::model::LogEntry, flutter_rust_bridge::for_generated::DcoCodec>>
     for *mut wire_cst_list_prim_u_8_strict
 {
@@ -70,6 +56,17 @@ impl CstDecode<StreamSink<crate::model::LogEntry, flutter_rust_bridge::for_gener
     fn cst_decode(
         self,
     ) -> StreamSink<crate::model::LogEntry, flutter_rust_bridge::for_generated::DcoCodec> {
+        let raw: String = self.cst_decode();
+        StreamSink::deserialize(raw)
+    }
+}
+impl CstDecode<StreamSink<crate::model::SdkEvent, flutter_rust_bridge::for_generated::DcoCodec>>
+    for *mut wire_cst_list_prim_u_8_strict
+{
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    fn cst_decode(
+        self,
+    ) -> StreamSink<crate::model::SdkEvent, flutter_rust_bridge::for_generated::DcoCodec> {
         let raw: String = self.cst_decode();
         StreamSink::deserialize(raw)
     }
@@ -192,13 +189,6 @@ impl CstDecode<crate::model::ConnectRequest> for *mut wire_cst_connect_request {
     fn cst_decode(self) -> crate::model::ConnectRequest {
         let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
         CstDecode::<crate::model::ConnectRequest>::cst_decode(*wrap).into()
-    }
-}
-impl CstDecode<crate::model::LiquidSdkEvent> for *mut wire_cst_liquid_sdk_event {
-    // Codec=Cst (C-struct based), see doc to use other codecs
-    fn cst_decode(self) -> crate::model::LiquidSdkEvent {
-        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
-        CstDecode::<crate::model::LiquidSdkEvent>::cst_decode(*wrap).into()
     }
 }
 impl CstDecode<crate::bindings::LNInvoice> for *mut wire_cst_ln_invoice {
@@ -374,6 +364,13 @@ impl CstDecode<crate::model::RestoreRequest> for *mut wire_cst_restore_request {
         CstDecode::<crate::model::RestoreRequest>::cst_decode(*wrap).into()
     }
 }
+impl CstDecode<crate::model::SdkEvent> for *mut wire_cst_sdk_event {
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    fn cst_decode(self) -> crate::model::SdkEvent {
+        let wrap = unsafe { flutter_rust_bridge::for_generated::box_from_leak_ptr(self) };
+        CstDecode::<crate::model::SdkEvent>::cst_decode(*wrap).into()
+    }
+}
 impl CstDecode<crate::bindings::SuccessActionProcessed> for *mut wire_cst_success_action_processed {
     // Codec=Cst (C-struct based), see doc to use other codecs
     fn cst_decode(self) -> crate::bindings::SuccessActionProcessed {
@@ -516,73 +513,6 @@ impl CstDecode<crate::bindings::InputType> for wire_cst_input_type {
                     data: ans.data.cst_decode(),
                 }
             }
-            _ => unreachable!(),
-        }
-    }
-}
-impl CstDecode<crate::error::LiquidSdkError> for wire_cst_liquid_sdk_error {
-    // Codec=Cst (C-struct based), see doc to use other codecs
-    fn cst_decode(self) -> crate::error::LiquidSdkError {
-        match self.tag {
-            0 => crate::error::LiquidSdkError::AlreadyStarted,
-            1 => {
-                let ans = unsafe { self.kind.Generic };
-                crate::error::LiquidSdkError::Generic {
-                    err: ans.err.cst_decode(),
-                }
-            }
-            2 => crate::error::LiquidSdkError::NotStarted,
-            3 => {
-                let ans = unsafe { self.kind.ServiceConnectivity };
-                crate::error::LiquidSdkError::ServiceConnectivity {
-                    err: ans.err.cst_decode(),
-                }
-            }
-            _ => unreachable!(),
-        }
-    }
-}
-impl CstDecode<crate::model::LiquidSdkEvent> for wire_cst_liquid_sdk_event {
-    // Codec=Cst (C-struct based), see doc to use other codecs
-    fn cst_decode(self) -> crate::model::LiquidSdkEvent {
-        match self.tag {
-            0 => {
-                let ans = unsafe { self.kind.PaymentFailed };
-                crate::model::LiquidSdkEvent::PaymentFailed {
-                    details: ans.details.cst_decode(),
-                }
-            }
-            1 => {
-                let ans = unsafe { self.kind.PaymentPending };
-                crate::model::LiquidSdkEvent::PaymentPending {
-                    details: ans.details.cst_decode(),
-                }
-            }
-            2 => {
-                let ans = unsafe { self.kind.PaymentRefunded };
-                crate::model::LiquidSdkEvent::PaymentRefunded {
-                    details: ans.details.cst_decode(),
-                }
-            }
-            3 => {
-                let ans = unsafe { self.kind.PaymentRefundPending };
-                crate::model::LiquidSdkEvent::PaymentRefundPending {
-                    details: ans.details.cst_decode(),
-                }
-            }
-            4 => {
-                let ans = unsafe { self.kind.PaymentSucceeded };
-                crate::model::LiquidSdkEvent::PaymentSucceeded {
-                    details: ans.details.cst_decode(),
-                }
-            }
-            5 => {
-                let ans = unsafe { self.kind.PaymentWaitingConfirmation };
-                crate::model::LiquidSdkEvent::PaymentWaitingConfirmation {
-                    details: ans.details.cst_decode(),
-                }
-            }
-            6 => crate::model::LiquidSdkEvent::Synced,
             _ => unreachable!(),
         }
     }
@@ -1305,6 +1235,73 @@ impl CstDecode<crate::bindings::RouteHintHop> for wire_cst_route_hint_hop {
         }
     }
 }
+impl CstDecode<crate::error::SdkError> for wire_cst_sdk_error {
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    fn cst_decode(self) -> crate::error::SdkError {
+        match self.tag {
+            0 => crate::error::SdkError::AlreadyStarted,
+            1 => {
+                let ans = unsafe { self.kind.Generic };
+                crate::error::SdkError::Generic {
+                    err: ans.err.cst_decode(),
+                }
+            }
+            2 => crate::error::SdkError::NotStarted,
+            3 => {
+                let ans = unsafe { self.kind.ServiceConnectivity };
+                crate::error::SdkError::ServiceConnectivity {
+                    err: ans.err.cst_decode(),
+                }
+            }
+            _ => unreachable!(),
+        }
+    }
+}
+impl CstDecode<crate::model::SdkEvent> for wire_cst_sdk_event {
+    // Codec=Cst (C-struct based), see doc to use other codecs
+    fn cst_decode(self) -> crate::model::SdkEvent {
+        match self.tag {
+            0 => {
+                let ans = unsafe { self.kind.PaymentFailed };
+                crate::model::SdkEvent::PaymentFailed {
+                    details: ans.details.cst_decode(),
+                }
+            }
+            1 => {
+                let ans = unsafe { self.kind.PaymentPending };
+                crate::model::SdkEvent::PaymentPending {
+                    details: ans.details.cst_decode(),
+                }
+            }
+            2 => {
+                let ans = unsafe { self.kind.PaymentRefunded };
+                crate::model::SdkEvent::PaymentRefunded {
+                    details: ans.details.cst_decode(),
+                }
+            }
+            3 => {
+                let ans = unsafe { self.kind.PaymentRefundPending };
+                crate::model::SdkEvent::PaymentRefundPending {
+                    details: ans.details.cst_decode(),
+                }
+            }
+            4 => {
+                let ans = unsafe { self.kind.PaymentSucceeded };
+                crate::model::SdkEvent::PaymentSucceeded {
+                    details: ans.details.cst_decode(),
+                }
+            }
+            5 => {
+                let ans = unsafe { self.kind.PaymentWaitingConfirmation };
+                crate::model::SdkEvent::PaymentWaitingConfirmation {
+                    details: ans.details.cst_decode(),
+                }
+            }
+            6 => crate::model::SdkEvent::Synced,
+            _ => unreachable!(),
+        }
+    }
+}
 impl CstDecode<crate::model::SendPaymentResponse> for wire_cst_send_payment_response {
     // Codec=Cst (C-struct based), see doc to use other codecs
     fn cst_decode(self) -> crate::model::SendPaymentResponse {
@@ -1511,32 +1508,6 @@ impl NewWithNullPtr for wire_cst_input_type {
     }
 }
 impl Default for wire_cst_input_type {
-    fn default() -> Self {
-        Self::new_with_null_ptr()
-    }
-}
-impl NewWithNullPtr for wire_cst_liquid_sdk_error {
-    fn new_with_null_ptr() -> Self {
-        Self {
-            tag: -1,
-            kind: LiquidSdkErrorKind { nil__: () },
-        }
-    }
-}
-impl Default for wire_cst_liquid_sdk_error {
-    fn default() -> Self {
-        Self::new_with_null_ptr()
-    }
-}
-impl NewWithNullPtr for wire_cst_liquid_sdk_event {
-    fn new_with_null_ptr() -> Self {
-        Self {
-            tag: -1,
-            kind: LiquidSdkEventKind { nil__: () },
-        }
-    }
-}
-impl Default for wire_cst_liquid_sdk_event {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
@@ -2121,6 +2092,32 @@ impl Default for wire_cst_route_hint_hop {
         Self::new_with_null_ptr()
     }
 }
+impl NewWithNullPtr for wire_cst_sdk_error {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            tag: -1,
+            kind: SdkErrorKind { nil__: () },
+        }
+    }
+}
+impl Default for wire_cst_sdk_error {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
+impl NewWithNullPtr for wire_cst_sdk_event {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            tag: -1,
+            kind: SdkEventKind { nil__: () },
+        }
+    }
+}
+impl Default for wire_cst_sdk_event {
+    fn default() -> Self {
+        Self::new_with_null_ptr()
+    }
+}
 impl NewWithNullPtr for wire_cst_send_payment_response {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -2392,7 +2389,7 @@ pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_sy
 pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__binding_event_listener_on_event(
     port_: i64,
     that: *mut wire_cst_binding_event_listener,
-    e: *mut wire_cst_liquid_sdk_event,
+    e: *mut wire_cst_sdk_event,
 ) {
     wire__crate__bindings__binding_event_listener_on_event_impl(port_, that, e)
 }
@@ -2503,14 +2500,6 @@ pub extern "C" fn frbgen_breez_liquid_cst_new_box_autoadd_connect_request(
 ) -> *mut wire_cst_connect_request {
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
         wire_cst_connect_request::new_with_null_ptr(),
-    )
-}
-
-#[no_mangle]
-pub extern "C" fn frbgen_breez_liquid_cst_new_box_autoadd_liquid_sdk_event(
-) -> *mut wire_cst_liquid_sdk_event {
-    flutter_rust_bridge::for_generated::new_leak_box_ptr(
-        wire_cst_liquid_sdk_event::new_with_null_ptr(),
     )
 }
 
@@ -2690,6 +2679,11 @@ pub extern "C" fn frbgen_breez_liquid_cst_new_box_autoadd_restore_request(
     flutter_rust_bridge::for_generated::new_leak_box_ptr(
         wire_cst_restore_request::new_with_null_ptr(),
     )
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_breez_liquid_cst_new_box_autoadd_sdk_event() -> *mut wire_cst_sdk_event {
+    flutter_rust_bridge::for_generated::new_leak_box_ptr(wire_cst_sdk_event::new_with_null_ptr())
 }
 
 #[no_mangle]
@@ -2990,76 +2984,6 @@ pub struct wire_cst_InputType_LnUrlAuth {
 #[derive(Clone, Copy)]
 pub struct wire_cst_InputType_LnUrlError {
     data: *mut wire_cst_ln_url_error_data,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_liquid_sdk_error {
-    tag: i32,
-    kind: LiquidSdkErrorKind,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub union LiquidSdkErrorKind {
-    Generic: wire_cst_LiquidSdkError_Generic,
-    ServiceConnectivity: wire_cst_LiquidSdkError_ServiceConnectivity,
-    nil__: (),
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkError_Generic {
-    err: *mut wire_cst_list_prim_u_8_strict,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkError_ServiceConnectivity {
-    err: *mut wire_cst_list_prim_u_8_strict,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_liquid_sdk_event {
-    tag: i32,
-    kind: LiquidSdkEventKind,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub union LiquidSdkEventKind {
-    PaymentFailed: wire_cst_LiquidSdkEvent_PaymentFailed,
-    PaymentPending: wire_cst_LiquidSdkEvent_PaymentPending,
-    PaymentRefunded: wire_cst_LiquidSdkEvent_PaymentRefunded,
-    PaymentRefundPending: wire_cst_LiquidSdkEvent_PaymentRefundPending,
-    PaymentSucceeded: wire_cst_LiquidSdkEvent_PaymentSucceeded,
-    PaymentWaitingConfirmation: wire_cst_LiquidSdkEvent_PaymentWaitingConfirmation,
-    nil__: (),
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkEvent_PaymentFailed {
-    details: *mut wire_cst_payment,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkEvent_PaymentPending {
-    details: *mut wire_cst_payment,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkEvent_PaymentRefunded {
-    details: *mut wire_cst_payment,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkEvent_PaymentRefundPending {
-    details: *mut wire_cst_payment,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkEvent_PaymentSucceeded {
-    details: *mut wire_cst_payment,
-}
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct wire_cst_LiquidSdkEvent_PaymentWaitingConfirmation {
-    details: *mut wire_cst_payment,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -3634,6 +3558,76 @@ pub struct wire_cst_route_hint_hop {
     cltv_expiry_delta: u64,
     htlc_minimum_msat: *mut u64,
     htlc_maximum_msat: *mut u64,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_sdk_error {
+    tag: i32,
+    kind: SdkErrorKind,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub union SdkErrorKind {
+    Generic: wire_cst_SdkError_Generic,
+    ServiceConnectivity: wire_cst_SdkError_ServiceConnectivity,
+    nil__: (),
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkError_Generic {
+    err: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkError_ServiceConnectivity {
+    err: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_sdk_event {
+    tag: i32,
+    kind: SdkEventKind,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub union SdkEventKind {
+    PaymentFailed: wire_cst_SdkEvent_PaymentFailed,
+    PaymentPending: wire_cst_SdkEvent_PaymentPending,
+    PaymentRefunded: wire_cst_SdkEvent_PaymentRefunded,
+    PaymentRefundPending: wire_cst_SdkEvent_PaymentRefundPending,
+    PaymentSucceeded: wire_cst_SdkEvent_PaymentSucceeded,
+    PaymentWaitingConfirmation: wire_cst_SdkEvent_PaymentWaitingConfirmation,
+    nil__: (),
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkEvent_PaymentFailed {
+    details: *mut wire_cst_payment,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkEvent_PaymentPending {
+    details: *mut wire_cst_payment,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkEvent_PaymentRefunded {
+    details: *mut wire_cst_payment,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkEvent_PaymentRefundPending {
+    details: *mut wire_cst_payment,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkEvent_PaymentSucceeded {
+    details: *mut wire_cst_payment,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_SdkEvent_PaymentWaitingConfirmation {
+    details: *mut wire_cst_payment,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]

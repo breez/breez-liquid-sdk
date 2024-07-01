@@ -3,7 +3,7 @@ rust_root: ../../../core/
 dart_output: ../../../../packages/dart/lib/src
 # flutter_rust_bridge has relative path issues with this new approach introduced in 2.0.0-dev.38
 # rust_output: ../../../core/frb/bridge.rs
-c_output: breez_liquid_sdk/include/breez_liquid_sdk.h
+c_output: breez_sdk_liquid/include/breez_sdk_liquid.h
 web: false
 full_dep: true
 add_mod_to_lib: false

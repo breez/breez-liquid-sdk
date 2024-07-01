@@ -32,8 +32,8 @@ gen: codegen && ffigen
 codegen:
 	{{frb_bin}}
 	cd ../../../../packages/dart/lib/src && dart format -l 110 .
-	-ln -sf $(pwd)/breez_liquid_sdk/include/breez_liquid_sdk.h ../../../../packages/flutter/ios/Classes/breez_liquid_sdk.h
-	-ln -sf $(pwd)/breez_liquid_sdk/include/breez_liquid_sdk.h ../../../../packages/flutter/macos/Classes/breez_liquid_sdk.h
+	-ln -sf $(pwd)/breez_sdk_liquid/include/breez_sdk_liquid.h ../../../../packages/flutter/ios/Classes/breez_sdk_liquid.h
+	-ln -sf $(pwd)/breez_sdk_liquid/include/breez_sdk_liquid.h ../../../../packages/flutter/macos/Classes/breez_sdk_liquid.h
 
 # Generate FFI bindings
 ffigen:
@@ -41,7 +41,7 @@ ffigen:
 
 # Builds the local library for testing
 build *args:
-	cargo build --package breez-liquid-sdk --manifest-path ../../../core/Cargo.toml --features frb {{args}}
+	cargo build --package breez-sdk-liquid --manifest-path ../../../core/Cargo.toml --features frb {{args}}
 
 build-apple profile='frb-min':
 	dart scripts/build_apple.dart --profile {{profile}}
@@ -69,8 +69,8 @@ test-dart build='true':
 
 # Softlinks library archives from platform-build to their expected locations
 link:
-	-ln -sf $(pwd)/platform-build/breez_liquid_sdk.xcframework.zip ../../../../packages/flutter/macos/Frameworks/{{curr_version}}.zip
-	-ln -sf $(pwd)/platform-build/breez_liquid_sdk.xcframework.zip ../../../../packages/flutter/ios/Frameworks/{{curr_version}}.zip
+	-ln -sf $(pwd)/platform-build/breez_sdk_liquid.xcframework.zip ../../../../packages/flutter/macos/Frameworks/{{curr_version}}.zip
+	-ln -sf $(pwd)/platform-build/breez_sdk_liquid.xcframework.zip ../../../../packages/flutter/ios/Frameworks/{{curr_version}}.zip
 	-ln -sf $(pwd)/platform-build/other.tar.gz ../../../../packages/flutter/linux/{{curr_version}}.tar.gz
 	-ln -sf $(pwd)/platform-build/other.tar.gz ../../../../packages/flutter/windows/{{curr_version}}.tar.gz
 	-ln -sf $(pwd)/platform-build/android.tar.gz ../../../../packages/flutter/android/{{curr_version}}.tar.gz

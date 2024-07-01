@@ -239,10 +239,10 @@ jobs:
           cargo init --name test_project --vcs none
           
           # A project might reference our SDK as a git repository
-          # cargo add --git https://github.com/breez/breez-liquid-sdk breez-liquid-sdk
+          # cargo add --git https://github.com/breez/breez-liquid-sdk breez-sdk-liquid
           
           # In this test, we reference the checked out repo (e.g. this PR branch)
-          cargo add --path ../lib/core breez-liquid-sdk
+          cargo add --path ../lib/core breez-sdk-liquid
           
           # Add the secp256k1-zkp patch: https://github.com/BlockstreamResearch/rust-secp256k1-zkp/pull/48/commits
           echo "[patch.crates-io]" >> Cargo.toml

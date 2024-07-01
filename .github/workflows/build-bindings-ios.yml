@@ -70,7 +70,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: bindings-${{ matrix.target }}
-        path: lib/target/${{ matrix.target }}/release/libbreez_liquid_sdk_bindings.a
+        path: lib/target/${{ matrix.target }}/release/libbreez_sdk_liquid_bindings.a
 
   merge:
     runs-on: macOS-latest
@@ -95,24 +95,24 @@ jobs:
     - name: Build ios-universal
       run: |
         mkdir -p ios-universal
-        lipo -create -output ios-universal/libbreez_liquid_sdk_bindings.a aarch64-apple-ios/libbreez_liquid_sdk_bindings.a x86_64-apple-ios/libbreez_liquid_sdk_bindings.a
+        lipo -create -output ios-universal/libbreez_sdk_liquid_bindings.a aarch64-apple-ios/libbreez_sdk_liquid_bindings.a x86_64-apple-ios/libbreez_sdk_liquid_bindings.a
 
     - name: Build ios-universal-sim
       run: |
         mkdir -p ios-universal-sim
-        lipo -create -output ios-universal-sim/libbreez_liquid_sdk_bindings.a aarch64-apple-ios-sim/libbreez_liquid_sdk_bindings.a x86_64-apple-ios/libbreez_liquid_sdk_bindings.a
+        lipo -create -output ios-universal-sim/libbreez_sdk_liquid_bindings.a aarch64-apple-ios-sim/libbreez_sdk_liquid_bindings.a x86_64-apple-ios/libbreez_sdk_liquid_bindings.a
 
     - name: Archive ios-universal
       uses: actions/upload-artifact@v3
       with:
         name: bindings-ios-universal
-        path: ios-universal/libbreez_liquid_sdk_bindings.a
+        path: ios-universal/libbreez_sdk_liquid_bindings.a
 
     - name: Archive ios-universal-sim
       uses: actions/upload-artifact@v3
       with:
         name: bindings-ios-universal-sim
-        path: ios-universal-sim/libbreez_liquid_sdk_bindings.a
+        path: ios-universal-sim/libbreez_sdk_liquid_bindings.a
 
   build-dummies:
     if: ${{ inputs.use-dummy-binaries }}
@@ -130,7 +130,7 @@ jobs:
     steps:
       - name: Build dummy ios ${{ matrix.target }}
         run: |
-          touch libbreez_liquid_sdk_bindings.a
+          touch libbreez_sdk_liquid_bindings.a
 
       - name: Upload dummy ios ${{ matrix.target }} artifact
         uses: actions/upload-artifact@v3

@@ -38,19 +38,19 @@ make all
 This will generate the following artifacts:
 
 - iOS
-	- `ios/BreezLiquidSDKMapper.swift`
-	- `ios/BreezLiquidSDK.m`
-	- `ios/BreezLiquidSDK.swift`
-	- `ios/bindings-swift/breez_liquid_sdkFFI.xcframework`
-	- `ios/bindings-swift/Sources/BreezLiquidSDK/BreezLiquidSDK.swift`
+	- `ios/BreezSDKLiquidMapper.swift`
+	- `ios/BreezSDKLiquid.m`
+	- `ios/BreezSDKLiquid.swift`
+	- `ios/bindings-swift/breez_sdk_liquidFFI.xcframework`
+	- `ios/bindings-swift/Sources/BreezSDKLiquid/BreezSDKLiquid.swift`
 - Android
-	- `android/src/main/java/com/breezliquidsdk/breez_liquid_sdk.kt`
-	- `android/src/main/java/com/breezliquidsdk/BreezLiquidSDKMapper.kt`
-	- `android/src/main/java/com/breezliquidsdk/BreezLiquidSDKModule.kt`
-	- `android/src/main/jniLibs/arm64-v8a/libbreez_liquid_sdk_bindings.so`
-	- `android/src/main/jniLibs/armeabi-v7a/libbreez_liquid_sdk_bindings.so`
-	- `android/src/main/jniLibs/x86/libbreez_liquid_sdk_bindings.so`
-	- `android/src/main/jniLibs/x86_64/libbreez_liquid_sdk_bindings.so`
+	- `android/src/main/java/com/breezsdkliquid/breez_sdk_liquid.kt`
+	- `android/src/main/java/com/breezsdkliquid/BreezSDKLiquidMapper.kt`
+	- `android/src/main/java/com/breezsdkliquid/BreezSDKLiquidModule.kt`
+	- `android/src/main/jniLibs/arm64-v8a/libbreez_sdk_liquid_bindings.so`
+	- `android/src/main/jniLibs/armeabi-v7a/libbreez_sdk_liquid_bindings.so`
+	- `android/src/main/jniLibs/x86/libbreez_sdk_liquid_bindings.so`
+	- `android/src/main/jniLibs/x86_64/libbreez_sdk_liquid_bindings.so`
 - Typescript
 	- `src/index.ts`
 
@@ -71,8 +71,8 @@ To use the locally built bindings instead of integrating them remotely, make the
 
 - For iOS:
 	- Rename the podspec files in `packages/react-native/`:
-		- Rename `breez_liquid_sdk.podspec` to `breez_liquid_sdk.podspec.prod`
-		- Rename `BreezLiquidSDK.podspec.dev` to `BreezLiquidSDK.podspec`
+		- Rename `breez_sdk_liquid.podspec` to `breez_sdk_liquid.podspec.prod`
+		- Rename `BreezSDKLiquid.podspec.dev` to `BreezSDKLiquid.podspec`
 - For Android:
 	- Comment out the following line from the dependencies section in `packages/react-native/android/build.gradle`:
 		- `implementation("com.github.breez:breez-liquid-sdk:${getVersionFromNpmPackage()}") { exclude group:"net.java.dev.jna" }`

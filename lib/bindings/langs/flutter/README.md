@@ -1,4 +1,4 @@
-# breez_liquid_sdk_workspace
+# breez_sdk_liquid_workspace
 
 Binding generation & build scripts for Dart/Flutter packages of Breez Liquid SDK.
 

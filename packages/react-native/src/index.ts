@@ -6,8 +6,8 @@ const LINKING_ERROR =
     "- You rebuilt the app after installing the package\n" +
     "- You are not using Expo managed workflow\n"
 
-const BreezLiquidSDK = NativeModules.RNBreezLiquidSDK
-    ? NativeModules.RNBreezLiquidSDK
+const BreezSDKLiquid = NativeModules.RNBreezSDKLiquid
+    ? NativeModules.RNBreezSDKLiquid
     : new Proxy(
           {},
           {
@@ -17,7 +17,7 @@ const BreezLiquidSDK = NativeModules.RNBreezLiquidSDK
           }
       )
 
-const BreezLiquidSDKEmitter = new NativeEventEmitter(BreezLiquidSDK)
+const BreezSDKLiquidEmitter = new NativeEventEmitter(BreezSDKLiquid)
 
 export interface AesSuccessActionDataDecrypted {
     description: string
@@ -353,38 +353,6 @@ export enum LiquidNetwork {
     TESTNET = "testnet"
 }
 
-export enum LiquidSdkEventVariant {
-    PAYMENT_FAILED = "paymentFailed",
-    PAYMENT_PENDING = "paymentPending",
-    PAYMENT_REFUNDED = "paymentRefunded",
-    PAYMENT_REFUND_PENDING = "paymentRefundPending",
-    PAYMENT_SUCCEEDED = "paymentSucceeded",
-    PAYMENT_WAITING_CONFIRMATION = "paymentWaitingConfirmation",
-    SYNCED = "synced"
-}
-
-export type LiquidSdkEvent = {
-    type: LiquidSdkEventVariant.PAYMENT_FAILED,
-    details: Payment
-} | {
-    type: LiquidSdkEventVariant.PAYMENT_PENDING,
-    details: Payment
-} | {
-    type: LiquidSdkEventVariant.PAYMENT_REFUNDED,
-    details: Payment
-} | {
-    type: LiquidSdkEventVariant.PAYMENT_REFUND_PENDING,
-    details: Payment
-} | {
-    type: LiquidSdkEventVariant.PAYMENT_SUCCEEDED,
-    details: Payment
-} | {
-    type: LiquidSdkEventVariant.PAYMENT_WAITING_CONFIRMATION,
-    details: Payment
-} | {
-    type: LiquidSdkEventVariant.SYNCED
-}
-
 export enum LnUrlCallbackStatusVariant {
     OK = "ok",
     ERROR_STATUS = "errorStatus"
@@ -449,6 +417,38 @@ export enum PaymentType {
     SEND = "send"
 }
 
+export enum SdkEventVariant {
+    PAYMENT_FAILED = "paymentFailed",
+    PAYMENT_PENDING = "paymentPending",
+    PAYMENT_REFUNDED = "paymentRefunded",
+    PAYMENT_REFUND_PENDING = "paymentRefundPending",
+    PAYMENT_SUCCEEDED = "paymentSucceeded",
+    PAYMENT_WAITING_CONFIRMATION = "paymentWaitingConfirmation",
+    SYNCED = "synced"
+}
+
+export type SdkEvent = {
+    type: SdkEventVariant.PAYMENT_FAILED,
+    details: Payment
+} | {
+    type: SdkEventVariant.PAYMENT_PENDING,
+    details: Payment
+} | {
+    type: SdkEventVariant.PAYMENT_REFUNDED,
+    details: Payment
+} | {
+    type: SdkEventVariant.PAYMENT_REFUND_PENDING,
+    details: Payment
+} | {
+    type: SdkEventVariant.PAYMENT_SUCCEEDED,
+    details: Payment
+} | {
+    type: SdkEventVariant.PAYMENT_WAITING_CONFIRMATION,
+    details: Payment
+} | {
+    type: SdkEventVariant.SYNCED
+}
+
 export enum SuccessActionProcessedVariant {
     AES = "aes",
     MESSAGE = "message",
@@ -466,158 +466,158 @@ export type SuccessActionProcessed = {
     data: UrlSuccessActionData
 }
 
-export type EventListener = (e: LiquidSdkEvent) => void
+export type EventListener = (e: SdkEvent) => void
 
 export type Logger = (logEntry: LogEntry) => void
 
 export const connect = async (req: ConnectRequest): Promise<void> => {
-    const response = await BreezLiquidSDK.connect(req)
+    const response = await BreezSDKLiquid.connect(req)
     return response
 }
 
 export const addEventListener = async (listener: EventListener): Promise<string> => {
-    const response = await BreezLiquidSDK.addEventListener()
-    BreezLiquidSDKEmitter.addListener(`event-${response}`, listener)
+    const response = await BreezSDKLiquid.addEventListener()
+    BreezSDKLiquidEmitter.addListener(`event-${response}`, listener)
 
     return response
 }
 
 export const setLogger = async (logger: Logger): Promise<EmitterSubscription> => {
-    const subscription = BreezLiquidSDKEmitter.addListener("breezLiquidSdkLog", logger)
+    const subscription = BreezSDKLiquidEmitter.addListener("breezSdkLiquidLog", logger)
 
     try {
-        await BreezLiquidSDK.setLogger()
+        await BreezSDKLiquid.setLogger()
     } catch {}
 
     return subscription
 }
 
 export const defaultConfig = async (network: LiquidNetwork): Promise<Config> => {
-    const response = await BreezLiquidSDK.defaultConfig(network)
+    const response = await BreezSDKLiquid.defaultConfig(network)
     return response
 }
 
 export const parse = async (input: string): Promise<InputType> => {
-    const response = await BreezLiquidSDK.parse(input)
+    const response = await BreezSDKLiquid.parse(input)
     return response
 }
 
 export const parseInvoice = async (input: string): Promise<LnInvoice> => {
-    const response = await BreezLiquidSDK.parseInvoice(input)
+    const response = await BreezSDKLiquid.parseInvoice(input)
     return response
 }
 
 
 export const removeEventListener = async (id: string): Promise<void> => {
-    await BreezLiquidSDK.removeEventListener(id)
+    await BreezSDKLiquid.removeEventListener(id)
 }
 
 export const getInfo = async (): Promise<GetInfoResponse> => {
-    const response = await BreezLiquidSDK.getInfo()
+    const response = await BreezSDKLiquid.getInfo()
     return response
 }
 
 export const prepareSendPayment = async (req: PrepareSendRequest): Promise<PrepareSendResponse> => {
-    const response = await BreezLiquidSDK.prepareSendPayment(req)
+    const response = await BreezSDKLiquid.prepareSendPayment(req)
     return response
 }
 
 export const sendPayment = async (req: PrepareSendResponse): Promise<SendPaymentResponse> => {
-    const response = await BreezLiquidSDK.sendPayment(req)
+    const response = await BreezSDKLiquid.sendPayment(req)
     return response
 }
 
 export const prepareReceivePayment = async (req: PrepareReceiveRequest): Promise<PrepareReceiveResponse> => {
-    const response = await BreezLiquidSDK.prepareReceivePayment(req)
+    const response = await BreezSDKLiquid.prepareReceivePayment(req)
     return response
 }
 
 export const receivePayment = async (req: PrepareReceiveResponse): Promise<ReceivePaymentResponse> => {
-    const response = await BreezLiquidSDK.receivePayment(req)
+    const response = await BreezSDKLiquid.receivePayment(req)
     return response
 }
 
 export const preparePayOnchain = async (req: PreparePayOnchainRequest): Promise<PreparePayOnchainResponse> => {
-    const response = await BreezLiquidSDK.preparePayOnchain(req)
+    const response = await BreezSDKLiquid.preparePayOnchain(req)
     return response
 }
 
 export const payOnchain = async (req: PayOnchainRequest): Promise<SendPaymentResponse> => {
-    const response = await BreezLiquidSDK.payOnchain(req)
+    const response = await BreezSDKLiquid.payOnchain(req)
     return response
 }
 
 export const prepareReceiveOnchain = async (req: PrepareReceiveOnchainRequest): Promise<PrepareReceiveOnchainResponse> => {
-    const response = await BreezLiquidSDK.prepareReceiveOnchain(req)
+    const response = await BreezSDKLiquid.prepareReceiveOnchain(req)
     return response
 }
 
 export const receiveOnchain = async (req: PrepareReceiveOnchainResponse): Promise<ReceiveOnchainResponse> => {
-    const response = await BreezLiquidSDK.receiveOnchain(req)
+    const response = await BreezSDKLiquid.receiveOnchain(req)
     return response
 }
 
 export const listPayments = async (): Promise<Payment[]> => {
-    const response = await BreezLiquidSDK.listPayments()
+    const response = await BreezSDKLiquid.listPayments()
     return response
 }
 
 export const listRefundables = async (): Promise<RefundableSwap[]> => {
-    const response = await BreezLiquidSDK.listRefundables()
+    const response = await BreezSDKLiquid.listRefundables()
     return response
 }
 
 export const prepareRefund = async (req: PrepareRefundRequest): Promise<PrepareRefundResponse> => {
-    const response = await BreezLiquidSDK.prepareRefund(req)
+    const response = await BreezSDKLiquid.prepareRefund(req)
     return response
 }
 
 export const refund = async (req: RefundRequest): Promise<RefundResponse> => {
-    const response = await BreezLiquidSDK.refund(req)
+    const response = await BreezSDKLiquid.refund(req)
     return response
 }
 
 export const rescanOnchainSwaps = async (): Promise<void> => {
-    await BreezLiquidSDK.rescanOnchainSwaps()
+    await BreezSDKLiquid.rescanOnchainSwaps()
 }
 
 export const sync = async (): Promise<void> => {
-    await BreezLiquidSDK.sync()
+    await BreezSDKLiquid.sync()
 }
 
 export const backup = async (req: BackupRequest): Promise<void> => {
-    await BreezLiquidSDK.backup(req)
+    await BreezSDKLiquid.backup(req)
 }
 
 export const restore = async (req: RestoreRequest): Promise<void> => {
-    await BreezLiquidSDK.restore(req)
+    await BreezSDKLiquid.restore(req)
 }
 
 export const disconnect = async (): Promise<void> => {
-    await BreezLiquidSDK.disconnect()
+    await BreezSDKLiquid.disconnect()
 }
 
 export const lnurlPay = async (req: LnUrlPayRequest): Promise<LnUrlPayResult> => {
-    const response = await BreezLiquidSDK.lnurlPay(req)
+    const response = await BreezSDKLiquid.lnurlPay(req)
     return response
 }
 
 export const lnurlWithdraw = async (req: LnUrlWithdrawRequest): Promise<LnUrlWithdrawResult> => {
-    const response = await BreezLiquidSDK.lnurlWithdraw(req)
+    const response = await BreezSDKLiquid.lnurlWithdraw(req)
     return response
 }
 
 export const lnurlAuth = async (reqData: LnUrlAuthRequestData): Promise<LnUrlCallbackStatus> => {
-    const response = await BreezLiquidSDK.lnurlAuth(reqData)
+    const response = await BreezSDKLiquid.lnurlAuth(reqData)
     return response
 }
 
 export const fetchFiatRates = async (): Promise<Rate[]> => {
-    const response = await BreezLiquidSDK.fetchFiatRates()
+    const response = await BreezSDKLiquid.fetchFiatRates()
     return response
 }
 
 export const listFiatCurrencies = async (): Promise<FiatCurrency[]> => {
-    const response = await BreezLiquidSDK.listFiatCurrencies()
+    const response = await BreezSDKLiquid.listFiatCurrencies()
     return response
 }

@@ -10,12 +10,12 @@
         {%- if e.is_flat() %}
                 val {{arg.name()|var_name|unquote|temporary}} = as{{arg.type_()|type_name}}({{ arg.name()|var_name|unquote }})
         {%- else %}
-                val {{arg.name()|var_name|unquote|temporary}} = as{{arg.type_()|type_name}}({{ arg.name()|var_name|unquote }}) ?: run { throw LiquidSdkException.Generic(errMissingMandatoryField("{{arg.name()|var_name|unquote}}", "{{ arg.type_()|type_name }}")) }
+                val {{arg.name()|var_name|unquote|temporary}} = as{{arg.type_()|type_name}}({{ arg.name()|var_name|unquote }}) ?: run { throw SdkException.Generic(errMissingMandatoryField("{{arg.name()|var_name|unquote}}", "{{ arg.type_()|type_name }}")) }
         {%- endif %}
     {%- when Type::Optional(_) %}
                 val {{arg.name()|var_name|unquote|temporary}} = {{arg.name()|var_name|unquote}}{{ arg.type_()|rn_convert_type(ci) -}}
     {%- when Type::Record(_) %}
-                val {{arg.type_()|type_name|var_name|unquote}} = as{{arg.type_()|type_name}}({{ arg.name()|var_name|unquote }}) ?: run { throw LiquidSdkException.Generic(errMissingMandatoryField("{{arg.name()|var_name|unquote}}", "{{ arg.type_()|type_name }}")) }
+                val {{arg.type_()|type_name|var_name|unquote}} = as{{arg.type_()|type_name}}({{ arg.name()|var_name|unquote }}) ?: run { throw SdkException.Generic(errMissingMandatoryField("{{arg.name()|var_name|unquote}}", "{{ arg.type_()|type_name }}")) }
     {%- else %}
     {%- endmatch %}
 {%- endfor %}
@@ -23,7 +23,7 @@
 {%- when Some with (return_type) %}
                 val res = {{ obj_interface }}{{ func.name()|fn_name|unquote }}({%- call kt::arg_list(func) -%})
 {%- if func.name() == "default_config" %}
-                val workingDir = File(reactApplicationContext.filesDir.toString() + "/breezLiquidSdk")
+                val workingDir = File(reactApplicationContext.filesDir.toString() + "/breezSdkLiquid")
 
                 res.workingDir = workingDir.absolutePath
 {%- endif -%}               

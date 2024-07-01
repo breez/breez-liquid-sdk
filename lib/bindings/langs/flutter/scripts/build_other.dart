@@ -7,7 +7,7 @@ import 'package:cli_script/cli_script.dart';
 
 import 'utils.dart';
 
-const libName = 'breez_liquid_sdk';
+const libName = 'breez_sdk_liquid';
 const linuxLibName = 'lib$libName.so';
 const windowsLibName = '$libName.dll';
 const buildDir = 'platform-build';
@@ -46,7 +46,7 @@ Future<void> mainImpl(List<String> args) async {
     final triple = target.triple;
     final flutterIdentifier = target.flutterIdentifier;
     await run('rustup target add $triple');
-    await run('${target.compiler} --package breez-liquid-sdk --target $triple $profileArg',
+    await run('${target.compiler} --package breez-sdk-liquid --target $triple $profileArg',
         args: compilerOpts);
     await run('mkdir -p $flutterIdentifier');
     await run('cp ../../../../target/$triple/$profile/${target.libName} $flutterIdentifier/');
@@ -89,6 +89,6 @@ enum Targets {
   }
 
   String get compiler =>
-      isWindows ? 'cargo xwin build --package breez-liquid-sdk' : 'cargo zigbuild --package breez-liquid-sdk';
+      isWindows ? 'cargo xwin build --package breez-sdk-liquid' : 'cargo zigbuild --package breez-sdk-liquid';
   String get libName => isWindows ? windowsLibName : linuxLibName;
 }

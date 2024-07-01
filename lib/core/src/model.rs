@@ -10,7 +10,7 @@ use rusqlite::ToSql;
 use sdk_common::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::error::{LiquidSdkResult, PaymentError};
+use crate::error::{PaymentError, SdkResult};
 use crate::receive_swap::{
     DEFAULT_ZERO_CONF_MAX_SAT, DEFAULT_ZERO_CONF_MIN_FEE_RATE_MAINNET,
     DEFAULT_ZERO_CONF_MIN_FEE_RATE_TESTNET,
@@ -142,15 +142,15 @@ impl From<LiquidNetwork> for sdk_common::bitcoin::Network {
     }
 }
 
-/// Trait that can be used to react to various [LiquidSdkEvent]s emitted by the SDK.
+/// Trait that can be used to react to various [SdkEvent]s emitted by the SDK.
 pub trait EventListener: Send + Sync {
-    fn on_event(&self, e: LiquidSdkEvent);
+    fn on_event(&self, e: SdkEvent);
 }
 
 /// Event emitted by the SDK. To listen for and react to these events, use an [EventListener] when
 /// initializing the [LiquidSdk].
 #[derive(Clone, Debug, PartialEq)]
-pub enum LiquidSdkEvent {
+pub enum SdkEvent {
     PaymentFailed { details: Payment },
     PaymentPending { details: Payment },
     PaymentRefunded { details: Payment },
@@ -401,11 +401,11 @@ pub(crate) struct ChainSwap {
     pub(crate) refund_private_key: String,
 }
 impl ChainSwap {
-    pub(crate) fn get_claim_keypair(&self) -> LiquidSdkResult<Keypair> {
+    pub(crate) fn get_claim_keypair(&self) -> SdkResult<Keypair> {
         utils::decode_keypair(&self.claim_private_key).map_err(Into::into)
     }
 
-    pub(crate) fn get_refund_keypair(&self) -> LiquidSdkResult<Keypair> {
+    pub(crate) fn get_refund_keypair(&self) -> SdkResult<Keypair> {
         utils::decode_keypair(&self.refund_private_key).map_err(Into::into)
     }
 
@@ -422,7 +422,7 @@ impl ChainSwap {
         })
     }
 
-    pub(crate) fn get_claim_swap_script(&self) -> LiquidSdkResult<SwapScriptV2> {
+    pub(crate) fn get_claim_swap_script(&self) -> SdkResult<SwapScriptV2> {
         let chain_swap_details = self.get_boltz_create_response()?.claim_details;
         let our_pubkey = self.get_claim_keypair()?.public_key();
         let swap_script = match self.direction {
@@ -440,7 +440,7 @@ impl ChainSwap {
         Ok(swap_script)
     }
 
-    pub(crate) fn get_lockup_swap_script(&self) -> LiquidSdkResult<SwapScriptV2> {
+    pub(crate) fn get_lockup_swap_script(&self) -> SdkResult<SwapScriptV2> {
         let chain_swap_details = self.get_boltz_create_response()?.lockup_details;
         let our_pubkey = self.get_refund_keypair()?.public_key();
         let swap_script = match self.direction {

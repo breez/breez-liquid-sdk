@@ -3,8 +3,8 @@
 # fenv
 **/.flutter-version
 # symlink headers
-packages/flutter/ios/Classes/breez_liquid_sdk.h
-packages/flutter/macos/Classes/breez_liquid_sdk.h
+packages/flutter/ios/Classes/breez_sdk_liquid.h
+packages/flutter/macos/Classes/breez_sdk_liquid.h
 # Miscellaneous
 .DS_Store
 .idea/

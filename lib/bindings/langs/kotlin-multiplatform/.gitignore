@@ -44,11 +44,11 @@ gen-external-apklibs
 
 # End of https://www.toptal.com/developers/gitignore/api/android
 
-breez-liquid-sdk-kmp/src/androiddMain/jniLibs/
-breez-liquid-sdk-kmp/src/jvmMain/jniLibs/
+breez-sdk-liquid-kmp/src/androiddMain/jniLibs/
+breez-sdk-liquid-kmp/src/jvmMain/jniLibs/
 
-breez-liquid-sdk-kmp/src/commonMain/kotlin/breez_liquid_sdk
-breez-liquid-sdk-kmp/src/jvmMain/kotlin/breez_liquid_sdk
-breez-liquid-sdk-kmp/src/androidMain/kotlin/breez_liquid_sdk
-breez-liquid-sdk-kmp/src/nativeMain/kotlin/breez_liquid_sdk
-breez-liquid-sdk-kmp/src/nativeInterop/cinterop/headers/breez_liquid_sdk
+breez-sdk-liquid-kmp/src/commonMain/kotlin/breez_sdk_liquid
+breez-sdk-liquid-kmp/src/jvmMain/kotlin/breez_sdk_liquid
+breez-sdk-liquid-kmp/src/androidMain/kotlin/breez_sdk_liquid
+breez-sdk-liquid-kmp/src/nativeMain/kotlin/breez_sdk_liquid
+breez-sdk-liquid-kmp/src/nativeInterop/cinterop/headers/breez_sdk_liquid

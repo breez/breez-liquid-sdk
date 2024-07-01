@@ -7,7 +7,7 @@ static func as{{ type_name }}({{ type_name|var_name|unquote }}: [String: Any?]) 
         {% if field.type_()|inline_optional_field(ci) -%}
         if hasNonNilKey(data: {{ type_name|var_name|unquote }}, key: "{{field.name()|var_name|unquote}}") {
             guard let {{field.name()|var_name|unquote|temporary}} = {{ type_name|var_name|unquote }}["{{field.name()|var_name|unquote}}"] as? {{field.type_()|rn_type_name(ci, true)}} else {
-                throw LiquidSdkError.Generic(message: errUnexpectedValue(fieldName: "{{field.name()|var_name|unquote}}"))
+                throw SdkError.Generic(message: errUnexpectedValue(fieldName: "{{field.name()|var_name|unquote}}"))
             }
             {{field.name()|var_name|unquote}} = {{field.name()|var_name|unquote|temporary}}
         }
@@ -19,11 +19,11 @@ static func as{{ type_name }}({{ type_name|var_name|unquote }}: [String: Any?]) 
     {%- else %}
     {% if field.type_()|inline_optional_field(ci) -%}
     guard let {{field.name()|var_name|unquote}} = {{ type_name|var_name|unquote }}["{{field.name()|var_name|unquote}}"] as? {{field.type_()|rn_type_name(ci, true)}} else {
-        throw LiquidSdkError.Generic(message: errMissingMandatoryField(fieldName: "{{field.name()|var_name|unquote}}", typeName: "{{ type_name }}"))
+        throw SdkError.Generic(message: errMissingMandatoryField(fieldName: "{{field.name()|var_name|unquote}}", typeName: "{{ type_name }}"))
     }
     {%- else -%}
     guard let {{field.name()|var_name|unquote|temporary}} = {{ type_name|var_name|unquote }}["{{field.name()|var_name|unquote}}"] as? {{field.type_()|rn_type_name(ci, true)}} else {
-        throw LiquidSdkError.Generic(message: errMissingMandatoryField(fieldName: "{{field.name()|var_name|unquote}}", typeName: "{{ type_name }}"))
+        throw SdkError.Generic(message: errMissingMandatoryField(fieldName: "{{field.name()|var_name|unquote}}", typeName: "{{ type_name }}"))
     }
     let {{field.name()|var_name|unquote}} = {{field.type_()|render_from_map(ci, field.name()|var_name|unquote|temporary)}}
     {% endif -%}        
@@ -48,7 +48,7 @@ static func as{{ type_name }}List(arr: [Any]) throws -> [{{ type_name }}] {
             var {{ type_name|var_name|unquote }} = try as{{ type_name }}({{ type_name|var_name|unquote }}: val)
             list.append({{ type_name|var_name|unquote }})
         } else { 
-            throw LiquidSdkError.Generic(message: errUnexpectedType(typeName: "{{ type_name }}"))
+            throw SdkError.Generic(message: errUnexpectedType(typeName: "{{ type_name }}"))
         }
     }
     return list

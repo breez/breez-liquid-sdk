@@ -45,16 +45,16 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: bindings-darwin-universal
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-python
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - name: Clean up downloaded files
         run: |
-          rm -f lib/bindings/langs/python/src/breez_liquid_sdk/*.a
+          rm -f lib/bindings/langs/python/src/breez_sdk_liquid/*.a
           ls -R lib/bindings/langs/python
 
       - name: Update package version
@@ -101,12 +101,12 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: bindings-${{ matrix.arch }}-unknown-linux-gnu
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-python
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - name: Update package version
         if: ${{ inputs.package-version }}
@@ -148,22 +148,22 @@ jobs:
         if: matrix.arch == 'win_amd64'
         with:
           name: bindings-x86_64-pc-windows-msvc
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - uses: actions/download-artifact@v3
         if: matrix.arch == 'win32'
         with:
           name: bindings-i686-pc-windows-msvc
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - uses: actions/download-artifact@v3
         with:
           name: bindings-python
-          path: lib/bindings/langs/python/src/breez_liquid_sdk
+          path: lib/bindings/langs/python/src/breez_sdk_liquid
 
       - name: Copy VC redistributable DLLs for Windows
         if: matrix.arch == 'win_amd64'
-        working-directory: lib/bindings/langs/python/src/breez_liquid_sdk
+        working-directory: lib/bindings/langs/python/src/breez_sdk_liquid
         run: |
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x64\*\msvcp140.dll') .
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x64\*\vcruntime140.dll') .
@@ -171,7 +171,7 @@ jobs:
 
       - name: Copy VC redistributable DLLs for Windows
         if: matrix.arch == 'win32'
-        working-directory: lib/bindings/langs/python/src/breez_liquid_sdk
+        working-directory: lib/bindings/langs/python/src/breez_sdk_liquid
         run: |
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x86\*\msvcp140.dll') .
           Copy-Item (vswhere -latest -find 'VC\Redist\MSVC\*\x86\*\vcruntime140.dll') .

@@ -1,6 +1,6 @@
-package com.breezliquidsdk
+package com.breezsdkliquid
 
-import breez_liquid_sdk.*
+import breez_sdk_liquid.*
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import java.io.File
@@ -9,12 +9,12 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 {% import "macros.kt" as kt %}
 
-class BreezLiquidSDKModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class BreezSDKLiquidModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     private lateinit var executor: ExecutorService
     private var bindingLiquidSdk: BindingLiquidSdk? = null
 
     companion object {
-        const val TAG = "RNBreezLiquidSDK"
+        const val TAG = "RNBreezSDKLiquid"
     }
 
     override fun initialize() {
@@ -27,25 +27,25 @@ class BreezLiquidSDKModule(reactContext: ReactApplicationContext) : ReactContext
         return TAG
     }
 
-    @Throws(LiquidSdkException::class)
+    @Throws(SdkException::class)
     fun getBindingLiquidSdk(): BindingLiquidSdk {
         if (bindingLiquidSdk != null) {
             return bindingLiquidSdk!!
         }
 
-        throw LiquidSdkException.Generic("Not initialized")
+        throw SdkException.Generic("Not initialized")
     }
 
-    @Throws(LiquidSdkException::class)
+    @Throws(SdkException::class)
     private fun ensureWorkingDir(workingDir: String) {
         try {
             val workingDirFile = File(workingDir)
 
             if (!workingDirFile.exists() && !workingDirFile.mkdirs()) {
-                throw LiquidSdkException.Generic("Mandatory field workingDir must contain a writable directory")
+                throw SdkException.Generic("Mandatory field workingDir must contain a writable directory")
             }
         } catch (e: SecurityException) {
-            throw LiquidSdkException.Generic("Mandatory field workingDir must contain a writable directory")
+            throw SdkException.Generic("Mandatory field workingDir must contain a writable directory")
         }
     }
 
@@ -67,7 +67,7 @@ class BreezLiquidSDKModule(reactContext: ReactApplicationContext) : ReactContext
             try {
                 val emitter = reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java)
 
-                setLogger(BreezLiquidSDKLogger(emitter))
+                setLogger(BreezSDKLiquidLogger(emitter))
                 promise.resolve(readableMapOf("status" to "ok"))
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -85,7 +85,7 @@ class BreezLiquidSDKModule(reactContext: ReactApplicationContext) : ReactContext
 
         executor.execute {
             try {
-                var connectRequest = asConnectRequest(req) ?: run { throw LiquidSdkException.Generic(errMissingMandatoryField("req", "ConnectRequest")) }
+                var connectRequest = asConnectRequest(req) ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "ConnectRequest")) }
 
                 ensureWorkingDir(connectRequest.config.workingDir)
 
@@ -102,7 +102,7 @@ class BreezLiquidSDKModule(reactContext: ReactApplicationContext) : ReactContext
         executor.execute {
             try {
                 val emitter = reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java)
-                var eventListener = BreezLiquidSDKEventListener(emitter)
+                var eventListener = BreezSDKEventListener(emitter)
                 val res = getBindingLiquidSdk().addEventListener(eventListener)
 
                 eventListener.setId(res)

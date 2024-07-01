@@ -3,8 +3,8 @@
 use std::sync::Arc;
 
 use anyhow::Result;
-use breez_liquid_sdk::logger::Logger;
-use breez_liquid_sdk::{
+use breez_sdk_liquid::logger::Logger;
+use breez_sdk_liquid::{
     error::*, model::*, sdk::LiquidSdk, AesSuccessActionDataDecrypted, AesSuccessActionDataResult,
     BitcoinAddressData, CurrencyInfo, FiatCurrency, InputType, LNInvoice, LnUrlAuthError,
     LnUrlAuthRequestData, LnUrlCallbackStatus, LnUrlErrorData, LnUrlPayError, LnUrlPayErrorData,
@@ -39,7 +39,7 @@ impl UniffiBindingLogger {
 impl log::Log for UniffiBindingLogger {
     fn enabled(&self, m: &Metadata) -> bool {
         // ignore the internal uniffi log to prevent infinite loop.
-        return m.level() <= Level::Trace && *m.target() != *"breez_liquid_sdk_bindings";
+        return m.level() <= Level::Trace && *m.target() != *"breez_sdk_liquid_bindings";
     }
 
     fn log(&self, record: &Record) {
@@ -52,14 +52,14 @@ impl log::Log for UniffiBindingLogger {
 }
 
 /// If used, this must be called before `connect`
-pub fn set_logger(logger: Box<dyn Logger>) -> Result<(), LiquidSdkError> {
-    UniffiBindingLogger::init(logger).map_err(|_| LiquidSdkError::Generic {
+pub fn set_logger(logger: Box<dyn Logger>) -> Result<(), SdkError> {
+    UniffiBindingLogger::init(logger).map_err(|_| SdkError::Generic {
         err: "Logger already created".into(),
     })?;
     Ok(())
 }
 
-pub fn connect(req: ConnectRequest) -> Result<Arc<BindingLiquidSdk>, LiquidSdkError> {
+pub fn connect(req: ConnectRequest) -> Result<Arc<BindingLiquidSdk>, SdkError> {
     rt().block_on(async {
         let sdk = LiquidSdk::connect(req).await?;
         Ok(Arc::from(BindingLiquidSdk { sdk }))
@@ -82,15 +82,15 @@ pub struct BindingLiquidSdk {
 }
 
 impl BindingLiquidSdk {
-    pub fn add_event_listener(&self, listener: Box<dyn EventListener>) -> LiquidSdkResult<String> {
+    pub fn add_event_listener(&self, listener: Box<dyn EventListener>) -> SdkResult<String> {
         rt().block_on(self.sdk.add_event_listener(listener))
     }
 
-    pub fn remove_event_listener(&self, id: String) -> LiquidSdkResult<()> {
+    pub fn remove_event_listener(&self, id: String) -> SdkResult<()> {
         rt().block_on(self.sdk.remove_event_listener(id))
     }
 
-    pub fn get_info(&self) -> Result<GetInfoResponse, LiquidSdkError> {
+    pub fn get_info(&self) -> Result<GetInfoResponse, SdkError> {
         rt().block_on(self.sdk.get_info()).map_err(Into::into)
     }
 
@@ -170,22 +170,19 @@ impl BindingLiquidSdk {
         rt().block_on(self.sdk.lnurl_auth(req_data))
     }
 
-    pub fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, LiquidSdkError> {
+    pub fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, SdkError> {
         rt().block_on(self.sdk.fetch_fiat_rates())
     }
 
-    pub fn list_fiat_currencies(&self) -> Result<Vec<FiatCurrency>, LiquidSdkError> {
+    pub fn list_fiat_currencies(&self) -> Result<Vec<FiatCurrency>, SdkError> {
         rt().block_on(self.sdk.list_fiat_currencies())
     }
 
-    pub fn list_refundables(&self) -> LiquidSdkResult<Vec<RefundableSwap>> {
+    pub fn list_refundables(&self) -> SdkResult<Vec<RefundableSwap>> {
         rt().block_on(self.sdk.list_refundables())
     }
 
-    pub fn prepare_refund(
-        &self,
-        req: PrepareRefundRequest,
-    ) -> LiquidSdkResult<PrepareRefundResponse> {
+    pub fn prepare_refund(&self, req: PrepareRefundRequest) -> SdkResult<PrepareRefundResponse> {
         rt().block_on(self.sdk.prepare_refund(&req))
     }
 
@@ -193,29 +190,29 @@ impl BindingLiquidSdk {
         rt().block_on(self.sdk.refund(&req))
     }
 
-    pub fn rescan_onchain_swaps(&self) -> LiquidSdkResult<()> {
+    pub fn rescan_onchain_swaps(&self) -> SdkResult<()> {
         rt().block_on(self.sdk.rescan_onchain_swaps())
     }
 
-    pub fn sync(&self) -> LiquidSdkResult<()> {
+    pub fn sync(&self) -> SdkResult<()> {
         rt().block_on(self.sdk.sync()).map_err(Into::into)
     }
 
-    pub fn empty_wallet_cache(&self) -> LiquidSdkResult<()> {
+    pub fn empty_wallet_cache(&self) -> SdkResult<()> {
         self.sdk.empty_wallet_cache().map_err(Into::into)
     }
 
-    pub fn backup(&self, req: BackupRequest) -> LiquidSdkResult<()> {
+    pub fn backup(&self, req: BackupRequest) -> SdkResult<()> {
         self.sdk.backup(req).map_err(Into::into)
     }
 
-    pub fn restore(&self, req: RestoreRequest) -> LiquidSdkResult<()> {
+    pub fn restore(&self, req: RestoreRequest) -> SdkResult<()> {
         self.sdk.restore(req).map_err(Into::into)
     }
 
-    pub fn disconnect(&self) -> LiquidSdkResult<()> {
+    pub fn disconnect(&self) -> SdkResult<()> {
         rt().block_on(self.sdk.disconnect())
     }
 }
 
-uniffi::include_scaffolding!("breez_liquid_sdk");
+uniffi::include_scaffolding!("breez_sdk_liquid");

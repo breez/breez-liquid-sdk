@@ -4,7 +4,7 @@ mod persist;
 use std::{fs, path::PathBuf};
 
 use anyhow::{anyhow, Result};
-use breez_liquid_sdk::prelude::*;
+use breez_sdk_liquid::prelude::*;
 use clap::Parser;
 use commands::{handle_command, CliHelper, Command, CommandResult};
 use log::{error, info};
@@ -42,7 +42,7 @@ fn show_results(result: Result<String>) -> Result<()> {
 struct CliEventListener {}
 
 impl EventListener for CliEventListener {
-    fn on_event(&self, e: LiquidSdkEvent) {
+    fn on_event(&self, e: SdkEvent) {
         info!("Received event: {:?}", e);
     }
 }

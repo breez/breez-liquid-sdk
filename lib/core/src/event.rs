@@ -4,16 +4,16 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use anyhow::Result;
 use tokio::sync::{broadcast, RwLock};
 
-use crate::model::{EventListener, LiquidSdkEvent};
+use crate::model::{EventListener, SdkEvent};
 
 pub(crate) struct EventManager {
     listeners: RwLock<HashMap<String, Box<dyn EventListener>>>,
-    notifier: broadcast::Sender<LiquidSdkEvent>,
+    notifier: broadcast::Sender<SdkEvent>,
 }
 
 impl EventManager {
     pub fn new() -> Self {
-        let (notifier, _) = broadcast::channel::<LiquidSdkEvent>(100);
+        let (notifier, _) = broadcast::channel::<SdkEvent>(100);
 
         Self {
             listeners: Default::default(),
@@ -34,7 +34,7 @@ impl EventManager {
         (*self.listeners.write().await).remove(&id);
     }
 
-    pub async fn notify(&self, e: LiquidSdkEvent) {
+    pub async fn notify(&self, e: SdkEvent) {
         let _ = self.notifier.send(e.clone());
 
         for listener in (*self.listeners.read().await).values() {
@@ -42,7 +42,7 @@ impl EventManager {
         }
     }
 
-    pub(crate) fn subscribe(&self) -> broadcast::Receiver<LiquidSdkEvent> {
+    pub(crate) fn subscribe(&self) -> broadcast::Receiver<SdkEvent> {
         self.notifier.subscribe()
     }
 }

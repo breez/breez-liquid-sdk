@@ -1,5 +1,5 @@
 [package]
-name = "breez-liquid-sdk-bindings"
+name = "breez-sdk-liquid-bindings"
 edition = "2021"
 version.workspace = true
 
@@ -8,12 +8,12 @@ name = "uniffi-bindgen"
 path = "uniffi-bindgen.rs"
 
 [lib]
-name = "breez_liquid_sdk_bindings"
+name = "breez_sdk_liquid_bindings"
 crate-type = ["staticlib", "cdylib", "lib"]
 
 [dependencies]
 anyhow = { workspace = true }
-breez-liquid-sdk = { path = "../core" }
+breez-sdk-liquid = { path = "../core" }
 log = { workspace = true }
 uniffi = { workspace = true, features = [ "bindgen-tests", "cli" ] }
 # Bindgen used by KMP, version has to match the one supported by KMP

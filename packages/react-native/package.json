@@ -14,7 +14,7 @@
     "lib",
     "android",
     "ios",
-    "breez_liquid_sdk.podspec",
+    "breez_sdk_liquid.podspec",
     "!PUBLISHING.md",
     "!android/.gradle",
     "!android/.idea",

@@ -10,10 +10,10 @@ let package = Package(
         .iOS(.v11),
     ],
     products: [
-        .library(name: "BreezLiquidSDK", targets: ["breez_liquid_sdkFFI", "BreezLiquidSDK"]),
+        .library(name: "BreezSDKLiquid", targets: ["breez_sdk_liquidFFI", "BreezSDKLiquid"]),
     ],
     targets: [
-        .binaryTarget(name: "breez_liquid_sdkFFI", path: "./breez_liquid_sdkFFI.xcframework"),
-        .target(name: "BreezLiquidSDK", dependencies: ["breez_liquid_sdkFFI"]),
+        .binaryTarget(name: "breez_sdk_liquidFFI", path: "./breez_sdk_liquidFFI.xcframework"),
+        .target(name: "BreezSDKLiquid", dependencies: ["breez_sdk_liquidFFI"]),
     ]
 )
