@@ -10,3 +10,14 @@ cdylib_name = "breez_sdk_liquid_bindings"
 # https://mozilla.github.io/uniffi-rs/python/configuration.html
 [bindings.python]
 cdylib_name = "breez_sdk_liquid_bindings"
+
+# https://github.com/NordSecurity/uniffi-bindgen-cs/blob/main/docs/CONFIGURATION.md
+[bindings.csharp]
+package_name = "breez_sdk_liquid"
+cdylib_name = "breez_sdk_liquid_bindings"
+namespace = "Breez.Sdk.Liquid"
+
+# https://github.com/NordSecurity/uniffi-bindgen-go/blob/main/docs/CONFIGURATION.md
+[bindings.go]
+package_name = "breez_sdk_liquid"
+cdylib_name = "breez_sdk_liquid_bindings"

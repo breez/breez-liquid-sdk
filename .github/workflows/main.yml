@@ -98,6 +98,26 @@ jobs:
         working-directory: lib/bindings
         run: cargo build
 
+      - name: Build C# bindings
+        working-directory: lib/bindings       
+        run: |
+          cargo install uniffi-bindgen-cs --git https://github.com/NordSecurity/uniffi-bindgen-cs --tag v0.8.0+v0.25.0
+          uniffi-bindgen-cs src/breez_sdk_liquid.udl -o ffi/csharp -c ./uniffi.toml
+          cp ../target/debug/libbreez_sdk_liquid_bindings.so ffi/csharp
+
+      - name: Build golang bindings
+        working-directory: lib/bindings       
+        run: |
+          cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --tag v0.2.1+v0.25.0
+          uniffi-bindgen-go src/breez_sdk_liquid.udl -o ffi/golang -c ./uniffi.toml
+          cp ../target/debug/libbreez_sdk_liquid_bindings.so ffi/golang
+          cp -r ffi/golang/breez_sdk_liquid tests/bindings/golang/
+
+      - name: Setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19.9'
+
       - name: Setup python
         uses: actions/setup-python@v4
         with:

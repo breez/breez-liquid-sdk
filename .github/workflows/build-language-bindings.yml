@@ -125,30 +125,30 @@ jobs:
           name: bindings-python
           path: lib/bindings/ffi/python/breez_sdk_liquid.py
 
-#      - name: Build C# binding
-#        if: ${{ inputs.csharp }}
-#        working-directory: lib/bindings
-#        run: |
-#          cargo install uniffi-bindgen-cs --git https://github.com/breez/uniffi-bindgen-cs --branch namespace
-#          uniffi-bindgen-cs src/breez_sdk_liquid.udl -o ffi/csharp -c ./uniffi.toml
-#      
-#      - name: Archive C# binding
-#        if: ${{ inputs.csharp }}
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: bindings-csharp
-#          path: lib/bindings/ffi/csharp/breez_sdk_liquid.cs
-#    
-#      - name: Build golang binding
-#        if: ${{ inputs.golang }}
-#        working-directory: lib/bindings
-#        run: |
-#          cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --tag v0.1.5+v0.23.0
-#          uniffi-bindgen-go src/breez_sdk_liquid.udl -o ffi/golang -c ./uniffi.toml
-#  
-#      - name: Archive golang binding
-#        if: ${{ inputs.golang }}
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: bindings-golang
-#          path: lib/bindings/ffi/golang/breez/breez_sdk_liquid/breez_sdk_liquid.*
+      - name: Build C# binding
+        if: ${{ inputs.csharp }}
+        working-directory: lib/bindings
+        run: |
+          cargo install uniffi-bindgen-cs --git https://github.com/breez/uniffi-bindgen-cs --branch namespace
+          uniffi-bindgen-cs src/breez_sdk_liquid.udl -o ffi/csharp -c ./uniffi.toml
+      
+      - name: Archive C# binding
+        if: ${{ inputs.csharp }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bindings-csharp
+          path: lib/bindings/ffi/csharp/breez_sdk_liquid.cs
+    
+      - name: Build golang binding
+        if: ${{ inputs.golang }}
+        working-directory: lib/bindings
+        run: |
+          cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --tag v0.1.5+v0.23.0
+          uniffi-bindgen-go src/breez_sdk_liquid.udl -o ffi/golang -c ./uniffi.toml
+  
+      - name: Archive golang binding
+        if: ${{ inputs.golang }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bindings-golang
+          path: lib/bindings/ffi/golang/breez/breez_sdk_liquid/breez_sdk_liquid.*

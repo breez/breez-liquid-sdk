@@ -35,8 +35,9 @@ anyhow = "1.0"
 log = "0.4.20"
 once_cell = "1.19"
 thiserror = "1.0"
-uniffi = "0.27.1"
-uniffi_macros = "0.27.1"
+# Version must match that used by uniffi-bindgen-go
+uniffi = "0.25.0"
+uniffi_macros = "0.25.0"
 
 [patch.crates-io]
 # https://github.com/BlockstreamResearch/rust-secp256k1-zkp/pull/48/commits

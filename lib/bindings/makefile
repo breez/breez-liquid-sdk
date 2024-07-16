@@ -127,6 +127,31 @@ bindings-swift: ios-universal darwin-universal
 	rm langs/swift/Sources/BreezSDKLiquid/breez_sdk_liquidFFI.h
 	rm langs/swift/Sources/BreezSDKLiquid/breez_sdk_liquidFFI.modulemap
 
+csharp-darwin: darwin-universal
+	cargo install uniffi-bindgen-cs --git https://github.com/NordSecurity/uniffi-bindgen-cs --tag v0.8.0+v0.25.0
+	uniffi-bindgen-cs src/breez_sdk_liquid.udl -o ffi/csharp -c ./uniffi.toml
+	cp ../target/darwin-universal/release/libbreez_sdk_liquid_bindings.dylib ffi/csharp
+
+csharp-linux: $(SOURCES)
+	cargo install uniffi-bindgen-cs --git https://github.com/NordSecurity/uniffi-bindgen-cs --tag v0.8.0+v0.25.0
+	cargo build --release --target $(TARGET)
+	uniffi-bindgen-cs src/breez_sdk_liquid.udl -o ffi/csharp -c ./uniffi.toml
+	cp ../target/$(TARGET)/release/libbreez_sdk_liquid_bindings.so ffi/csharp
+
+## Go
+golang-darwin: darwin-universal
+	cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --tag v0.2.1+v0.25.0
+	uniffi-bindgen-go src/breez_sdk_liquid.udl -o ffi/golang -c ./uniffi.toml
+	cp ../target/darwin-universal/release/libbreez_sdk_liquid_bindings.dylib ffi/golang
+	cp -r ffi/golang/breez_sdk_liquid tests/bindings/golang/
+
+golang-linux: $(SOURCES)
+	cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --tag v0.2.1+v0.25.0
+	cargo build --release --target $(TARGET)
+	uniffi-bindgen-go src/breez_sdk_liquid.udl -o ffi/golang -c ./uniffi.toml
+	cp ../target/$(TARGET)/release/libbreez_sdk_liquid_bindings.so ffi/golang
+	cp -r ffi/golang/breez_sdk_liquid tests/bindings/golang/
+
 ## Python
 python-linux: $(SOURCES)
 	cargo build --release --target $(TARGET)
