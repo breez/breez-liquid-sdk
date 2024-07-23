@@ -322,8 +322,8 @@ impl LiquidSdk {
                         match cloned.persister.list_pending_send_swaps() {
                             Ok(pending_send_swaps) => {
                                 for swap in pending_send_swaps {
-                                    if let Err(e) = cloned.check_send_swap_expiration(&swap).await {
-                                        error!("Error checking expiration for Send Swap {}: {e:?}", swap.id);
+                                    if let Err(e) = cloned.try_send_swap_refund(&swap).await {
+                                        error!("Could not execute refund for Send Swap {}: {e:?}", swap.id);
                                     }
                                 }
                             }
@@ -332,8 +332,8 @@ impl LiquidSdk {
                         match cloned.persister.list_pending_chain_swaps() {
                             Ok(pending_chain_swaps) => {
                                 for swap in pending_chain_swaps {
-                                    if let Err(e) = cloned.check_chain_swap_expiration(&swap).await {
-                                        error!("Error checking expiration for Chain Swap {}: {e:?}", swap.id);
+                                    if let Err(e) = cloned.try_chain_swap_refund(&swap).await {
+                                        error!("Could not execute refund for Chain Swap {}: {e:?}", swap.id);
                                     }
                                 }
                             }
@@ -349,65 +349,115 @@ impl LiquidSdk {
         });
     }
 
-    async fn check_chain_swap_expiration(&self, chain_swap: &ChainSwap) -> Result<()> {
-        if chain_swap.user_lockup_tx_id.is_some() && chain_swap.refund_tx_id.is_none() {
-            match chain_swap.direction {
-                Direction::Incoming => {
-                    let swap_script = chain_swap.get_lockup_swap_script()?.as_bitcoin_script()?;
-                    let current_height =
-                        self.bitcoin_chain_service.lock().await.tip()?.height as u32;
-                    let locktime_from_height =
-                        LockTime::from_height(current_height).map_err(|e| {
-                            PaymentError::Generic {
-                                err: format!(
-                                    "Error getting locktime from height {current_height:?}: {e}",
-                                ),
-                            }
-                        })?;
-
-                    info!("Checking Chain Swap {} expiration: locktime_from_height = {locktime_from_height:?},  swap_script.locktime = {:?}", chain_swap.id, swap_script.locktime);
-                    if swap_script.locktime.is_implied_by(locktime_from_height) {
-                        let id: &String = &chain_swap.id;
-                        info!("Chain Swap {} user lockup tx was broadcast. Setting the swap to refundable.", id);
-                        self.chain_swap_state_handler
-                            .update_swap_info(id, Refundable, None, None, None, None)
-                            .await?;
-                    }
-                }
-                Direction::Outgoing => {
-                    let swap_script = chain_swap.get_lockup_swap_script()?.as_liquid_script()?;
-                    let current_height = self.liquid_chain_service.lock().await.tip().await?;
-                    let locktime_from_height = elements::LockTime::from_height(current_height)?;
-
-                    info!("Checking Chain Swap {} expiration: locktime_from_height = {locktime_from_height:?},  swap_script.locktime = {:?}", chain_swap.id, swap_script.locktime);
-                    if utils::is_locktime_expired(locktime_from_height, swap_script.locktime) {
-                        self.chain_swap_state_handler
-                            .refund_outgoing_swap(chain_swap)
-                            .await?;
-                    }
-                }
-            }
+    /// Tries refunding a chain swap:
+    /// ## Outgoing Chain Swap
+    /// For outgoing chain swaps, we check whether the status is `RefundPending` and
+    /// the locktime has expired. If so, we refund non-cooperatively; else we refund cooperatively
+    ///
+    /// ## Incoming Chain Swap
+    /// For incoming chain swaps, we check whether the status is `Pending` and the locktime has expired.
+    /// If so, we set the swap status as `Refundable`
+    async fn try_chain_swap_refund(&self, chain_swap: &ChainSwap) -> Result<()> {
+        if chain_swap.user_lockup_tx_id.is_none() || chain_swap.refund_tx_id.is_some() {
+            return Err(anyhow::anyhow!(
+                "Lockup_tx not present or refund_tx already broadcast"
+            ));
         }
+
+        if chain_swap.state == PaymentState::RefundPending
+            && chain_swap.direction == Direction::Outgoing
+        {
+            let is_cooperative = !self.check_chain_swap_expiration(chain_swap).await?;
+            self.chain_swap_state_handler
+                .refund_outgoing_swap(chain_swap, is_cooperative)
+                .await?;
+        }
+
+        if chain_swap.state == PaymentState::Pending
+            && chain_swap.direction == Direction::Incoming
+            && self.check_chain_swap_expiration(chain_swap).await?
+        {
+            info!(
+                "Chain Swap {} user lockup tx was broadcast. Setting the swap to refundable.",
+                &chain_swap.id
+            );
+            self.chain_swap_state_handler
+                .update_swap_info(&chain_swap.id, Refundable, None, None, None, None)
+                .await?;
+        }
+
         Ok(())
     }
 
-    async fn check_send_swap_expiration(&self, send_swap: &SendSwap) -> Result<()> {
-        if send_swap.lockup_tx_id.is_some() && send_swap.refund_tx_id.is_none() {
-            let swap_script = send_swap.get_swap_script()?;
-            let current_height = self.liquid_chain_service.lock().await.tip().await?;
-            let locktime_from_height = elements::LockTime::from_height(current_height)?;
+    async fn check_chain_swap_expiration(&self, chain_swap: &ChainSwap) -> Result<bool> {
+        match chain_swap.direction {
+            Direction::Incoming => {
+                let swap_script = chain_swap.get_lockup_swap_script()?.as_bitcoin_script()?;
+                let current_height = self.bitcoin_chain_service.lock().await.tip()?.height as u32;
+                let locktime_from_height =
+                    LockTime::from_height(current_height).map_err(|e| PaymentError::Generic {
+                        err: format!("Error getting locktime from height {current_height:?}: {e}",),
+                    })?;
 
-            info!("Checking Send Swap {} expiration: locktime_from_height = {locktime_from_height:?},  swap_script.locktime = {:?}", send_swap.id, swap_script.locktime);
-            if utils::is_locktime_expired(locktime_from_height, swap_script.locktime) {
-                let id = &send_swap.id;
-                let refund_tx_id = self.send_swap_state_handler.refund(send_swap).await?;
-                info!("Broadcast refund tx for Send Swap {id}. Tx id: {refund_tx_id}");
-                self.send_swap_state_handler
-                    .update_swap_info(id, Pending, None, None, Some(&refund_tx_id))
-                    .await?;
+                info!("Checking Chain Swap {} expiration: locktime_from_height = {locktime_from_height:?},  swap_script.locktime = {:?}", chain_swap.id, swap_script.locktime);
+                Ok(swap_script.locktime.is_implied_by(locktime_from_height))
+            }
+            Direction::Outgoing => {
+                let swap_script = chain_swap.get_lockup_swap_script()?.as_liquid_script()?;
+                let current_height = self.liquid_chain_service.lock().await.tip().await?;
+                let locktime_from_height = elements::LockTime::from_height(current_height)?;
+
+                info!("Checking Chain Swap {} expiration: locktime_from_height = {locktime_from_height:?},  swap_script.locktime = {:?}", chain_swap.id, swap_script.locktime);
+                Ok(utils::is_locktime_expired(
+                    locktime_from_height,
+                    swap_script.locktime,
+                ))
             }
         }
+    }
+
+    /// Tries refunding a pending send swap if swap has been marked as `RefundPending` and:
+    /// 1. Swap has expired and locktime has elapsed, we try refunding non-cooperatively
+    /// 2. No `refund_tx_id` is present, we try to refund cooperatively
+    async fn try_send_swap_refund(&self, send_swap: &SendSwap) -> Result<()> {
+        if send_swap.state != PaymentState::RefundPending {
+            return Ok(());
+        }
+
+        if send_swap.lockup_tx_id.is_none() || send_swap.refund_tx_id.is_some() {
+            return Err(anyhow::anyhow!(
+                "Lockup_tx not present or refund_tx already broadcast"
+            ));
+        }
+
+        let refund_tx_id = if self.check_send_swap_expiration(send_swap).await? {
+            debug!("Locktime has elapsed, proceeding with non-cooperative refund.");
+            self.send_swap_state_handler
+                .refund_non_cooperative(send_swap)
+                .await?
+        } else {
+            self.send_swap_state_handler
+                .refund_cooperative(send_swap)
+                .await?
+        };
+
+        self.send_swap_state_handler
+            .update_swap_info(&send_swap.id, Pending, None, None, Some(&refund_tx_id))
+            .await?;
+
         Ok(())
+    }
+
+    async fn check_send_swap_expiration(&self, send_swap: &SendSwap) -> Result<bool> {
+        let swap_script = send_swap.get_swap_script()?;
+        let current_height = self.liquid_chain_service.lock().await.tip().await?;
+        let locktime_from_height = elements::LockTime::from_height(current_height)?;
+
+        info!("Checking Send Swap {} expiration: locktime_from_height = {locktime_from_height:?},  swap_script.locktime = {:?}", send_swap.id, swap_script.locktime);
+        Ok(utils::is_locktime_expired(
+            locktime_from_height,
+            swap_script.locktime,
+        ))
     }
 
     async fn notify_event_listeners(&self, e: SdkEvent) -> Result<()> {

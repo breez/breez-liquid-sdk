@@ -465,18 +465,9 @@ impl ChainSwapStateHandler {
                         warn!("Chain Swap {id} is in an unrecoverable state: {swap_state:?}");
                         match swap.user_lockup_tx_id.clone() {
                             Some(_) => {
-                                warn!("Chain Swap {id} user lockup tx has been broadcast. Attempting refund.");
-                                let refund_tx_id = self.refund_outgoing_swap(swap).await?;
-                                info!("Broadcast refund tx for Chain Swap {id}. Tx id: {refund_tx_id}");
-                                self.update_swap_info(
-                                    id,
-                                    RefundPending,
-                                    None,
-                                    None,
-                                    None,
-                                    Some(&refund_tx_id),
-                                )
-                                .await?;
+                                warn!("Chain Swap {id} user lockup tx has been broadcast. Marking payment as `RefundPending`.");
+                                self.update_swap_info(id, RefundPending, None, None, None, None)
+                                    .await?;
                             }
                             None => {
                                 warn!("Chain Swap {id} user lockup tx was never broadcast. Resolving payment as failed.");
@@ -686,6 +677,7 @@ impl ChainSwapStateHandler {
     pub(crate) async fn refund_outgoing_swap(
         &self,
         swap: &ChainSwap,
+        is_cooperative: bool,
     ) -> Result<String, PaymentError> {
         match swap.refund_tx_id.clone() {
             Some(refund_tx_id) => Err(PaymentError::Generic {
@@ -699,29 +691,23 @@ impl ChainSwapStateHandler {
                 let (_, broadcast_fees_sat) =
                     self.swapper
                         .prepare_chain_swap_refund(swap, &output_address, 0.1)?;
-                let refund_res = self.swapper.refund_chain_swap_cooperative(
-                    swap,
-                    &output_address,
-                    broadcast_fees_sat,
-                );
-                let refund_tx_id = match refund_res {
-                    Ok(res) => Ok(res),
-                    Err(e) => {
-                        warn!("Cooperative refund failed: {:?}", e);
-                        let current_height = self.liquid_chain_service.lock().await.tip().await?;
-                        self.swapper.refund_chain_swap_non_cooperative(
-                            swap,
-                            broadcast_fees_sat,
-                            &output_address,
-                            current_height,
-                        )
-                    }
-                }?;
 
-                info!(
-                    "Broadcast refund tx for Chain Swap {}. Tx id: {refund_tx_id}",
-                    swap.id
-                );
+                let refund_tx_id = if is_cooperative {
+                    self.swapper.refund_chain_swap_cooperative(
+                        swap,
+                        &output_address,
+                        broadcast_fees_sat,
+                    )?
+                } else {
+                    let current_height = self.liquid_chain_service.lock().await.tip().await?;
+                    self.swapper.refund_chain_swap_non_cooperative(
+                        swap,
+                        broadcast_fees_sat,
+                        &output_address,
+                        current_height,
+                    )?
+                };
+
                 self.update_swap_info(
                     &swap.id,
                     RefundPending,
@@ -731,6 +717,12 @@ impl ChainSwapStateHandler {
                     Some(&refund_tx_id),
                 )
                 .await?;
+
+                info!(
+                    "Broadcast refund tx for Chain Swap {}. Tx id: {refund_tx_id}",
+                    swap.id
+                );
+
                 Ok(refund_tx_id)
             }
         }

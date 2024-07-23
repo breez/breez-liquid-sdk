@@ -591,7 +591,7 @@ impl Swapper for BoltzSwapper {
         current_height: u32,
     ) -> Result<String, PaymentError> {
         info!(
-            "Initiating non cooperative refund for Chain Swap {}",
+            "Initiating non-cooperative refund for Chain Swap {}",
             &swap.id
         );
         let refund_keypair = swap.get_refund_keypair()?;
@@ -614,6 +614,10 @@ impl Swapper for BoltzSwapper {
         output_address: &str,
         current_height: u32,
     ) -> Result<String, PaymentError> {
+        info!(
+            "Initiating non-cooperative refund for Send Swap {}",
+            &swap.id
+        );
         let swap_script = SwapScriptV2::Liquid(swap.get_swap_script()?);
         let refund_keypair = swap.get_refund_keypair()?;
         self.refund_swap_non_cooperative(
