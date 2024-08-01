@@ -220,6 +220,9 @@ impl LiquidSdk {
             .clone()
             .start(reconnect_handler, self.shutdown_receiver.clone())
             .await;
+        self.send_swap_state_handler
+            .start(self.shutdown_receiver.clone())
+            .await;
         self.chain_swap_state_handler
             .clone()
             .start(self.shutdown_receiver.clone())
@@ -322,7 +325,7 @@ impl LiquidSdk {
                         match cloned.persister.list_pending_send_swaps() {
                             Ok(pending_send_swaps) => {
                                 for swap in pending_send_swaps {
-                                    if let Err(e) = cloned.try_send_swap_refund(&swap).await {
+                                    if let Err(e) = cloned.try_non_cooperative_send_swap_refund(&swap).await {
                                         error!("Could not execute refund for Send Swap {}: {e:?}", swap.id);
                                     }
                                 }
@@ -332,7 +335,7 @@ impl LiquidSdk {
                         match cloned.persister.list_pending_chain_swaps() {
                             Ok(pending_chain_swaps) => {
                                 for swap in pending_chain_swaps {
-                                    if let Err(e) = cloned.try_chain_swap_refund(&swap).await {
+                                    if let Err(e) = cloned.try_non_cooperative_chain_swap_refund(&swap).await {
                                         error!("Could not execute refund for Chain Swap {}: {e:?}", swap.id);
                                     }
                                 }
@@ -349,42 +352,38 @@ impl LiquidSdk {
         });
     }
 
-    /// Tries refunding a chain swap:
-    /// ## Outgoing Chain Swap
-    /// For outgoing chain swaps, we check whether the status is `RefundPending` and
-    /// the locktime has expired. If so, we refund non-cooperatively; else we refund cooperatively
+    /// # Outgoing Swap
+    /// Tries refunding a chain swap non-cooperatively if the locktime has expired
     ///
-    /// ## Incoming Chain Swap
-    /// For incoming chain swaps, we check whether the status is `Pending` and the locktime has expired.
-    /// If so, we set the swap status as `Refundable`
-    async fn try_chain_swap_refund(&self, chain_swap: &ChainSwap) -> Result<()> {
+    /// # Incoming Swaps
+    /// Sets the status to `Refundable` if the locktime has expired
+    async fn try_non_cooperative_chain_swap_refund(&self, chain_swap: &ChainSwap) -> Result<()> {
         if chain_swap.user_lockup_tx_id.is_none() || chain_swap.refund_tx_id.is_some() {
             return Err(anyhow::anyhow!(
                 "Lockup_tx not present or refund_tx already broadcast"
             ));
         }
 
-        if chain_swap.state == PaymentState::RefundPending
-            && chain_swap.direction == Direction::Outgoing
-        {
-            let is_cooperative = !self.check_chain_swap_expiration(chain_swap).await?;
-            self.chain_swap_state_handler
-                .refund_outgoing_swap(chain_swap, is_cooperative)
-                .await?;
+        if !self.check_chain_swap_expiration(chain_swap).await? {
+            return Ok(());
         }
 
-        if chain_swap.state == PaymentState::Pending
-            && chain_swap.direction == Direction::Incoming
-            && self.check_chain_swap_expiration(chain_swap).await?
-        {
-            info!(
-                "Chain Swap {} user lockup tx was broadcast. Setting the swap to refundable.",
-                &chain_swap.id
-            );
-            self.chain_swap_state_handler
-                .update_swap_info(&chain_swap.id, Refundable, None, None, None, None)
-                .await?;
-        }
+        match chain_swap.direction {
+            Direction::Outgoing => {
+                self.chain_swap_state_handler
+                    .refund_outgoing_swap(chain_swap, false)
+                    .await?;
+            }
+            Direction::Incoming => {
+                info!(
+                    "Chain Swap {} user lockup tx was broadcast. Setting the swap to refundable.",
+                    &chain_swap.id
+                );
+                self.chain_swap_state_handler
+                    .update_swap_info(&chain_swap.id, Refundable, None, None, None, None)
+                    .await?;
+            }
+        };
 
         Ok(())
     }
@@ -416,10 +415,8 @@ impl LiquidSdk {
         }
     }
 
-    /// Tries refunding a pending send swap if swap has been marked as `RefundPending` and:
-    /// 1. Swap has expired and locktime has elapsed, we try refunding non-cooperatively
-    /// 2. No `refund_tx_id` is present, we try to refund cooperatively
-    async fn try_send_swap_refund(&self, send_swap: &SendSwap) -> Result<()> {
+    /// Tries refunding a pending send swap if its locktime has elapsed
+    async fn try_non_cooperative_send_swap_refund(&self, send_swap: &SendSwap) -> Result<()> {
         if send_swap.state != PaymentState::RefundPending {
             return Ok(());
         }
@@ -430,20 +427,17 @@ impl LiquidSdk {
             ));
         }
 
-        let refund_tx_id = if self.check_send_swap_expiration(send_swap).await? {
+        if self.check_send_swap_expiration(send_swap).await? {
             debug!("Locktime has elapsed, proceeding with non-cooperative refund.");
-            self.send_swap_state_handler
+            let refund_tx_id = self
+                .send_swap_state_handler
                 .refund_non_cooperative(send_swap)
-                .await?
-        } else {
-            self.send_swap_state_handler
-                .refund_cooperative(send_swap)
-                .await?
-        };
+                .await?;
 
-        self.send_swap_state_handler
-            .update_swap_info(&send_swap.id, Pending, None, None, Some(&refund_tx_id))
-            .await?;
+            self.send_swap_state_handler
+                .update_swap_info(&send_swap.id, Pending, None, None, Some(&refund_tx_id))
+                .await?;
+        };
 
         Ok(())
     }

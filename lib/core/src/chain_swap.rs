@@ -34,6 +34,7 @@ pub(crate) struct ChainSwapStateHandler {
     liquid_chain_service: Arc<Mutex<dyn LiquidChainService>>,
     bitcoin_chain_service: Arc<Mutex<dyn BitcoinChainService>>,
     subscription_notifier: broadcast::Sender<String>,
+    refundable_swaps: Arc<Mutex<Vec<ChainSwap>>>,
 }
 
 impl ChainSwapStateHandler {
@@ -54,20 +55,32 @@ impl ChainSwapStateHandler {
             liquid_chain_service,
             bitcoin_chain_service,
             subscription_notifier,
+            refundable_swaps: Default::default(),
         })
     }
 
     pub(crate) async fn start(self: Arc<Self>, mut shutdown: watch::Receiver<()>) {
         let cloned = self.clone();
         tokio::spawn(async move {
-            let mut interval = tokio::time::interval(Duration::from_secs(60 * 10));
-            interval.set_missed_tick_behavior(MissedTickBehavior::Skip);
+            let mut rescan_interval = tokio::time::interval(Duration::from_secs(60 * 10));
+            rescan_interval.set_missed_tick_behavior(MissedTickBehavior::Burst);
+
+            let mut refund_interval = tokio::time::interval(Duration::from_secs(10));
+            refund_interval.set_missed_tick_behavior(MissedTickBehavior::Skip);
 
             loop {
                 tokio::select! {
-                    _ = interval.tick() => {
+                    _ = rescan_interval.tick() => {
                         if let Err(e) = cloned.rescan_incoming_chain_swaps().await {
                             error!("Error checking chain swaps: {e:?}");
+                        }
+                    },
+                    _ = refund_interval.tick() => {
+                        let swaps = cloned.refundable_swaps.lock().await;
+                        for swap in swaps.iter() {
+                            if let Err(err) = cloned.refund_outgoing_swap(swap, true).await {
+                                warn!("Could not refund Chain swap cooperatively: {err:?}");
+                            }
                         }
                     },
                     _ = shutdown.changed() => {
@@ -465,9 +478,9 @@ impl ChainSwapStateHandler {
                         warn!("Chain Swap {id} is in an unrecoverable state: {swap_state:?}");
                         match swap.user_lockup_tx_id.clone() {
                             Some(_) => {
-                                warn!("Chain Swap {id} user lockup tx has been broadcast. Marking payment as `RefundPending`.");
-                                self.update_swap_info(id, RefundPending, None, None, None, None)
-                                    .await?;
+                                warn!("Chain Swap {id} user lockup tx has been broadcast.");
+                                let mut refundable_swaps = self.refundable_swaps.lock().await;
+                                refundable_swaps.push(swap.clone());
                             }
                             None => {
                                 warn!("Chain Swap {id} user lockup tx was never broadcast. Resolving payment as failed.");

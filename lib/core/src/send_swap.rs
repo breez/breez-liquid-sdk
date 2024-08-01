@@ -1,4 +1,4 @@
-use std::{str::FromStr, sync::Arc};
+use std::{str::FromStr, sync::Arc, time::Duration};
 
 use anyhow::{anyhow, Result};
 use boltz_client::swaps::boltz;
@@ -9,7 +9,8 @@ use log::{debug, error, info, warn};
 use lwk_wollet::bitcoin::Witness;
 use lwk_wollet::elements::Transaction;
 use lwk_wollet::hashes::{sha256, Hash};
-use tokio::sync::{broadcast, Mutex};
+use tokio::sync::{broadcast, watch, Mutex};
+use tokio::time::MissedTickBehavior;
 
 use crate::chain::liquid::LiquidChainService;
 use crate::model::PaymentState::{
@@ -33,6 +34,7 @@ pub(crate) struct SendSwapStateHandler {
     swapper: Arc<dyn Swapper>,
     chain_service: Arc<Mutex<dyn LiquidChainService>>,
     subscription_notifier: broadcast::Sender<String>,
+    refundable_swaps: Arc<Mutex<Vec<SendSwap>>>,
 }
 
 impl SendSwapStateHandler {
@@ -51,7 +53,33 @@ impl SendSwapStateHandler {
             swapper,
             chain_service,
             subscription_notifier,
+            refundable_swaps: Default::default(),
         }
+    }
+
+    pub(crate) async fn start(&self, mut shutdown: watch::Receiver<()>) {
+        let cloned = self.clone();
+        tokio::spawn(async move {
+            let mut interval = tokio::time::interval(Duration::from_secs(10));
+            interval.set_missed_tick_behavior(MissedTickBehavior::Skip);
+
+            loop {
+                tokio::select! {
+                    _ = interval.tick() => {
+                        let swaps = cloned.refundable_swaps.lock().await;
+                        for swap in swaps.iter() {
+                            if let Err(err) = cloned.refund_cooperative(swap).await {
+                                warn!("Could not refund Send swap cooperatively: {err:?}");
+                            }
+                        }
+                    },
+                    _ = shutdown.changed() => {
+                        info!("Received shutdown signal, exiting chain swap loop");
+                        return;
+                    }
+                }
+            }
+        });
     }
 
     pub(crate) fn subscribe_payment_updates(&self) -> broadcast::Receiver<String> {
@@ -156,10 +184,9 @@ impl SendSwapStateHandler {
                         "Refund tx for Send Swap {id} was already broadcast: txid {refund_tx_id}"
                     ),
                         None => {
-                            warn!("Send Swap {id} is in an unrecoverable state: {swap_state:?}, and lockup tx has been broadcast. Marking payment as `RefundPending`.");
-
-                            self.update_swap_info(id, RefundPending, None, None, None)
-                                .await?;
+                            warn!("Send Swap {id} is in an unrecoverable state: {swap_state:?}, and lockup tx has been broadcast.");
+                            let mut refundable_swaps = self.refundable_swaps.lock().await;
+                            refundable_swaps.push(swap);
                         }
                     },
                     // Do not attempt broadcasting a refund if lockup tx was never sent and swap is
