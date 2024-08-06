@@ -825,7 +825,7 @@ pub enum PaymentState {
 
     /// ## Send and Chain Swaps
     ///
-    /// This is the status when a refund was initiated and our refund tx was broadcast
+    /// This is the status when a refund was initiated and/or our refund tx was broadcast
     ///
     /// When the refund tx is broadcast, `refund_tx_id` is set in the swap.
     RefundPending = 6,
