@@ -90,6 +90,10 @@ jobs:
           zip -9 -r breez_sdk_liquidFFI.xcframework.zip breez_sdk_liquidFFI.xcframework
           echo "XCF_CHECKSUM=`swift package compute-checksum breez_sdk_liquidFFI.xcframework.zip`" >> $GITHUB_ENV
 
+      - name: Remove dist Sources
+        working-directory: dist
+        run: git rm -r Sources
+
       - name: Update Swift Package definition
         working-directory: build/lib/bindings/langs/swift
         run: |
