@@ -109,7 +109,7 @@ impl Swapper for MockSwapper {
             hash: generate_random_string(10),
             rate: 0.0,
             limits: PairLimits {
-                maximal: std::u64::MAX,
+                maximal: u64::MAX,
                 minimal: 0,
                 maximal_zero_conf: 100_000,
             },
@@ -154,7 +154,7 @@ impl Swapper for MockSwapper {
             hash: generate_random_string(10),
             rate: 0.0,
             limits: PairLimits {
-                maximal: std::u64::MAX,
+                maximal: u64::MAX,
                 minimal: 0,
                 maximal_zero_conf: 100_000,
             },
@@ -260,7 +260,7 @@ impl Swapper for MockSwapper {
             hash: "".to_string(),
             rate: 0.0,
             limits: ReverseLimits {
-                maximal: std::u64::MAX,
+                maximal: u64::MAX,
                 minimal: 0,
             },
             fees: ReverseFees {

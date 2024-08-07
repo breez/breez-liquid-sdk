@@ -195,7 +195,7 @@ pub struct ConnectRequest {
 }
 
 /// The receive methods supported by the SDK
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Eq, PartialEq)]
 pub enum PaymentMethod {
     Lightning,
     BitcoinAddress,
@@ -262,7 +262,7 @@ pub struct OnchainPaymentLimitsResponse {
 #[derive(Debug, Serialize, Clone)]
 pub struct PrepareSendRequest {
     /// The destination we intend to pay to.
-    /// Currently supports BIP21 URIs, BOLT11 invoices and Liquid addresses
+    /// Supports BIP21 URIs, BOLT11 invoices and Liquid addresses
     pub destination: String,
 
     /// Should only be set when paying directly onchain or to a BIP21 URI
@@ -1190,14 +1190,14 @@ impl From<SwapTree> for InternalSwapTree {
 /// Contains the result of the entire LNURL-pay interaction, as reported by the LNURL endpoint.
 ///
 /// * `EndpointSuccess` indicates the payment is complete. The endpoint may return a `SuccessActionProcessed`,
-/// in which case, the wallet has to present it to the user as described in
-/// <https://github.com/lnurl/luds/blob/luds/09.md>
+///   in which case, the wallet has to present it to the user as described in
+///   <https://github.com/lnurl/luds/blob/luds/09.md>
 ///
 /// * `EndpointError` indicates a generic issue the LNURL endpoint encountered, including a freetext
-/// field with the reason.
+///   field with the reason.
 ///
 /// * `PayError` indicates that an error occurred while trying to pay the invoice from the LNURL endpoint.
-/// This includes the payment hash of the failed invoice and the failure reason.
+///   This includes the payment hash of the failed invoice and the failure reason.
 #[derive(Serialize)]
 pub enum LnUrlPayResult {
     EndpointSuccess { data: LnUrlPaySuccessData },

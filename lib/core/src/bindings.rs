@@ -5,12 +5,17 @@ use std::sync::Arc;
 use anyhow::Result;
 use flutter_rust_bridge::frb;
 use log::{Level, LevelFilter, Metadata, Record, SetLoggerError};
-pub use sdk_common::prelude::{
-    AesSuccessActionDataDecrypted, AesSuccessActionDataResult, BitcoinAddressData, CurrencyInfo,
-    FiatCurrency, InputType, LNInvoice, LnUrlAuthRequestData, LnUrlErrorData, LnUrlPayErrorData,
-    LnUrlPayRequest, LnUrlPayRequestData, LnUrlWithdrawRequest, LnUrlWithdrawRequestData,
-    LocaleOverrides, LocalizedName, MessageSuccessActionData, Network, Rate, RouteHint,
-    RouteHintHop, SuccessActionProcessed, Symbol, UrlSuccessActionData,
+
+pub use sdk_common::{
+    liquid::LiquidAddressData,
+    prelude::{
+        AesSuccessActionDataDecrypted, AesSuccessActionDataResult, BitcoinAddressData,
+        CurrencyInfo, FiatCurrency, InputType, LNInvoice, LnUrlAuthRequestData, LnUrlErrorData,
+        LnUrlPayErrorData, LnUrlPayRequest, LnUrlPayRequestData, LnUrlWithdrawRequest,
+        LnUrlWithdrawRequestData, LocaleOverrides, LocalizedName, MessageSuccessActionData,
+        Network, Rate, RouteHint, RouteHintHop, SuccessActionProcessed, Symbol,
+        UrlSuccessActionData,
+    },
 };
 
 use crate::{error::*, frb_generated::StreamSink, model::*, sdk::LiquidSdk};
@@ -301,6 +306,7 @@ pub struct _RouteHintHop {
 #[frb(mirror(InputType))]
 pub enum _InputType {
     BitcoinAddress { address: BitcoinAddressData },
+    LiquidAddress { address: LiquidAddressData },
     Bolt11 { invoice: LNInvoice },
     NodeId { node_id: String },
     Url { url: String },
@@ -314,6 +320,16 @@ pub enum _InputType {
 pub struct _BitcoinAddressData {
     pub address: String,
     pub network: sdk_common::prelude::Network,
+    pub amount_sat: Option<u64>,
+    pub label: Option<String>,
+    pub message: Option<String>,
+}
+
+#[frb(mirror(LiquidAddressData))]
+pub struct _LiquidAddressData {
+    pub address: String,
+    pub network: Network,
+    pub asset_id: Option<String>,
     pub amount_sat: Option<u64>,
     pub label: Option<String>,
     pub message: Option<String>,
@@ -683,8 +699,9 @@ pub mod duplicates {
     ///
     /// * `Ok` indicates the interaction with the endpoint was valid, and the endpoint
     ///  - started to pay the invoice asynchronously in the case of LNURL-withdraw,
-    ///  - verified the client signature in the case of LNURL-auth,////// * `Error` indicates a generic issue the LNURL endpoint encountered, including a freetext
-    /// description of the reason.
+    ///  - verified the client signature in the case of LNURL-auth,
+    /// * `Error` indicates a generic issue the LNURL endpoint encountered, including a freetext
+    ///   description of the reason.
     ///
     /// Both cases are described in LUD-03 <https://github.com/lnurl/luds/blob/luds/03.md> & LUD-04: <https://github.com/lnurl/luds/blob/luds/04.md>
     #[derive(Clone, Deserialize, Debug, Serialize)]

@@ -66,7 +66,6 @@ dictionary LiquidAddressData {
     u64? amount_sat;
     string? label;
     string? message;
-    string? invoice;
 };
 
 dictionary LnUrlPayRequestData {
@@ -349,14 +348,20 @@ dictionary SendPaymentResponse {
     Payment payment;
 };
 
+enum PaymentMethod {
+    "Lightning",
+    "BitcoinAddress",
+    "LiquidAddress",
+};
+
 dictionary PrepareReceiveRequest {
-    u64? payer_amount_sat;
-    bool use_lightning;
+    u64? amount_sat;
+    PaymentMethod payment_method;
 };
 
 dictionary PrepareReceiveResponse {
-    u64? payer_amount_sat;
-    bool use_lightning;
+    u64? amount_sat;
+    PaymentMethod payment_method;
     u64 fees_sat;
 };
 

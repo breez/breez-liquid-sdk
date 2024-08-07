@@ -23,7 +23,6 @@ class _ReceivePaymentDialogState extends State<ReceivePaymentDialog> {
   bool creatingInvoice = false;
 
   String? invoice;
-  String? invoiceId;
 
   StreamSubscription<List<Payment>>? streamSubscription;
 
@@ -31,9 +30,10 @@ class _ReceivePaymentDialogState extends State<ReceivePaymentDialog> {
   void initState() {
     super.initState();
     streamSubscription = widget.paymentsStream.listen((paymentList) {
-      if (invoiceId != null && invoiceId!.isNotEmpty) {
-        if (paymentList.any((e) => e.swapId == invoiceId!)) {
-          debugPrint("Payment Received! Id: $invoiceId");
+      if (invoice != null && invoice!.isNotEmpty) {
+        // TODO: How do we match created invoice to newly received payments with new structural changes?
+        if (paymentList.any((e) => e.swapId == invoice! || e.bolt11 == invoice! || e.txId == invoice!)) {
+          debugPrint("Payment Received! Id: $invoice");
           if (context.mounted) {
             Navigator.of(context).pop();
           }
@@ -134,28 +134,29 @@ class _ReceivePaymentDialogState extends State<ReceivePaymentDialog> {
                     try {
                       setState(() => creatingInvoice = true);
                       int amountSat = int.parse(payerAmountController.text);
-                      PrepareReceivePaymentRequest prepareReceiveReq =
-                          PrepareReceivePaymentRequest(payerAmountSat: BigInt.from(amountSat));
-                      PrepareReceivePaymentResponse prepareRes = await widget.liquidSDK.prepareReceivePayment(
+                      PrepareReceiveRequest prepareReceiveReq = PrepareReceiveRequest(
+                        paymentMethod: PaymentMethod.lightning,
+                        amountSat: BigInt.from(amountSat),
+                      );
+                      PrepareReceiveResponse prepareResponse = await widget.liquidSDK.prepareReceivePayment(
                         req: prepareReceiveReq,
                       );
                       setState(() {
-                        payerAmountSat = prepareRes.payerAmountSat.toInt();
-                        feesSat = prepareRes.feesSat.toInt();
+                        payerAmountSat = prepareResponse.amountSat?.toInt();
+                        feesSat = prepareResponse.feesSat.toInt();
                       });
-                      ReceivePaymentRequest receiveReq = ReceivePaymentRequest(prepareRes: prepareRes);
+                      ReceivePaymentRequest receiveReq =
+                          ReceivePaymentRequest(prepareResponse: prepareResponse);
                       ReceivePaymentResponse resp = await widget.liquidSDK.receivePayment(req: receiveReq);
                       debugPrint(
-                        "Created Invoice for $payerAmountSat sats with $feesSat sats fees.\nInvoice:${resp.invoice}",
+                        "Created Invoice for $payerAmountSat sats with $feesSat sats fees.\nDestination:${resp.destination}",
                       );
-                      setState(() => invoice = resp.invoice);
-                      setState(() => invoiceId = resp.id);
+                      setState(() => invoice = resp.destination);
                     } catch (e) {
                       setState(() {
                         payerAmountSat = null;
                         feesSat = null;
                         invoice = null;
-                        invoiceId = null;
                       });
                       final errMsg = "Error receiving payment: $e";
                       debugPrint(errMsg);

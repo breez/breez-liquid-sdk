@@ -210,9 +210,9 @@ class BreezSDKLiquidModule(
     ) {
         executor.execute {
             try {
-                val prepareSendResponse =
-                    asPrepareSendResponse(req) ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "PrepareSendResponse")) }
-                val res = getBindingLiquidSdk().sendPayment(prepareSendResponse)
+                val sendPaymentRequest =
+                    asSendPaymentRequest(req) ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "SendPaymentRequest")) }
+                val res = getBindingLiquidSdk().sendPayment(sendPaymentRequest)
                 promise.resolve(readableMapOf(res))
             } catch (e: Exception) {
                 promise.reject(e.javaClass.simpleName.replace("Exception", "Error"), e.message, e)
@@ -227,10 +227,10 @@ class BreezSDKLiquidModule(
     ) {
         executor.execute {
             try {
-                val prepareReceivePaymentRequest =
-                    asPrepareReceivePaymentRequest(req)
-                        ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "PrepareReceivePaymentRequest")) }
-                val res = getBindingLiquidSdk().prepareReceivePayment(prepareReceivePaymentRequest)
+                val prepareReceiveRequest =
+                    asPrepareReceiveRequest(req)
+                        ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "PrepareReceiveRequest")) }
+                val res = getBindingLiquidSdk().prepareReceivePayment(prepareReceiveRequest)
                 promise.resolve(readableMapOf(res))
             } catch (e: Exception) {
                 promise.reject(e.javaClass.simpleName.replace("Exception", "Error"), e.message, e)
@@ -308,42 +308,6 @@ class BreezSDKLiquidModule(
                 val payOnchainRequest =
                     asPayOnchainRequest(req) ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "PayOnchainRequest")) }
                 val res = getBindingLiquidSdk().payOnchain(payOnchainRequest)
-                promise.resolve(readableMapOf(res))
-            } catch (e: Exception) {
-                promise.reject(e.javaClass.simpleName.replace("Exception", "Error"), e.message, e)
-            }
-        }
-    }
-
-    @ReactMethod
-    fun prepareReceiveOnchain(
-        req: ReadableMap,
-        promise: Promise,
-    ) {
-        executor.execute {
-            try {
-                val prepareReceiveOnchainRequest =
-                    asPrepareReceiveOnchainRequest(req)
-                        ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "PrepareReceiveOnchainRequest")) }
-                val res = getBindingLiquidSdk().prepareReceiveOnchain(prepareReceiveOnchainRequest)
-                promise.resolve(readableMapOf(res))
-            } catch (e: Exception) {
-                promise.reject(e.javaClass.simpleName.replace("Exception", "Error"), e.message, e)
-            }
-        }
-    }
-
-    @ReactMethod
-    fun receiveOnchain(
-        req: ReadableMap,
-        promise: Promise,
-    ) {
-        executor.execute {
-            try {
-                val prepareReceiveOnchainResponse =
-                    asPrepareReceiveOnchainResponse(req)
-                        ?: run { throw SdkException.Generic(errMissingMandatoryField("req", "PrepareReceiveOnchainResponse")) }
-                val res = getBindingLiquidSdk().receiveOnchain(prepareReceiveOnchainResponse)
                 promise.resolve(readableMapOf(res))
             } catch (e: Exception) {
                 promise.reject(e.javaClass.simpleName.replace("Exception", "Error"), e.message, e)

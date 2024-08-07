@@ -306,6 +306,86 @@ abstract class InputType_BitcoinAddress extends InputType {
 }
 
 /// @nodoc
+abstract class _$$InputType_LiquidAddressImplCopyWith<$Res> {
+  factory _$$InputType_LiquidAddressImplCopyWith(
+          _$InputType_LiquidAddressImpl value, $Res Function(_$InputType_LiquidAddressImpl) then) =
+      __$$InputType_LiquidAddressImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({LiquidAddressData address});
+}
+
+/// @nodoc
+class __$$InputType_LiquidAddressImplCopyWithImpl<$Res>
+    extends _$InputTypeCopyWithImpl<$Res, _$InputType_LiquidAddressImpl>
+    implements _$$InputType_LiquidAddressImplCopyWith<$Res> {
+  __$$InputType_LiquidAddressImplCopyWithImpl(
+      _$InputType_LiquidAddressImpl _value, $Res Function(_$InputType_LiquidAddressImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of InputType
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? address = null,
+  }) {
+    return _then(_$InputType_LiquidAddressImpl(
+      address: null == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as LiquidAddressData,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$InputType_LiquidAddressImpl extends InputType_LiquidAddress {
+  const _$InputType_LiquidAddressImpl({required this.address}) : super._();
+
+  @override
+  final LiquidAddressData address;
+
+  @override
+  String toString() {
+    return 'InputType.liquidAddress(address: $address)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$InputType_LiquidAddressImpl &&
+            (identical(other.address, address) || other.address == address));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, address);
+
+  /// Create a copy of InputType
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$InputType_LiquidAddressImplCopyWith<_$InputType_LiquidAddressImpl> get copyWith =>
+      __$$InputType_LiquidAddressImplCopyWithImpl<_$InputType_LiquidAddressImpl>(this, _$identity);
+}
+
+abstract class InputType_LiquidAddress extends InputType {
+  const factory InputType_LiquidAddress({required final LiquidAddressData address}) =
+      _$InputType_LiquidAddressImpl;
+  const InputType_LiquidAddress._() : super._();
+
+  LiquidAddressData get address;
+
+  /// Create a copy of InputType
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$InputType_LiquidAddressImplCopyWith<_$InputType_LiquidAddressImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 abstract class _$$InputType_Bolt11ImplCopyWith<$Res> {
   factory _$$InputType_Bolt11ImplCopyWith(
           _$InputType_Bolt11Impl value, $Res Function(_$InputType_Bolt11Impl) then) =
