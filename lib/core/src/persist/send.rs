@@ -133,11 +133,16 @@ impl Persister {
         })
     }
 
-    pub(crate) fn list_send_swaps(
+    pub(crate) fn list_send_swaps(&self) -> Result<Vec<SendSwap>> {
+        let con: Connection = self.get_connection()?;
+        self.list_send_swaps_where(&con, vec![])
+    }
+
+    pub(crate) fn list_send_swaps_where(
         &self,
         con: &Connection,
         where_clauses: Vec<String>,
-    ) -> rusqlite::Result<Vec<SendSwap>> {
+    ) -> Result<Vec<SendSwap>> {
         let query = Self::list_send_swaps_query(where_clauses);
         let ongoing_send = con
             .prepare(&query)?
@@ -147,16 +152,13 @@ impl Persister {
         Ok(ongoing_send)
     }
 
-    pub(crate) fn list_ongoing_send_swaps(
-        &self,
-        con: &Connection,
-    ) -> rusqlite::Result<Vec<SendSwap>> {
+    pub(crate) fn list_ongoing_send_swaps(&self, con: &Connection) -> Result<Vec<SendSwap>> {
         let where_clause = vec![get_where_clause_state_in(&[
             PaymentState::Created,
             PaymentState::Pending,
         ])];
 
-        self.list_send_swaps(con, where_clause)
+        self.list_send_swaps_where(con, where_clause)
     }
 
     pub(crate) fn list_pending_send_swaps(&self) -> Result<Vec<SendSwap>> {
@@ -315,7 +317,7 @@ mod tests {
         }
 
         let con = storage.get_connection()?;
-        let swaps = storage.list_send_swaps(&con, vec![])?;
+        let swaps = storage.list_send_swaps_where(&con, vec![])?;
         assert_eq!(swaps.len(), range.len());
 
         // List ongoing send swaps

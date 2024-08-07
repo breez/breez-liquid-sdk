@@ -170,6 +170,7 @@ pub mod logger;
 pub mod model;
 pub mod persist;
 pub(crate) mod receive_swap;
+mod restore;
 pub mod sdk;
 pub(crate) mod send_swap;
 pub(crate) mod swapper;

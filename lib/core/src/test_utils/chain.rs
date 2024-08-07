@@ -2,7 +2,8 @@
 
 use anyhow::Result;
 use async_trait::async_trait;
-use lwk_wollet::{bitcoin::consensus::deserialize, elements::hex::FromHex};
+use boltz_client::elements::Script;
+use lwk_wollet::{bitcoin::consensus::deserialize, elements::hex::FromHex, History};
 
 use crate::{
     chain::{bitcoin::BitcoinChainService, liquid::LiquidChainService},
@@ -44,6 +45,10 @@ impl LiquidChainService for MockLiquidChainService {
         &self,
         _scripts: &lwk_wollet::elements::Script,
     ) -> Result<Vec<lwk_wollet::History>> {
+        unimplemented!()
+    }
+
+    async fn get_scripts_history(&self, _scripts: &[&Script]) -> Result<Vec<Vec<History>>> {
         unimplemented!()
     }
 
@@ -90,6 +95,13 @@ impl BitcoinChainService for MockBitcoinChainService {
         &self,
         _script: &boltz_client::bitcoin::Script,
     ) -> Result<Vec<lwk_wollet::History>> {
+        unimplemented!()
+    }
+
+    fn get_scripts_history(
+        &self,
+        _scripts: &[&boltz_client::bitcoin::Script],
+    ) -> Result<Vec<Vec<History>>> {
         unimplemented!()
     }
 

@@ -33,6 +33,9 @@ pub trait BitcoinChainService: Send + Sync {
     /// Get the transactions involved for a script
     fn get_script_history(&self, script: &Script) -> Result<Vec<History>>;
 
+    /// Get the transactions involved in a list of scripts.
+    fn get_scripts_history(&self, scripts: &[&Script]) -> Result<Vec<Vec<History>>>;
+
     /// Return the confirmed and unconfirmed balances of a script hash
     fn script_get_balance(&self, script: &Script) -> Result<GetBalanceRes>;
 
@@ -151,6 +154,15 @@ impl BitcoinChainService for HybridBitcoinChainService {
             .script_get_history(script)?
             .into_iter()
             .map(Into::into)
+            .collect())
+    }
+
+    fn get_scripts_history(&self, scripts: &[&Script]) -> Result<Vec<Vec<History>>> {
+        Ok(self
+            .client
+            .batch_script_get_history(scripts)?
+            .into_iter()
+            .map(|v| v.into_iter().map(Into::into).collect())
             .collect())
     }
 

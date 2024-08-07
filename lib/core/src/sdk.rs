@@ -14,9 +14,10 @@ use futures_util::stream::select_all;
 use futures_util::StreamExt;
 use log::{debug, error, info};
 use lwk_wollet::bitcoin::hex::DisplayHex;
+use lwk_wollet::elements::Txid;
 use lwk_wollet::hashes::{sha256, Hash};
 use lwk_wollet::secp256k1::ThirtyTwoByteHash;
-use lwk_wollet::{elements, ElementsNetwork};
+use lwk_wollet::{elements, ElementsNetwork, WalletTx};
 use sdk_common::bitcoin::secp256k1::Secp256k1;
 use sdk_common::bitcoin::util::bip32::ChildNumber;
 use sdk_common::ensure_sdk;
@@ -32,6 +33,7 @@ use crate::error::SdkError;
 use crate::lightning_invoice::{Bolt11Invoice, Bolt11InvoiceDescription};
 use crate::model::PaymentState::*;
 use crate::receive_swap::ReceiveSwapStateHandler;
+use crate::restore::TxMap;
 use crate::send_swap::SendSwapStateHandler;
 use crate::swapper::{BoltzSwapper, ReconnectHandler, Swapper, SwapperStatusStream};
 use crate::wallet::{LiquidOnchainWallet, OnchainWallet};
@@ -719,7 +721,7 @@ impl LiquidSdk {
     ///
     /// Depending on [Config]'s `payment_timeout_sec`, this function will return:
     /// * [PaymentState::Pending] payment - if the payment could be initiated but didn't yet
-    /// complete in this time
+    ///   complete in this time
     /// * [PaymentState::Complete] payment - if the payment was successfully completed in this time
     ///
     /// # Arguments
@@ -976,7 +978,7 @@ impl LiquidSdk {
     ///
     /// Depending on [Config]'s `payment_timeout_sec`, this function will return:
     /// * [PaymentState::Pending] payment - if the payment could be initiated but didn't yet
-    /// complete in this time
+    ///   complete in this time
     /// * [PaymentState::Complete] payment - if the payment was successfully completed in this time
     ///
     /// # Arguments
@@ -1558,7 +1560,15 @@ impl LiquidSdk {
         let pending_chain_swaps_by_refund_tx_id =
             self.persister.list_pending_chain_swaps_by_refund_tx_id()?;
 
-        for tx in self.onchain_wallet.transactions().await? {
+        let tx_map: HashMap<Txid, WalletTx> = self
+            .onchain_wallet
+            .transactions()
+            .await?
+            .iter()
+            .map(|tx| (tx.txid, tx.clone()))
+            .collect();
+
+        for tx in tx_map.values() {
             let tx_id = tx.txid.to_string();
             let is_tx_confirmed = tx.height.is_some();
             let amount_sat = tx.balance.values().sum::<i64>();
@@ -1614,6 +1624,13 @@ impl LiquidSdk {
                 }
             }
         }
+
+        // TODO Recover data from onchain on 1st sync only
+        let t0 = Instant::now();
+        self.recover_from_onchain(TxMap::from_raw_tx_map(tx_map))
+            .await?;
+        let duration_ms = Instant::now().duration_since(t0).as_millis();
+        info!("Finished recovering swap tx IDs from onchain data (t = {duration_ms} ms)");
 
         Ok(())
     }
