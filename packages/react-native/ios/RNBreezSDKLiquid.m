@@ -95,18 +95,6 @@ RCT_EXTERN_METHOD(
 )
 
 RCT_EXTERN_METHOD(
-    prepareReceiveOnchain: (NSDictionary*)req
-    resolve: (RCTPromiseResolveBlock)resolve
-    reject: (RCTPromiseRejectBlock)reject
-)
-
-RCT_EXTERN_METHOD(
-    receiveOnchain: (NSDictionary*)req
-    resolve: (RCTPromiseResolveBlock)resolve
-    reject: (RCTPromiseRejectBlock)reject
-)
-
-RCT_EXTERN_METHOD(
     prepareBuyBitcoin: (NSDictionary*)req
     resolve: (RCTPromiseResolveBlock)resolve
     reject: (RCTPromiseRejectBlock)reject

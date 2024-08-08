@@ -17,7 +17,7 @@ class _SendPaymentDialogState extends State<SendPaymentDialog> {
 
   bool paymentInProgress = false;
 
-  PrepareSendResponse? sendPaymentReq;
+  SendPaymentRequest? sendPaymentReq;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _SendPaymentDialogState extends State<SendPaymentDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Please confirm that you agree to the payment fee of ${sendPaymentReq!.feesSat} sats.',
+                        'Please confirm that you agree to the payment fee of ${sendPaymentReq!.prepareResponse.feesSat} sats.',
                       ),
                     ],
                   ),
@@ -84,12 +84,16 @@ class _SendPaymentDialogState extends State<SendPaymentDialog> {
                       onPressed: () async {
                         try {
                           setState(() => paymentInProgress = true);
-                          PrepareSendRequest prepareSendReq =
-                              PrepareSendRequest(invoice: invoiceController.text);
-                          PrepareSendResponse req =
-                              await widget.liquidSdk.prepareSendPayment(req: prepareSendReq);
-                          debugPrint("PrepareSendResponse for  ${req.invoice}, fees: ${req.feesSat}");
-                          setState(() => sendPaymentReq = req);
+                          PrepareSendRequest prepareSendReq = PrepareSendRequest(
+                            destination: invoiceController.text,
+                          );
+                          PrepareSendResponse req = await widget.liquidSdk.prepareSendPayment(
+                            req: prepareSendReq,
+                          );
+                          debugPrint(
+                            "PrepareSendResponse for  ${req.destination}, fees: ${req.feesSat}",
+                          );
+                          setState(() => sendPaymentReq = SendPaymentRequest(prepareResponse: req));
                         } catch (e) {
                           final errMsg = "Error preparing payment: $e";
                           debugPrint(errMsg);

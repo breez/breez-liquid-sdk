@@ -548,6 +548,7 @@ dependencies = [
  "lwk_signer",
  "lwk_wollet",
  "openssl",
+ "querystring",
  "reqwest 0.11.20",
  "rusqlite",
  "rusqlite_migration",
@@ -2763,8 +2764,8 @@ dependencies = [
 
 [[package]]
 name = "sdk-common"
-version = "0.5.0"
-source = "git+https://github.com/breez/breez-sdk?branch=main#8e4f8467892837421707e0b6f935edc494fdac58"
+version = "0.5.1-rc6"
+source = "git+https://github.com/breez/breez-sdk?rev=68aa1d003944a6d75f99bf6c6f30da03e070bbce#68aa1d003944a6d75f99bf6c6f30da03e070bbce"
 dependencies = [
  "aes 0.8.4",
  "anyhow",
@@ -2772,6 +2773,7 @@ dependencies = [
  "bip21",
  "bitcoin 0.29.2",
  "cbc",
+ "elements",
  "hex",
  "lightning 0.0.116",
  "lightning-invoice 0.24.0",
@@ -2787,6 +2789,7 @@ dependencies = [
  "tonic",
  "tonic-build",
  "url",
+ "urlencoding",
 ]
 
 [[package]]
@@ -3557,6 +3560,12 @@ dependencies = [
  "idna 0.5.0",
  "percent-encoding",
 ]
+
+[[package]]
+name = "urlencoding"
+version = "2.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "daf8dba3b7eb870caf1ddeed7bc9d2a049f3cfdfae7cb521b087cc33ae4c49da"
 
 [[package]]
 name = "utf-8"

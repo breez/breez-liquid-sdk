@@ -41,6 +41,7 @@ dictionary RouteHintHop {
 [Enum]
 interface InputType {
     BitcoinAddress(BitcoinAddressData address);
+    LiquidAddress(LiquidAddressData address);
     Bolt11(LNInvoice invoice);
     NodeId(string node_id);
     Url(string url);
@@ -53,6 +54,15 @@ interface InputType {
 dictionary BitcoinAddressData {
     string address;
     Network network;
+    u64? amount_sat;
+    string? label;
+    string? message;
+};
+
+dictionary LiquidAddressData {
+    string address;
+    Network network;
+    string? asset_id;
     u64? amount_sat;
     string? label;
     string? message;
@@ -268,10 +278,12 @@ enum PaymentError {
     "AlreadyPaid",
     "PaymentInProgress",
     "AmountOutOfRange",
+    "AmountMissing",
     "Generic",
     "InvalidOrExpiredFees",
     "InsufficientFunds",
     "InvalidInvoice",
+    "NetworkMismatch",
     "InvalidPreimage",
     "LwkError",
     "PairsNotFound",
@@ -313,35 +325,53 @@ dictionary GetInfoResponse {
 };
 
 dictionary PrepareSendRequest {
-    string invoice;
+    string destination;
+    u64? amount_sat;
+};
+
+[Enum]
+interface SendDestination {
+    LiquidAddress(LiquidAddressData address_data);
+    Bolt11(LNInvoice invoice);
 };
 
 dictionary PrepareSendResponse {
-    string invoice;
+    SendDestination destination;
     u64 fees_sat;
+};
+
+dictionary SendPaymentRequest {
+    PrepareSendResponse prepare_response;
 };
 
 dictionary SendPaymentResponse {
     Payment payment;
 };
 
-dictionary PrepareReceivePaymentRequest {
-    u64 payer_amount_sat;
+enum PaymentMethod {
+    "Lightning",
+    "BitcoinAddress",
+    "LiquidAddress",
 };
 
-dictionary PrepareReceivePaymentResponse {
-    u64 payer_amount_sat;
+dictionary PrepareReceiveRequest {
+    u64? amount_sat;
+    PaymentMethod payment_method;
+};
+
+dictionary PrepareReceiveResponse {
+    u64? amount_sat;
+    PaymentMethod payment_method;
     u64 fees_sat;
 };
 
 dictionary ReceivePaymentRequest {
-    PrepareReceivePaymentResponse prepare_res;
+    PrepareReceiveResponse prepare_response;
     string? description = null;
 };
 
 dictionary ReceivePaymentResponse {
-    string id;
-    string invoice;
+    string destination;
 };
 
 dictionary Limits {
@@ -373,21 +403,7 @@ dictionary PreparePayOnchainResponse {
 
 dictionary PayOnchainRequest {
     string address;
-    PreparePayOnchainResponse prepare_res;
-};
-
-dictionary PrepareReceiveOnchainRequest {
-    u64 payer_amount_sat;
-};
-
-dictionary PrepareReceiveOnchainResponse {
-    u64 payer_amount_sat;
-    u64 fees_sat;
-};
-
-dictionary ReceiveOnchainResponse {
-    string address;
-    string bip21;
+    PreparePayOnchainResponse prepare_response;
 };
 
 enum BuyBitcoinProvider {
@@ -406,7 +422,7 @@ dictionary PrepareBuyBitcoinResponse {
 };
 
 dictionary BuyBitcoinRequest {
-    PrepareBuyBitcoinResponse prepare_res;
+    PrepareBuyBitcoinResponse prepare_response;
     string? redirect_url = null;
 };
 
@@ -546,10 +562,10 @@ interface BindingLiquidSdk {
     PrepareSendResponse prepare_send_payment(PrepareSendRequest req);
 
     [Throws=PaymentError]
-    SendPaymentResponse send_payment(PrepareSendResponse req);
+    SendPaymentResponse send_payment(SendPaymentRequest req);
 
     [Throws=PaymentError]
-    PrepareReceivePaymentResponse prepare_receive_payment(PrepareReceivePaymentRequest req);
+    PrepareReceiveResponse prepare_receive_payment(PrepareReceiveRequest req);
 
     [Throws=PaymentError]
     ReceivePaymentResponse receive_payment(ReceivePaymentRequest req);
@@ -565,12 +581,6 @@ interface BindingLiquidSdk {
 
     [Throws=PaymentError]
     SendPaymentResponse pay_onchain(PayOnchainRequest req);
-
-    [Throws=PaymentError]
-    PrepareReceiveOnchainResponse prepare_receive_onchain(PrepareReceiveOnchainRequest req);
-
-    [Throws=PaymentError]
-    ReceiveOnchainResponse receive_onchain(PrepareReceiveOnchainResponse req);
 
     [Throws=PaymentError]
     PrepareBuyBitcoinResponse prepare_buy_bitcoin(PrepareBuyBitcoinRequest req);

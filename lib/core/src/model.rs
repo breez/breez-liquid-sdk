@@ -194,16 +194,26 @@ pub struct ConnectRequest {
     pub config: Config,
 }
 
+/// The send/receive methods supported by the SDK
+#[derive(Clone, Debug, Serialize, Eq, PartialEq)]
+pub enum PaymentMethod {
+    Lightning,
+    BitcoinAddress,
+    LiquidAddress,
+}
+
 /// An argument when calling [crate::sdk::LiquidSdk::prepare_receive_payment].
 #[derive(Debug, Serialize)]
-pub struct PrepareReceivePaymentRequest {
-    pub payer_amount_sat: u64,
+pub struct PrepareReceiveRequest {
+    pub amount_sat: Option<u64>,
+    pub payment_method: PaymentMethod,
 }
 
 /// Returned when calling [crate::sdk::LiquidSdk::prepare_receive_payment].
 #[derive(Debug, Serialize)]
-pub struct PrepareReceivePaymentResponse {
-    pub payer_amount_sat: u64,
+pub struct PrepareReceiveResponse {
+    pub payment_method: PaymentMethod,
+    pub amount_sat: Option<u64>,
     pub fees_sat: u64,
 }
 
@@ -211,14 +221,15 @@ pub struct PrepareReceivePaymentResponse {
 #[derive(Debug, Serialize)]
 pub struct ReceivePaymentRequest {
     pub description: Option<String>,
-    pub prepare_res: PrepareReceivePaymentResponse,
+    pub prepare_response: PrepareReceiveResponse,
 }
 
 /// Returned when calling [crate::sdk::LiquidSdk::receive_payment].
 #[derive(Debug, Serialize)]
 pub struct ReceivePaymentResponse {
-    pub id: String,
-    pub invoice: String,
+    /// Either a BIP21 URI (Liquid or Bitcoin), a Liquid address
+    /// or an invoice, depending on the [PrepareReceivePaymentResponse] parameters
+    pub destination: String,
 }
 
 /// The minimum and maximum in satoshis of a Lightning or onchain payment.
@@ -250,14 +261,37 @@ pub struct OnchainPaymentLimitsResponse {
 /// An argument when calling [crate::sdk::LiquidSdk::prepare_send_payment].
 #[derive(Debug, Serialize, Clone)]
 pub struct PrepareSendRequest {
-    pub invoice: String,
+    /// The destination we intend to pay to.
+    /// Supports BIP21 URIs, BOLT11 invoices and Liquid addresses
+    pub destination: String,
+
+    /// Should only be set when paying directly onchain or to a BIP21 URI
+    /// where no amount is specified
+    pub amount_sat: Option<u64>,
+}
+
+/// Specifies the supported destinations which can be payed by the SDK
+#[derive(Clone, Debug, Serialize)]
+pub enum SendDestination {
+    LiquidAddress {
+        address_data: liquid::LiquidAddressData,
+    },
+    Bolt11 {
+        invoice: LNInvoice,
+    },
 }
 
 /// Returned when calling [crate::sdk::LiquidSdk::prepare_send_payment].
 #[derive(Debug, Serialize, Clone)]
 pub struct PrepareSendResponse {
-    pub invoice: String,
+    pub destination: SendDestination,
     pub fees_sat: u64,
+}
+
+/// An argument when calling [crate::sdk::LiquidSdk::send_payment].
+#[derive(Debug, Serialize)]
+pub struct SendPaymentRequest {
+    pub prepare_response: PrepareSendResponse,
 }
 
 /// Returned when calling [crate::sdk::LiquidSdk::send_payment].
@@ -285,27 +319,7 @@ pub struct PreparePayOnchainResponse {
 #[derive(Debug, Serialize)]
 pub struct PayOnchainRequest {
     pub address: String,
-    pub prepare_res: PreparePayOnchainResponse,
-}
-
-/// An argument when calling [crate::sdk::LiquidSdk::prepare_receive_onchain].
-#[derive(Debug, Serialize, Clone)]
-pub struct PrepareReceiveOnchainRequest {
-    pub payer_amount_sat: u64,
-}
-
-/// Returned when calling [crate::sdk::LiquidSdk::prepare_receive_onchain].
-#[derive(Debug, Serialize, Clone)]
-pub struct PrepareReceiveOnchainResponse {
-    pub payer_amount_sat: u64,
-    pub fees_sat: u64,
-}
-
-/// Returned when calling [crate::sdk::LiquidSdk::receive_onchain].
-#[derive(Debug, Serialize)]
-pub struct ReceiveOnchainResponse {
-    pub address: String,
-    pub bip21: String,
+    pub prepare_response: PreparePayOnchainResponse,
 }
 
 /// An argument when calling [crate::sdk::LiquidSdk::prepare_refund].
@@ -1114,7 +1128,7 @@ pub struct PrepareBuyBitcoinResponse {
 /// An argument when calling [crate::sdk::LiquidSdk::buy_bitcoin].
 #[derive(Clone, Debug, Serialize)]
 pub struct BuyBitcoinRequest {
-    pub prepare_res: PrepareBuyBitcoinResponse,
+    pub prepare_response: PrepareBuyBitcoinResponse,
 
     /// The optional URL to redirect to after completing the buy.
     ///
@@ -1176,14 +1190,14 @@ impl From<SwapTree> for InternalSwapTree {
 /// Contains the result of the entire LNURL-pay interaction, as reported by the LNURL endpoint.
 ///
 /// * `EndpointSuccess` indicates the payment is complete. The endpoint may return a `SuccessActionProcessed`,
-/// in which case, the wallet has to present it to the user as described in
-/// <https://github.com/lnurl/luds/blob/luds/09.md>
+///   in which case, the wallet has to present it to the user as described in
+///   <https://github.com/lnurl/luds/blob/luds/09.md>
 ///
 /// * `EndpointError` indicates a generic issue the LNURL endpoint encountered, including a freetext
-/// field with the reason.
+///   field with the reason.
 ///
 /// * `PayError` indicates that an error occurred while trying to pay the invoice from the LNURL endpoint.
-/// This includes the payment hash of the failed invoice and the failure reason.
+///   This includes the payment hash of the failed invoice and the failure reason.
 #[derive(Serialize)]
 pub enum LnUrlPayResult {
     EndpointSuccess { data: LnUrlPaySuccessData },

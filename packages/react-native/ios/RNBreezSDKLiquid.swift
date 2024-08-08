@@ -178,8 +178,8 @@ class RNBreezSDKLiquid: RCTEventEmitter {
     @objc(sendPayment:resolve:reject:)
     func sendPayment(_ req: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            let prepareSendResponse = try BreezSDKLiquidMapper.asPrepareSendResponse(prepareSendResponse: req)
-            var res = try getBindingLiquidSdk().sendPayment(req: prepareSendResponse)
+            let sendPaymentRequest = try BreezSDKLiquidMapper.asSendPaymentRequest(sendPaymentRequest: req)
+            var res = try getBindingLiquidSdk().sendPayment(req: sendPaymentRequest)
             resolve(BreezSDKLiquidMapper.dictionaryOf(sendPaymentResponse: res))
         } catch let err {
             rejectErr(err: err, reject: reject)
@@ -189,9 +189,9 @@ class RNBreezSDKLiquid: RCTEventEmitter {
     @objc(prepareReceivePayment:resolve:reject:)
     func prepareReceivePayment(_ req: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {
-            let prepareReceivePaymentRequest = try BreezSDKLiquidMapper.asPrepareReceivePaymentRequest(prepareReceivePaymentRequest: req)
-            var res = try getBindingLiquidSdk().prepareReceivePayment(req: prepareReceivePaymentRequest)
-            resolve(BreezSDKLiquidMapper.dictionaryOf(prepareReceivePaymentResponse: res))
+            let prepareReceiveRequest = try BreezSDKLiquidMapper.asPrepareReceiveRequest(prepareReceiveRequest: req)
+            var res = try getBindingLiquidSdk().prepareReceivePayment(req: prepareReceiveRequest)
+            resolve(BreezSDKLiquidMapper.dictionaryOf(prepareReceiveResponse: res))
         } catch let err {
             rejectErr(err: err, reject: reject)
         }
@@ -245,28 +245,6 @@ class RNBreezSDKLiquid: RCTEventEmitter {
             let payOnchainRequest = try BreezSDKLiquidMapper.asPayOnchainRequest(payOnchainRequest: req)
             var res = try getBindingLiquidSdk().payOnchain(req: payOnchainRequest)
             resolve(BreezSDKLiquidMapper.dictionaryOf(sendPaymentResponse: res))
-        } catch let err {
-            rejectErr(err: err, reject: reject)
-        }
-    }
-
-    @objc(prepareReceiveOnchain:resolve:reject:)
-    func prepareReceiveOnchain(_ req: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        do {
-            let prepareReceiveOnchainRequest = try BreezSDKLiquidMapper.asPrepareReceiveOnchainRequest(prepareReceiveOnchainRequest: req)
-            var res = try getBindingLiquidSdk().prepareReceiveOnchain(req: prepareReceiveOnchainRequest)
-            resolve(BreezSDKLiquidMapper.dictionaryOf(prepareReceiveOnchainResponse: res))
-        } catch let err {
-            rejectErr(err: err, reject: reject)
-        }
-    }
-
-    @objc(receiveOnchain:resolve:reject:)
-    func receiveOnchain(_ req: [String: Any], resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        do {
-            let prepareReceiveOnchainResponse = try BreezSDKLiquidMapper.asPrepareReceiveOnchainResponse(prepareReceiveOnchainResponse: req)
-            var res = try getBindingLiquidSdk().receiveOnchain(req: prepareReceiveOnchainResponse)
-            resolve(BreezSDKLiquidMapper.dictionaryOf(receiveOnchainResponse: res))
         } catch let err {
             rejectErr(err: err, reject: reject)
         }

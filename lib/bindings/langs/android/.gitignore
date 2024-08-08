@@ -45,4 +45,5 @@ gen-external-apklibs
 # End of https://www.toptal.com/developers/gitignore/api/android
 
 lib/src/main/jniLibs/
+lib/src/main/kotlin/breez_sdk_liquid.kt
 lib/src/main/kotlin/breez_sdk_liquid/breez_sdk_liquid.kt

@@ -19,10 +19,21 @@ use serde_json::to_string_pretty;
 
 #[derive(Parser, Debug, Clone, PartialEq)]
 pub(crate) enum Command {
+    /// TODO Add BIP21 Support
     /// Send lbtc and receive btc lightning through a swap
     SendPayment {
         /// Invoice which has to be paid
-        bolt11: String,
+        #[arg(long)]
+        bolt11: Option<String>,
+
+        /// Either BIP21 URI or Liquid address we intend to pay to
+        #[arg(long)]
+        address: Option<String>,
+
+        /// The amount in satoshi to pay, in case of a direct Liquid address
+        /// or amount-less BIP21
+        #[arg(long = "amount")]
+        amount_sat: Option<u64>,
 
         /// Delay for the send, in seconds
         #[arg(short, long)]
@@ -46,17 +57,18 @@ pub(crate) enum Command {
     },
     /// Receive lbtc and send btc through a swap
     ReceivePayment {
+        /// The method to use when receiving. Either "lightning", "bitcoin" or "liquid"
+        #[arg(short = 'm', long = "method")]
+        payment_method: Option<String>,
+
         /// Amount the payer will send, in satoshi
-        payer_amount_sat: u64,
+        /// If not specified, it will generate a BIP21 URI/Liquid address with no amount
+        #[arg(short, long)]
+        amount_sat: Option<u64>,
 
         /// Optional description for the invoice
         #[clap(short = 'd', long = "description")]
         description: Option<String>,
-    },
-    /// Receive lbtc and send btc onchain through a swap
-    ReceiveOnchainPayment {
-        /// Amount the payer will send, in satoshi
-        payer_amount_sat: u64,
     },
     /// Generates an URL to buy bitcoin from a 3rd party provider
     BuyBitcoin {
@@ -200,32 +212,59 @@ pub(crate) async fn handle_command(
 ) -> Result<String> {
     Ok(match command {
         Command::ReceivePayment {
-            payer_amount_sat,
+            payment_method,
+            amount_sat,
             description,
         } => {
-            let prepare_res = sdk
-                .prepare_receive_payment(&PrepareReceivePaymentRequest { payer_amount_sat })
+            let payment_method = match payment_method.as_deref() {
+                Some("bitcoin") => PaymentMethod::BitcoinAddress,
+                Some("liquid") => PaymentMethod::LiquidAddress,
+                Some("lightning") | None => PaymentMethod::Lightning,
+                Some(_) => return Err(anyhow::anyhow!("Invalid payment method")),
+            };
+
+            let prepare_response = sdk
+                .prepare_receive_payment(&PrepareReceiveRequest {
+                    amount_sat,
+                    payment_method,
+                })
                 .await?;
 
             wait_confirmation!(
                 format!(
                     "Fees: {} sat. Are the fees acceptable? (y/N) ",
-                    prepare_res.fees_sat
+                    prepare_response.fees_sat
                 ),
                 "Payment receive halted"
             );
 
             let response = sdk
                 .receive_payment(&ReceivePaymentRequest {
-                    prepare_res,
+                    prepare_response,
                     description,
                 })
                 .await?;
-            let invoice = response.invoice.clone();
 
-            let mut result = command_result!(response);
+            let mut result = command_result!(&response);
             result.push('\n');
-            result.push_str(&build_qr_text(&invoice));
+
+            match parse(&response.destination).await? {
+                InputType::Bolt11 { invoice } => result.push_str(&build_qr_text(&invoice.bolt11)),
+                InputType::LiquidAddress { address } => {
+                    result.push_str(&build_qr_text(&address.to_uri().map_err(|e| {
+                        anyhow::anyhow!("Could not build BIP21 from address data: {e:?}")
+                    })?))
+                }
+                InputType::BitcoinAddress { address } => {
+                    result.push_str(&build_qr_text(&address.to_uri().map_err(|e| {
+                        anyhow::anyhow!("Could not build BIP21 from address data: {e:?}")
+                    })?))
+                }
+                _ => {}
+            }
+            if let Ok(InputType::Bolt11 { invoice }) = parse(&response.destination).await {
+                result.push_str(&build_qr_text(&invoice.bolt11));
+            }
             result
         }
         Command::FetchLightningLimits => {
@@ -236,9 +275,32 @@ pub(crate) async fn handle_command(
             let limits = sdk.fetch_onchain_limits().await?;
             command_result!(limits)
         }
-        Command::SendPayment { bolt11, delay } => {
+        Command::SendPayment {
+            bolt11,
+            address,
+            amount_sat,
+            delay,
+        } => {
+            let destination = match (bolt11, address) {
+                (None, None) => {
+                    return Err(anyhow::anyhow!(
+                        "Must specify either a `bolt11` invoice or a direct/BIP21 `address`."
+                    ))
+                }
+                (Some(bolt11), None) => bolt11,
+                (None, Some(address)) => address,
+                (Some(_), Some(_)) => {
+                    return Err(anyhow::anyhow!(
+                        "Cannot specify both `bolt11` and `address` at the same time."
+                    ))
+                }
+            };
+
             let prepare_response = sdk
-                .prepare_send_payment(&PrepareSendRequest { invoice: bolt11 })
+                .prepare_send_payment(&PrepareSendRequest {
+                    destination,
+                    amount_sat,
+                })
                 .await?;
 
             wait_confirmation!(
@@ -249,17 +311,20 @@ pub(crate) async fn handle_command(
                 "Payment send halted"
             );
 
+            let send_payment_req = SendPaymentRequest {
+                prepare_response: prepare_response.clone(),
+            };
+
             if let Some(delay) = delay {
                 let sdk_cloned = sdk.clone();
-                let prepare_cloned = prepare_response.clone();
 
                 tokio::spawn(async move {
                     thread::sleep(Duration::from_secs(delay));
-                    sdk_cloned.send_payment(&prepare_cloned).await.unwrap();
+                    sdk_cloned.send_payment(&send_payment_req).await.unwrap();
                 });
                 command_result!(prepare_response)
             } else {
-                let response = sdk.send_payment(&prepare_response).await?;
+                let response = sdk.send_payment(&send_payment_req).await?;
                 command_result!(response)
             }
         }
@@ -268,7 +333,7 @@ pub(crate) async fn handle_command(
             receiver_amount_sat,
             sat_per_vbyte,
         } => {
-            let prepare_res = sdk
+            let prepare_response = sdk
                 .prepare_pay_onchain(&PreparePayOnchainRequest {
                     receiver_amount_sat,
                     sat_per_vbyte,
@@ -278,7 +343,7 @@ pub(crate) async fn handle_command(
             wait_confirmation!(
                 format!(
                     "Fees: {} sat (incl claim fee: {} sat). Are the fees acceptable? (y/N) ",
-                    prepare_res.total_fees_sat, prepare_res.claim_fees_sat
+                    prepare_response.total_fees_sat, prepare_response.claim_fees_sat
                 ),
                 "Payment send halted"
             );
@@ -286,37 +351,16 @@ pub(crate) async fn handle_command(
             let response = sdk
                 .pay_onchain(&PayOnchainRequest {
                     address,
-                    prepare_res,
+                    prepare_response,
                 })
                 .await?;
             command_result!(response)
-        }
-        Command::ReceiveOnchainPayment { payer_amount_sat } => {
-            let prepare_res = sdk
-                .prepare_receive_onchain(&PrepareReceiveOnchainRequest { payer_amount_sat })
-                .await?;
-
-            wait_confirmation!(
-                format!(
-                    "Fees: {} sat. Are the fees acceptable? (y/N) ",
-                    prepare_res.fees_sat
-                ),
-                "Payment receive halted"
-            );
-
-            let response = sdk.receive_onchain(&prepare_res).await?;
-            let bip21 = response.bip21.clone();
-
-            let mut result = command_result!(response);
-            result.push('\n');
-            result.push_str(&build_qr_text(&bip21));
-            result
         }
         Command::BuyBitcoin {
             provider,
             amount_sat,
         } => {
-            let prepare_res = sdk
+            let prepare_response = sdk
                 .prepare_buy_bitcoin(&PrepareBuyBitcoinRequest {
                     provider,
                     amount_sat,
@@ -326,14 +370,14 @@ pub(crate) async fn handle_command(
             wait_confirmation!(
                 format!(
                     "Fees: {} sat. Are the fees acceptable? (y/N) ",
-                    prepare_res.fees_sat
+                    prepare_response.fees_sat
                 ),
                 "Buy Bitcoin halted"
             );
 
             let url = sdk
                 .buy_bitcoin(&BuyBitcoinRequest {
-                    prepare_res,
+                    prepare_response,
                     redirect_url: None,
                 })
                 .await?;

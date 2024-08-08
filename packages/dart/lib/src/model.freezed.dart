@@ -825,3 +825,186 @@ abstract class SdkEvent_Synced extends SdkEvent {
   const factory SdkEvent_Synced() = _$SdkEvent_SyncedImpl;
   const SdkEvent_Synced._() : super._();
 }
+
+/// @nodoc
+mixin _$SendDestination {}
+
+/// @nodoc
+abstract class $SendDestinationCopyWith<$Res> {
+  factory $SendDestinationCopyWith(SendDestination value, $Res Function(SendDestination) then) =
+      _$SendDestinationCopyWithImpl<$Res, SendDestination>;
+}
+
+/// @nodoc
+class _$SendDestinationCopyWithImpl<$Res, $Val extends SendDestination>
+    implements $SendDestinationCopyWith<$Res> {
+  _$SendDestinationCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$SendDestination_LiquidAddressImplCopyWith<$Res> {
+  factory _$$SendDestination_LiquidAddressImplCopyWith(_$SendDestination_LiquidAddressImpl value,
+          $Res Function(_$SendDestination_LiquidAddressImpl) then) =
+      __$$SendDestination_LiquidAddressImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({LiquidAddressData addressData});
+}
+
+/// @nodoc
+class __$$SendDestination_LiquidAddressImplCopyWithImpl<$Res>
+    extends _$SendDestinationCopyWithImpl<$Res, _$SendDestination_LiquidAddressImpl>
+    implements _$$SendDestination_LiquidAddressImplCopyWith<$Res> {
+  __$$SendDestination_LiquidAddressImplCopyWithImpl(
+      _$SendDestination_LiquidAddressImpl _value, $Res Function(_$SendDestination_LiquidAddressImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? addressData = null,
+  }) {
+    return _then(_$SendDestination_LiquidAddressImpl(
+      addressData: null == addressData
+          ? _value.addressData
+          : addressData // ignore: cast_nullable_to_non_nullable
+              as LiquidAddressData,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SendDestination_LiquidAddressImpl extends SendDestination_LiquidAddress {
+  const _$SendDestination_LiquidAddressImpl({required this.addressData}) : super._();
+
+  @override
+  final LiquidAddressData addressData;
+
+  @override
+  String toString() {
+    return 'SendDestination.liquidAddress(addressData: $addressData)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SendDestination_LiquidAddressImpl &&
+            (identical(other.addressData, addressData) || other.addressData == addressData));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, addressData);
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SendDestination_LiquidAddressImplCopyWith<_$SendDestination_LiquidAddressImpl> get copyWith =>
+      __$$SendDestination_LiquidAddressImplCopyWithImpl<_$SendDestination_LiquidAddressImpl>(
+          this, _$identity);
+}
+
+abstract class SendDestination_LiquidAddress extends SendDestination {
+  const factory SendDestination_LiquidAddress({required final LiquidAddressData addressData}) =
+      _$SendDestination_LiquidAddressImpl;
+  const SendDestination_LiquidAddress._() : super._();
+
+  LiquidAddressData get addressData;
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SendDestination_LiquidAddressImplCopyWith<_$SendDestination_LiquidAddressImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SendDestination_Bolt11ImplCopyWith<$Res> {
+  factory _$$SendDestination_Bolt11ImplCopyWith(
+          _$SendDestination_Bolt11Impl value, $Res Function(_$SendDestination_Bolt11Impl) then) =
+      __$$SendDestination_Bolt11ImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({LNInvoice invoice});
+}
+
+/// @nodoc
+class __$$SendDestination_Bolt11ImplCopyWithImpl<$Res>
+    extends _$SendDestinationCopyWithImpl<$Res, _$SendDestination_Bolt11Impl>
+    implements _$$SendDestination_Bolt11ImplCopyWith<$Res> {
+  __$$SendDestination_Bolt11ImplCopyWithImpl(
+      _$SendDestination_Bolt11Impl _value, $Res Function(_$SendDestination_Bolt11Impl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? invoice = null,
+  }) {
+    return _then(_$SendDestination_Bolt11Impl(
+      invoice: null == invoice
+          ? _value.invoice
+          : invoice // ignore: cast_nullable_to_non_nullable
+              as LNInvoice,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SendDestination_Bolt11Impl extends SendDestination_Bolt11 {
+  const _$SendDestination_Bolt11Impl({required this.invoice}) : super._();
+
+  @override
+  final LNInvoice invoice;
+
+  @override
+  String toString() {
+    return 'SendDestination.bolt11(invoice: $invoice)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SendDestination_Bolt11Impl &&
+            (identical(other.invoice, invoice) || other.invoice == invoice));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, invoice);
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SendDestination_Bolt11ImplCopyWith<_$SendDestination_Bolt11Impl> get copyWith =>
+      __$$SendDestination_Bolt11ImplCopyWithImpl<_$SendDestination_Bolt11Impl>(this, _$identity);
+}
+
+abstract class SendDestination_Bolt11 extends SendDestination {
+  const factory SendDestination_Bolt11({required final LNInvoice invoice}) = _$SendDestination_Bolt11Impl;
+  const SendDestination_Bolt11._() : super._();
+
+  LNInvoice get invoice;
+
+  /// Create a copy of SendDestination
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SendDestination_Bolt11ImplCopyWith<_$SendDestination_Bolt11Impl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

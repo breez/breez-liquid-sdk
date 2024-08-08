@@ -1,4 +1,5 @@
 use std::str::FromStr;
+use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::error::{PaymentError, SdkResult};
@@ -6,6 +7,7 @@ use crate::prelude::{
     Config, LiquidNetwork, SendSwap, LOWBALL_FEE_RATE_SAT_PER_VBYTE,
     STANDARD_FEE_RATE_SAT_PER_VBYTE,
 };
+use crate::wallet::OnchainWallet;
 use anyhow::{anyhow, Result};
 use boltz_client::boltz::{
     BoltzApiClientV2, Cooperative, BOLTZ_MAINNET_URL_V2, BOLTZ_TESTNET_URL_V2,
@@ -57,6 +59,22 @@ pub(crate) fn deserialize_tx_hex(tx_hex: &str) -> Result<Transaction> {
     Ok(deserialize(&Vec::<u8>::from_hex(tx_hex).map_err(
         |err| anyhow!("Could not deserialize transaction: {err:?}"),
     )?)?)
+}
+
+pub(crate) async fn derive_fee_rate(
+    wallet: Arc<dyn OnchainWallet>,
+    amount_sat: u64,
+    recipient_address: &str,
+    absolute_fees: u64,
+) -> Result<f32> {
+    let standard_fees = wallet
+        .build_tx(None, recipient_address, amount_sat)
+        .await?
+        .all_fees()
+        .values()
+        .sum::<u64>() as f32;
+
+    Ok(STANDARD_FEE_RATE_SAT_PER_VBYTE * absolute_fees as f32 / standard_fees)
 }
 
 pub(crate) fn estimate_refund_fees(
