@@ -55,7 +55,6 @@ pub(crate) enum Command {
         #[clap(short = 'f', long = "fee_rate")]
         sat_per_vbyte: Option<u32>,
     },
-    /// TODO Add BIP21 Support
     /// Receive lbtc and send btc through a swap
     ReceivePayment {
         /// The method to use when receiving. Either "lightning", "bitcoin" or "liquid"
@@ -247,8 +246,23 @@ pub(crate) async fn handle_command(
                 .await?;
 
             let mut result = command_result!(&response);
+            result.push('\n');
+
+            match parse(&response.destination).await? {
+                InputType::Bolt11 { invoice } => result.push_str(&build_qr_text(&invoice.bolt11)),
+                InputType::LiquidAddress { address } => {
+                    result.push_str(&build_qr_text(&address.to_uri().map_err(|e| {
+                        anyhow::anyhow!("Could not build BIP21 from address data: {e:?}")
+                    })?))
+                }
+                InputType::BitcoinAddress { address } => {
+                    result.push_str(&build_qr_text(&address.to_uri().map_err(|e| {
+                        anyhow::anyhow!("Could not build BIP21 from address data: {e:?}")
+                    })?))
+                }
+                _ => {}
+            }
             if let Ok(InputType::Bolt11 { invoice }) = parse(&response.destination).await {
-                result.push('\n');
                 result.push_str(&build_qr_text(&invoice.bolt11));
             }
             result

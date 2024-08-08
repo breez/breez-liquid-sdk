@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -17,12 +16,10 @@ use boltz_client::network::electrum::ElectrumConfig;
 use boltz_client::Amount;
 use lwk_wollet::elements::encode::deserialize;
 use lwk_wollet::elements::hex::FromHex;
-use lwk_wollet::elements::AssetId;
 use lwk_wollet::elements::{
     LockTime::{self, *},
     Transaction,
 };
-use sdk_common::bitcoin::hashes::hex::ToHex;
 
 pub(crate) fn now() -> u32 {
     SystemTime::now()
@@ -132,48 +129,4 @@ pub(crate) fn estimate_refund_fees(
     let dummy_tx = swap_tx.sign_refund(&swap.get_refund_keypair()?, dummy_fees, cooperative)?;
 
     Ok((dummy_tx.vsize() as f32 * fee_rate).ceil() as u64)
-}
-
-pub(crate) fn new_liquid_bip21(
-    address: &str,
-    network: LiquidNetwork,
-    amount_sat: Option<u64>,
-    message: Option<String>,
-) -> String {
-    let (scheme, asset_id) = match network {
-        LiquidNetwork::Mainnet => ("liquidnetwork", AssetId::LIQUID_BTC),
-        LiquidNetwork::Testnet => (
-            "liquidtestnet",
-            AssetId::from_str("6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d")
-                .unwrap(),
-        ),
-    };
-
-    let mut optional_keys = HashMap::new();
-
-    if let Some(amount_sat) = amount_sat {
-        let amount_btc = amount_sat as f64 / 100_000_000.0;
-        optional_keys.insert("amount", format!("{amount_btc:.8}"));
-        optional_keys.insert("assetid", asset_id.to_hex());
-    }
-
-    if let Some(message) = message {
-        optional_keys.insert("message", message);
-    }
-
-    let suffix_str = if optional_keys.is_empty() {
-        "".to_string()
-    } else {
-        format!(
-            "?{}",
-            querystring::stringify(
-                optional_keys
-                    .iter()
-                    .map(|(key, value)| (*key, value.as_str()))
-                    .collect(),
-            )
-        )
-    };
-
-    format!("{scheme}:{address}{suffix_str}")
 }

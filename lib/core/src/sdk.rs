@@ -14,11 +14,13 @@ use futures_util::stream::select_all;
 use futures_util::StreamExt;
 use log::{debug, error, info};
 use lwk_wollet::bitcoin::hex::DisplayHex;
+use lwk_wollet::elements::AssetId;
 use lwk_wollet::hashes::{sha256, Hash};
 use lwk_wollet::secp256k1::ThirtyTwoByteHash;
 use lwk_wollet::{elements, ElementsNetwork};
 use sdk_common::bitcoin::secp256k1::Secp256k1;
 use sdk_common::bitcoin::util::bip32::ChildNumber;
+use sdk_common::liquid::LiquidAddressData;
 use sdk_common::prelude::{FiatAPI, FiatCurrency, LnUrlPayError, LnUrlWithdrawError, Rate};
 use tokio::sync::{watch, Mutex, RwLock};
 use tokio::time::MissedTickBehavior;
@@ -690,8 +692,8 @@ impl LiquidSdk {
             InputType::LiquidAddress {
                 address: mut liquid_address_data,
             } => {
-                let Some(amount_sat) = req.amount_sat.or(liquid_address_data.amount_sat) else {
-                    return Err(PaymentError::AmountOutOfRange);
+                let Some(amount_sat) = liquid_address_data.amount_sat else {
+                    return Err(PaymentError::AmountMissing { err: "`amount_sat` must be present when paying to a `SendDestination::LiquidAddress`".to_string() });
                 };
 
                 ensure_sdk!(
@@ -1358,12 +1360,24 @@ impl LiquidSdk {
                 let address = self.onchain_wallet.next_unused_address().await?.to_string();
 
                 let receive_destination = match amount_sat {
-                    Some(amount_sat) => utils::new_liquid_bip21(
-                        &address,
-                        self.config.network,
-                        Some(*amount_sat),
-                        req.description.clone(),
-                    ),
+                    Some(amount_sat) => LiquidAddressData {
+                        address: address.to_string(),
+                        network: self.config.network.into(),
+                        amount_sat: Some(*amount_sat),
+                        asset_id: Some(match self.config.network {
+                            LiquidNetwork::Mainnet => AssetId::LIQUID_BTC.to_hex(),
+                            LiquidNetwork::Testnet => {
+                                "6f0279e9ed041c3d710a9f57d0c02928416460c4b722ae3457a11eec381c526d"
+                                    .to_string()
+                            }
+                        }),
+                        label: None,
+                        message: req.description.clone(),
+                    }
+                    .to_uri()
+                    .map_err(|e| PaymentError::Generic {
+                        err: format!("Could not build BIP21 URI: {e:?}"),
+                    })?,
                     None => address,
                 };
 

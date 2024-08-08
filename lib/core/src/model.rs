@@ -194,7 +194,7 @@ pub struct ConnectRequest {
     pub config: Config,
 }
 
-/// The receive methods supported by the SDK
+/// The send/receive methods supported by the SDK
 #[derive(Clone, Debug, Serialize, Eq, PartialEq)]
 pub enum PaymentMethod {
     Lightning,

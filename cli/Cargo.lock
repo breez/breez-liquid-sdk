@@ -2764,8 +2764,8 @@ dependencies = [
 
 [[package]]
 name = "sdk-common"
-version = "0.5.0"
-source = "git+https://github.com/breez/breez-sdk?branch=yse-bip21-liquid#bf3023ee8435d3b5a75bedf740142b1f8e3b2b1b"
+version = "0.5.1-rc6"
+source = "git+https://github.com/breez/breez-sdk?rev=68aa1d003944a6d75f99bf6c6f30da03e070bbce#68aa1d003944a6d75f99bf6c6f30da03e070bbce"
 dependencies = [
  "aes 0.8.4",
  "anyhow",
