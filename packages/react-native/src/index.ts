@@ -291,6 +291,7 @@ export interface ReceiveOnchainResponse {
 export interface ReceivePaymentRequest {
     prepareRes: PrepareReceivePaymentResponse
     description?: string
+    useDescriptionHash?: boolean
 }
 
 export interface ReceivePaymentResponse {

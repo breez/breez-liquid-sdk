@@ -17,6 +17,10 @@ android {
         minSdk = 24
         consumerProguardFiles("consumer-rules.pro")
     }
+    
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     buildTypes {
         getByName("release") {
@@ -30,11 +34,6 @@ android {
         singleVariant("release") {
             withSourcesJar()
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

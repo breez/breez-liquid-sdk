@@ -25,6 +25,8 @@
 -keep class com.sun.jna.** { *; }
 -keep class technology.breez.* { *; }
 -keep class breez_sdk_liquid.** { *; }
+-keep class breez_sdk_liquid_notification.** { *; }
 -keepclassmembers class * extends technology.breez.* { public *; }
 -keepclassmembers class * extends breez_sdk_liquid.** { public *; }
+-keepclassmembers class * extends breez_sdk_liquid_notification.** { public *; }
 -keepclassmembers class * extends com.sun.jna.** { public *; }

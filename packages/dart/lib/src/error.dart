@@ -21,6 +21,9 @@ sealed class PaymentError with _$PaymentError implements FrbException {
   }) = PaymentError_Generic;
   const factory PaymentError.invalidOrExpiredFees() = PaymentError_InvalidOrExpiredFees;
   const factory PaymentError.insufficientFunds() = PaymentError_InsufficientFunds;
+  const factory PaymentError.invalidDescription({
+    required String err,
+  }) = PaymentError_InvalidDescription;
   const factory PaymentError.invalidInvoice({
     required String err,
   }) = PaymentError_InvalidInvoice;

@@ -1793,9 +1793,20 @@ fun asReceivePaymentRequest(receivePaymentRequest: ReadableMap): ReceivePaymentR
     }
     val prepareRes = receivePaymentRequest.getMap("prepareRes")?.let { asPrepareReceivePaymentResponse(it) }!!
     val description = if (hasNonNullKey(receivePaymentRequest, "description")) receivePaymentRequest.getString("description") else null
+    val useDescriptionHash =
+        if (hasNonNullKey(
+                receivePaymentRequest,
+                "useDescriptionHash",
+            )
+        ) {
+            receivePaymentRequest.getBoolean("useDescriptionHash")
+        } else {
+            null
+        }
     return ReceivePaymentRequest(
         prepareRes,
         description,
+        useDescriptionHash,
     )
 }
 
@@ -1803,6 +1814,7 @@ fun readableMapOf(receivePaymentRequest: ReceivePaymentRequest): ReadableMap =
     readableMapOf(
         "prepareRes" to readableMapOf(receivePaymentRequest.prepareRes),
         "description" to receivePaymentRequest.description,
+        "useDescriptionHash" to receivePaymentRequest.useDescriptionHash,
     )
 
 fun asReceivePaymentRequestList(arr: ReadableArray): List<ReceivePaymentRequest> {

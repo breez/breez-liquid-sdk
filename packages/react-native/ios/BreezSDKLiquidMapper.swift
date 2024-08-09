@@ -2078,10 +2078,18 @@ enum BreezSDKLiquidMapper {
             }
             description = descriptionTmp
         }
+        var useDescriptionHash: Bool?
+        if hasNonNilKey(data: receivePaymentRequest, key: "useDescriptionHash") {
+            guard let useDescriptionHashTmp = receivePaymentRequest["useDescriptionHash"] as? Bool else {
+                throw SdkError.Generic(message: errUnexpectedValue(fieldName: "useDescriptionHash"))
+            }
+            useDescriptionHash = useDescriptionHashTmp
+        }
 
         return ReceivePaymentRequest(
             prepareRes: prepareRes,
-            description: description
+            description: description,
+            useDescriptionHash: useDescriptionHash
         )
     }
 
@@ -2089,6 +2097,7 @@ enum BreezSDKLiquidMapper {
         return [
             "prepareRes": dictionaryOf(prepareReceivePaymentResponse: receivePaymentRequest.prepareRes),
             "description": receivePaymentRequest.description == nil ? nil : receivePaymentRequest.description,
+            "useDescriptionHash": receivePaymentRequest.useDescriptionHash == nil ? nil : receivePaymentRequest.useDescriptionHash,
         ]
     }
 
