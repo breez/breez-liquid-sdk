@@ -1116,42 +1116,48 @@ impl CstDecode<crate::error::PaymentError> for wire_cst_payment_error {
             5 => crate::error::PaymentError::InvalidOrExpiredFees,
             6 => crate::error::PaymentError::InsufficientFunds,
             7 => {
+                let ans = unsafe { self.kind.InvalidDescription };
+                crate::error::PaymentError::InvalidDescription {
+                    err: ans.err.cst_decode(),
+                }
+            }
+            8 => {
                 let ans = unsafe { self.kind.InvalidInvoice };
                 crate::error::PaymentError::InvalidInvoice {
                     err: ans.err.cst_decode(),
                 }
             }
-            8 => crate::error::PaymentError::InvalidPreimage,
-            9 => {
+            9 => crate::error::PaymentError::InvalidPreimage,
+            10 => {
                 let ans = unsafe { self.kind.LwkError };
                 crate::error::PaymentError::LwkError {
                     err: ans.err.cst_decode(),
                 }
             }
-            10 => crate::error::PaymentError::PairsNotFound,
-            11 => crate::error::PaymentError::PaymentTimeout,
-            12 => crate::error::PaymentError::PersistError,
-            13 => {
+            11 => crate::error::PaymentError::PairsNotFound,
+            12 => crate::error::PaymentError::PaymentTimeout,
+            13 => crate::error::PaymentError::PersistError,
+            14 => {
                 let ans = unsafe { self.kind.ReceiveError };
                 crate::error::PaymentError::ReceiveError {
                     err: ans.err.cst_decode(),
                 }
             }
-            14 => {
+            15 => {
                 let ans = unsafe { self.kind.Refunded };
                 crate::error::PaymentError::Refunded {
                     err: ans.err.cst_decode(),
                     refund_tx_id: ans.refund_tx_id.cst_decode(),
                 }
             }
-            15 => crate::error::PaymentError::SelfTransferNotSupported,
-            16 => {
+            16 => crate::error::PaymentError::SelfTransferNotSupported,
+            17 => {
                 let ans = unsafe { self.kind.SendError };
                 crate::error::PaymentError::SendError {
                     err: ans.err.cst_decode(),
                 }
             }
-            17 => {
+            18 => {
                 let ans = unsafe { self.kind.SignerError };
                 crate::error::PaymentError::SignerError {
                     err: ans.err.cst_decode(),
@@ -1300,8 +1306,9 @@ impl CstDecode<crate::model::ReceivePaymentRequest> for wire_cst_receive_payment
     // Codec=Cst (C-struct based), see doc to use other codecs
     fn cst_decode(self) -> crate::model::ReceivePaymentRequest {
         crate::model::ReceivePaymentRequest {
-            description: self.description.cst_decode(),
             prepare_res: self.prepare_res.cst_decode(),
+            description: self.description.cst_decode(),
+            use_description_hash: self.use_description_hash.cst_decode(),
         }
     }
 }
@@ -2251,8 +2258,9 @@ impl Default for wire_cst_receive_onchain_response {
 impl NewWithNullPtr for wire_cst_receive_payment_request {
     fn new_with_null_ptr() -> Self {
         Self {
-            description: core::ptr::null_mut(),
             prepare_res: Default::default(),
+            description: core::ptr::null_mut(),
+            use_description_hash: core::ptr::null_mut(),
         }
     }
 }
@@ -3829,6 +3837,7 @@ pub struct wire_cst_payment_error {
 #[derive(Clone, Copy)]
 pub union PaymentErrorKind {
     Generic: wire_cst_PaymentError_Generic,
+    InvalidDescription: wire_cst_PaymentError_InvalidDescription,
     InvalidInvoice: wire_cst_PaymentError_InvalidInvoice,
     LwkError: wire_cst_PaymentError_LwkError,
     ReceiveError: wire_cst_PaymentError_ReceiveError,
@@ -3840,6 +3849,11 @@ pub union PaymentErrorKind {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct wire_cst_PaymentError_Generic {
+    err: *mut wire_cst_list_prim_u_8_strict,
+}
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct wire_cst_PaymentError_InvalidDescription {
     err: *mut wire_cst_list_prim_u_8_strict,
 }
 #[repr(C)]
@@ -3961,8 +3975,9 @@ pub struct wire_cst_receive_onchain_response {
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct wire_cst_receive_payment_request {
-    description: *mut wire_cst_list_prim_u_8_strict,
     prepare_res: wire_cst_prepare_receive_payment_response,
+    description: *mut wire_cst_list_prim_u_8_strict,
+    use_description_hash: *mut bool,
 }
 #[repr(C)]
 #[derive(Clone, Copy)]

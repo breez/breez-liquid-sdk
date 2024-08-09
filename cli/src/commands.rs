@@ -52,6 +52,10 @@ pub(crate) enum Command {
         /// Optional description for the invoice
         #[clap(short = 'd', long = "description")]
         description: Option<String>,
+
+        /// Optional if true uses the hash of the description
+        #[clap(short = 'h', long = "hash_description")]
+        use_description_hash: Option<bool>,
     },
     /// Receive lbtc and send btc onchain through a swap
     ReceiveOnchainPayment {
@@ -206,6 +210,7 @@ pub(crate) async fn handle_command(
         Command::ReceivePayment {
             payer_amount_sat,
             description,
+            use_description_hash,
         } => {
             let prepare_res = sdk
                 .prepare_receive_payment(&PrepareReceivePaymentRequest { payer_amount_sat })
@@ -223,6 +228,7 @@ pub(crate) async fn handle_command(
                 .receive_payment(&ReceivePaymentRequest {
                     prepare_res,
                     description,
+                    use_description_hash,
                 })
                 .await?;
             let invoice = response.invoice.clone();

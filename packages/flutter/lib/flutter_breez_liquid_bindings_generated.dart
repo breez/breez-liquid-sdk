@@ -1613,9 +1613,11 @@ final class wire_cst_prepare_receive_payment_response extends ffi.Struct {
 }
 
 final class wire_cst_receive_payment_request extends ffi.Struct {
+  external wire_cst_prepare_receive_payment_response prepare_res;
+
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> description;
 
-  external wire_cst_prepare_receive_payment_response prepare_res;
+  external ffi.Pointer<ffi.Bool> use_description_hash;
 }
 
 final class wire_cst_refund_request extends ffi.Struct {
@@ -2338,6 +2340,10 @@ final class wire_cst_PaymentError_Generic extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
 
+final class wire_cst_PaymentError_InvalidDescription extends ffi.Struct {
+  external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
+}
+
 final class wire_cst_PaymentError_InvalidInvoice extends ffi.Struct {
   external ffi.Pointer<wire_cst_list_prim_u_8_strict> err;
 }
@@ -2366,6 +2372,8 @@ final class wire_cst_PaymentError_SignerError extends ffi.Struct {
 
 final class PaymentErrorKind extends ffi.Union {
   external wire_cst_PaymentError_Generic Generic;
+
+  external wire_cst_PaymentError_InvalidDescription InvalidDescription;
 
   external wire_cst_PaymentError_InvalidInvoice InvalidInvoice;
 

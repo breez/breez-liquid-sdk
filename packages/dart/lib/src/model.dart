@@ -858,24 +858,31 @@ class ReceiveOnchainResponse {
 
 /// An argument when calling [crate::sdk::LiquidSdk::receive_payment].
 class ReceivePaymentRequest {
-  final String? description;
   final PrepareReceivePaymentResponse prepareRes;
 
+  /// The description for this payment request.
+  final String? description;
+
+  /// If set to true, then the hash of the description will be used.
+  final bool? useDescriptionHash;
+
   const ReceivePaymentRequest({
-    this.description,
     required this.prepareRes,
+    this.description,
+    this.useDescriptionHash,
   });
 
   @override
-  int get hashCode => description.hashCode ^ prepareRes.hashCode;
+  int get hashCode => prepareRes.hashCode ^ description.hashCode ^ useDescriptionHash.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ReceivePaymentRequest &&
           runtimeType == other.runtimeType &&
+          prepareRes == other.prepareRes &&
           description == other.description &&
-          prepareRes == other.prepareRes;
+          useDescriptionHash == other.useDescriptionHash;
 }
 
 /// Returned when calling [crate::sdk::LiquidSdk::receive_payment].

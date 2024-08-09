@@ -380,6 +380,87 @@ abstract class PaymentError_InsufficientFunds extends PaymentError {
 }
 
 /// @nodoc
+abstract class _$$PaymentError_InvalidDescriptionImplCopyWith<$Res> {
+  factory _$$PaymentError_InvalidDescriptionImplCopyWith(_$PaymentError_InvalidDescriptionImpl value,
+          $Res Function(_$PaymentError_InvalidDescriptionImpl) then) =
+      __$$PaymentError_InvalidDescriptionImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String err});
+}
+
+/// @nodoc
+class __$$PaymentError_InvalidDescriptionImplCopyWithImpl<$Res>
+    extends _$PaymentErrorCopyWithImpl<$Res, _$PaymentError_InvalidDescriptionImpl>
+    implements _$$PaymentError_InvalidDescriptionImplCopyWith<$Res> {
+  __$$PaymentError_InvalidDescriptionImplCopyWithImpl(_$PaymentError_InvalidDescriptionImpl _value,
+      $Res Function(_$PaymentError_InvalidDescriptionImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PaymentError
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? err = null,
+  }) {
+    return _then(_$PaymentError_InvalidDescriptionImpl(
+      err: null == err
+          ? _value.err
+          : err // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$PaymentError_InvalidDescriptionImpl extends PaymentError_InvalidDescription {
+  const _$PaymentError_InvalidDescriptionImpl({required this.err}) : super._();
+
+  @override
+  final String err;
+
+  @override
+  String toString() {
+    return 'PaymentError.invalidDescription(err: $err)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PaymentError_InvalidDescriptionImpl &&
+            (identical(other.err, err) || other.err == err));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, err);
+
+  /// Create a copy of PaymentError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PaymentError_InvalidDescriptionImplCopyWith<_$PaymentError_InvalidDescriptionImpl> get copyWith =>
+      __$$PaymentError_InvalidDescriptionImplCopyWithImpl<_$PaymentError_InvalidDescriptionImpl>(
+          this, _$identity);
+}
+
+abstract class PaymentError_InvalidDescription extends PaymentError {
+  const factory PaymentError_InvalidDescription({required final String err}) =
+      _$PaymentError_InvalidDescriptionImpl;
+  const PaymentError_InvalidDescription._() : super._();
+
+  String get err;
+
+  /// Create a copy of PaymentError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PaymentError_InvalidDescriptionImplCopyWith<_$PaymentError_InvalidDescriptionImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 abstract class _$$PaymentError_InvalidInvoiceImplCopyWith<$Res> {
   factory _$$PaymentError_InvalidInvoiceImplCopyWith(
           _$PaymentError_InvalidInvoiceImpl value, $Res Function(_$PaymentError_InvalidInvoiceImpl) then) =
