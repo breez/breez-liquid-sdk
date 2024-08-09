@@ -830,6 +830,16 @@ impl LiquidSdk {
                     compressed: true,
                     inner: keypair.public_key(),
                 };
+                let webhook = self.persister.get_webhook_url()?.map(|url| Webhook {
+                    url,
+                    hash_swap_id: Some(true),
+                    status: Some(vec![
+                        SubSwapStates::InvoiceFailedToPay,
+                        SubSwapStates::SwapExpired,
+                        SubSwapStates::TransactionClaimPending,
+                        SubSwapStates::TransactionLockupFailed,
+                    ]),
+                });
                 let create_response = self.swapper.create_send_swap(CreateSubmarineRequest {
                     from: "L-BTC".to_string(),
                     to: "BTC".to_string(),
@@ -837,6 +847,7 @@ impl LiquidSdk {
                     refund_public_key,
                     pair_hash: Some(lbtc_pair.hash),
                     referral_id: None,
+                    webhook,
                 })?;
 
                 let swap_id = &create_response.id;
@@ -1031,6 +1042,15 @@ impl LiquidSdk {
             compressed: true,
             inner: refund_keypair.public_key(),
         };
+        let webhook = self.persister.get_webhook_url()?.map(|url| Webhook {
+            url,
+            hash_swap_id: Some(true),
+            status: Some(vec![
+                ChainSwapStates::TransactionFailed,
+                ChainSwapStates::TransactionLockupFailed,
+                ChainSwapStates::TransactionServerConfirmed,
+            ]),
+        });
         let create_response = self.swapper.create_chain_swap(CreateChainRequest {
             from: "L-BTC".to_string(),
             to: "BTC".to_string(),
@@ -1041,6 +1061,7 @@ impl LiquidSdk {
             server_lock_amount: Some(server_lockup_amount_sat as u32), // TODO update our model
             pair_hash: Some(pair.hash),
             referral_id: None,
+            webhook,
         })?;
 
         let swap_id = &create_response.id;
@@ -1189,6 +1210,7 @@ impl LiquidSdk {
 
         let payer_amount_sat = req.prepare_res.payer_amount_sat;
         let fees_sat = req.prepare_res.fees_sat;
+        let receiver_amount_sat = payer_amount_sat - fees_sat;
 
         let reverse_pair = self
             .swapper
@@ -1213,6 +1235,17 @@ impl LiquidSdk {
         let mrh_addr_hash = sha256::Hash::hash(mrh_addr_str.as_bytes());
         let mrh_addr_hash_sig = keypair.sign_schnorr(mrh_addr_hash.into());
 
+        let webhook_claim_status =
+            match receiver_amount_sat > self.config.zero_conf_max_amount_sat() {
+                true => RevSwapStates::TransactionConfirmed,
+                false => RevSwapStates::TransactionMempool,
+            };
+        let webhook = self.persister.get_webhook_url()?.map(|url| Webhook {
+            url,
+            hash_swap_id: Some(true),
+            status: Some(vec![webhook_claim_status]),
+        });
+
         let v2_req = CreateReverseRequest {
             invoice_amount: payer_amount_sat as u32, // TODO update our model
             from: "BTC".to_string(),
@@ -1223,6 +1256,7 @@ impl LiquidSdk {
             address: Some(mrh_addr_str.clone()),
             address_signature: Some(mrh_addr_hash_sig.to_hex()),
             referral_id: None,
+            webhook,
         };
         let create_response = self.swapper.create_receive_swap(v2_req)?;
 
@@ -1285,7 +1319,7 @@ impl LiquidSdk {
                 invoice: invoice.to_string(),
                 description,
                 payer_amount_sat,
-                receiver_amount_sat: payer_amount_sat - fees_sat,
+                receiver_amount_sat,
                 claim_fees_sat: reverse_pair.fees.claim_estimate(),
                 claim_tx_id: None,
                 created_at: utils::now(),
@@ -1350,6 +1384,15 @@ impl LiquidSdk {
             compressed: true,
             inner: refund_keypair.public_key(),
         };
+        let webhook = self.persister.get_webhook_url()?.map(|url| Webhook {
+            url,
+            hash_swap_id: Some(true),
+            status: Some(vec![
+                ChainSwapStates::TransactionFailed,
+                ChainSwapStates::TransactionLockupFailed,
+                ChainSwapStates::TransactionServerConfirmed,
+            ]),
+        });
         let create_response = self.swapper.create_chain_swap(CreateChainRequest {
             from: "BTC".to_string(),
             to: "L-BTC".to_string(),
@@ -1360,6 +1403,7 @@ impl LiquidSdk {
             server_lock_amount: None,
             pair_hash: Some(pair.hash),
             referral_id: None,
+            webhook,
         })?;
 
         let swap_id = create_response.id.clone();
@@ -1832,6 +1876,31 @@ impl LiquidSdk {
         Ok(perform_lnurl_auth(linking_keys, req_data).await?)
     }
 
+    /// Register for webhook callbacks at the given `webhook_url`. Each created swap after registering the
+    /// webhook will include the `webhook_url`.
+    ///
+    /// This method should be called every time the application is started and when the `webhook_url` changes.
+    /// For example, if the `webhook_url` contains a push notification token and the token changes after
+    /// the application was started, then this method should be called to register for callbacks at
+    /// the new correct `webhook_url`. To unregister a webhook call [LiquidSdk::unregister_webhook].
+    pub async fn register_webhook(&self, webhook_url: String) -> SdkResult<()> {
+        info!("Registering for webhook notifications");
+        self.persister.set_webhook_url(webhook_url)?;
+        Ok(())
+    }
+
+    /// Unregister webhook callbacks. Each swap already created will continue to use the registered
+    /// `webhook_url` until complete.
+    ///
+    /// This can be called when callbacks are no longer needed or the `webhook_url`
+    /// has changed such that it needs unregistering. For example, the token is valid but the locale changes.
+    /// To register a webhook call [LiquidSdk::register_webhook].
+    pub async fn unregister_webhook(&self) -> SdkResult<()> {
+        info!("Unregistering for webhook notifications");
+        self.persister.remove_webhook_url()?;
+        Ok(())
+    }
+
     /// Fetch live rates of fiat currencies, sorted by name.
     pub async fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, SdkError> {
         self.fiat_api.fetch_fiat_rates().await.map_err(Into::into)
@@ -1932,22 +2001,24 @@ impl ReconnectHandler for SwapperReconnectHandler {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
+    use std::{str::FromStr, sync::Arc};
 
     use anyhow::{anyhow, Result};
     use boltz_client::{
         boltz::{self, SwapUpdateTxDetails},
         swaps::boltz::{ChainSwapStates, RevSwapStates, SubSwapStates},
     };
-    use lwk_wollet::hashes::hex::DisplayHex;
+    use lwk_wollet::{elements::Txid, hashes::hex::DisplayHex};
+    use tokio::sync::Mutex;
 
     use crate::{
         model::{Direction, PaymentState, Swap},
         sdk::LiquidSdk,
         test_utils::{
+            chain::{MockBitcoinChainService, MockHistory, MockLiquidChainService},
             chain_swap::{new_chain_swap, TEST_BITCOIN_TX},
             persist::{new_persister, new_receive_swap, new_send_swap},
-            sdk::new_liquid_sdk,
+            sdk::{new_liquid_sdk, new_liquid_sdk_with_chain_services},
             status_stream::MockStatusStream,
             swapper::MockSwapper,
             wallet::TEST_LIQUID_TX,
@@ -2193,11 +2264,15 @@ mod tests {
         let persister = Arc::new(persister);
         let swapper = Arc::new(MockSwapper::default());
         let status_stream = Arc::new(MockStatusStream::new());
+        let liquid_chain_service = Arc::new(Mutex::new(MockLiquidChainService::new()));
+        let bitcoin_chain_service = Arc::new(Mutex::new(MockBitcoinChainService::new()));
 
-        let sdk = Arc::new(new_liquid_sdk(
+        let sdk = Arc::new(new_liquid_sdk_with_chain_services(
             persister.clone(),
             swapper.clone(),
             status_stream.clone(),
+            liquid_chain_service.clone(),
+            bitcoin_chain_service.clone(),
         )?);
 
         LiquidSdk::track_swap_updates(&sdk).await;
@@ -2226,10 +2301,53 @@ mod tests {
                     assert_eq!(persisted_swap.state, PaymentState::Failed);
                 }
 
+                let (mock_tx_hex, mock_tx_id) = match direction {
+                    Direction::Incoming => {
+                        let tx = TEST_LIQUID_TX.clone();
+                        (
+                            lwk_wollet::elements::encode::serialize(&tx).to_lower_hex_string(),
+                            tx.txid().to_string(),
+                        )
+                    }
+                    Direction::Outgoing => {
+                        let tx = TEST_BITCOIN_TX.clone();
+                        (
+                            sdk_common::bitcoin::consensus::serialize(&tx).to_lower_hex_string(),
+                            tx.txid().to_string(),
+                        )
+                    }
+                };
+
                 // Verify that `TransactionLockupFailed` correctly sets the state as
                 // `RefundPending`/`Refundable` or as `Failed` depending on whether or not
                 // `user_lockup_tx_id` is present
-                for user_lockup_tx_id in &[None, Some("user-lockup-tx-id".to_string())] {
+                for user_lockup_tx_id in &[None, Some(mock_tx_id.clone())] {
+                    if let Some(user_lockup_tx_id) = user_lockup_tx_id {
+                        match direction {
+                            Direction::Incoming => {
+                                bitcoin_chain_service
+                                    .lock()
+                                    .await
+                                    .set_history(vec![MockHistory {
+                                        txid: Txid::from_str(&user_lockup_tx_id).unwrap(),
+                                        height: 0,
+                                        block_hash: None,
+                                        block_timestamp: None,
+                                    }]);
+                            }
+                            Direction::Outgoing => {
+                                liquid_chain_service
+                                    .lock()
+                                    .await
+                                    .set_history(vec![MockHistory {
+                                        txid: Txid::from_str(&user_lockup_tx_id).unwrap(),
+                                        height: 0,
+                                        block_hash: None,
+                                        block_timestamp: None,
+                                    }]);
+                            }
+                        }
+                    }
                     let persisted_swap = trigger_swap_update!(
                         "chain",
                         NewSwapArgs::default()
@@ -2252,23 +2370,6 @@ mod tests {
                     };
                     assert_eq!(persisted_swap.state, expected_state);
                 }
-
-                let (mock_tx_hex, mock_tx_id) = match direction {
-                    Direction::Incoming => {
-                        let tx = TEST_LIQUID_TX.clone();
-                        (
-                            lwk_wollet::elements::encode::serialize(&tx).to_lower_hex_string(),
-                            tx.txid().to_string(),
-                        )
-                    }
-                    Direction::Outgoing => {
-                        let tx = TEST_BITCOIN_TX.clone();
-                        (
-                            sdk_common::bitcoin::consensus::serialize(&tx).to_lower_hex_string(),
-                            tx.txid().to_string(),
-                        )
-                    }
-                };
 
                 // Verify that `TransactionMempool` and `TransactionConfirmed` correctly set
                 // `user_lockup_tx_id` and `accept_zero_conf`

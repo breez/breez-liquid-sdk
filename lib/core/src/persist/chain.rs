@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use anyhow::Result;
 use boltz_client::swaps::boltz::{ChainSwapDetails, CreateChainResponse};
 use rusqlite::{named_params, params, Connection, Row};
+use sdk_common::bitcoin::hashes::{hex::ToHex, sha256, Hash};
 use serde::{Deserialize, Serialize};
 
 use crate::ensure_sdk;
@@ -20,6 +21,7 @@ impl Persister {
             "
             INSERT INTO chain_swaps (
                 id,
+                id_hash,
                 direction,
                 claim_address,
                 lockup_address,
@@ -35,10 +37,12 @@ impl Persister {
                 created_at,
                 state
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )?;
+        let id_hash = sha256::Hash::hash(chain_swap.id.as_bytes()).to_hex();
         _ = stmt.execute((
             &chain_swap.id,
+            &id_hash,
             &chain_swap.direction,
             &chain_swap.claim_address,
             &chain_swap.lockup_address,
@@ -117,7 +121,7 @@ impl Persister {
 
     pub(crate) fn fetch_chain_swap_by_id(&self, id: &str) -> Result<Option<ChainSwap>> {
         let con: Connection = self.get_connection()?;
-        let query = Self::list_chain_swaps_query(vec!["id = ?1".to_string()]);
+        let query = Self::list_chain_swaps_query(vec!["id = ?1 or id_hash = ?1".to_string()]);
         let res = con.query_row(&query, [id], Self::sql_row_to_chain_swap);
 
         Ok(res.ok())

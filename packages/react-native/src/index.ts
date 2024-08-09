@@ -704,6 +704,14 @@ export const lnurlAuth = async (reqData: LnUrlAuthRequestData): Promise<LnUrlCal
     return response
 }
 
+export const registerWebhook = async (webhookUrl: string): Promise<void> => {
+    await BreezSDKLiquid.registerWebhook(webhookUrl)
+}
+
+export const unregisterWebhook = async (): Promise<void> => {
+    await BreezSDKLiquid.unregisterWebhook()
+}
+
 export const fetchFiatRates = async (): Promise<Rate[]> => {
     const response = await BreezSDKLiquid.fetchFiatRates()
     return response

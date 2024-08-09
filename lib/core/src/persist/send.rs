@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use anyhow::Result;
 use boltz_client::swaps::boltz::CreateSubmarineResponse;
 use rusqlite::{named_params, params, Connection, Row};
+use sdk_common::bitcoin::hashes::{hex::ToHex, sha256, Hash};
 use serde::{Deserialize, Serialize};
 
 use crate::ensure_sdk;
@@ -18,6 +19,7 @@ impl Persister {
             "
             INSERT INTO send_swaps (
                 id,
+                id_hash,
                 invoice,
                 description,
                 payer_amount_sat,
@@ -29,10 +31,12 @@ impl Persister {
                 created_at,
                 state
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )?;
+        let id_hash = sha256::Hash::hash(send_swap.id.as_bytes()).to_hex();
         _ = stmt.execute((
             &send_swap.id,
+            &id_hash,
             &send_swap.invoice,
             &send_swap.description,
             &send_swap.payer_amount_sat,
@@ -102,7 +106,7 @@ impl Persister {
 
     pub(crate) fn fetch_send_swap_by_id(&self, id: &str) -> Result<Option<SendSwap>> {
         let con: Connection = self.get_connection()?;
-        let query = Self::list_send_swaps_query(vec!["id = ?1".to_string()]);
+        let query = Self::list_send_swaps_query(vec!["id = ?1 or id_hash = ?1".to_string()]);
         let res = con.query_row(&query, [id], Self::sql_row_to_send_swap);
 
         Ok(res.ok())

@@ -211,6 +211,14 @@ impl BindingLiquidSdk {
             .map_err(Into::into)
     }
 
+    pub async fn register_webhook(&self, webhook_url: String) -> Result<(), SdkError> {
+        self.sdk.register_webhook(webhook_url).await
+    }
+
+    pub async fn unregister_webhook(&self) -> Result<(), SdkError> {
+        self.sdk.unregister_webhook().await
+    }
+
     pub async fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, SdkError> {
         self.sdk.fetch_fiat_rates().await
     }

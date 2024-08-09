@@ -189,6 +189,14 @@ impl BindingLiquidSdk {
         rt().block_on(self.sdk.lnurl_auth(req_data))
     }
 
+    pub fn register_webhook(&self, webhook_url: String) -> Result<(), SdkError> {
+        rt().block_on(self.sdk.register_webhook(webhook_url))
+    }
+
+    pub fn unregister_webhook(&self) -> Result<(), SdkError> {
+        rt().block_on(self.sdk.unregister_webhook())
+    }
+
     pub fn fetch_fiat_rates(&self) -> Result<Vec<Rate>, SdkError> {
         rt().block_on(self.sdk.fetch_fiat_rates())
     }

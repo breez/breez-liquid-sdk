@@ -2,6 +2,7 @@
 
 use anyhow::Result;
 use async_trait::async_trait;
+use lwk_wollet::elements::{BlockHash, Txid};
 use lwk_wollet::{bitcoin::consensus::deserialize, elements::hex::FromHex};
 
 use crate::{
@@ -10,12 +11,38 @@ use crate::{
     utils,
 };
 
+#[derive(Clone)]
+pub(crate) struct MockHistory {
+    pub txid: Txid,
+    pub height: i32,
+    pub block_hash: Option<BlockHash>,
+    pub block_timestamp: Option<u32>,
+}
+
+impl From<MockHistory> for lwk_wollet::History {
+    fn from(h: MockHistory) -> Self {
+        lwk_wollet::History {
+            txid: h.txid,
+            height: h.height,
+            block_hash: h.block_hash,
+            block_timestamp: h.block_timestamp,
+        }
+    }
+}
+
 #[derive(Default)]
-pub(crate) struct MockLiquidChainService {}
+pub(crate) struct MockLiquidChainService {
+    history: Vec<MockHistory>,
+}
 
 impl MockLiquidChainService {
     pub(crate) fn new() -> Self {
         MockLiquidChainService::default()
+    }
+
+    pub(crate) fn set_history(&mut self, history: Vec<MockHistory>) -> &mut Self {
+        self.history = history;
+        self
     }
 }
 
@@ -44,7 +71,15 @@ impl LiquidChainService for MockLiquidChainService {
         &self,
         _scripts: &lwk_wollet::elements::Script,
     ) -> Result<Vec<lwk_wollet::History>> {
-        unimplemented!()
+        Ok(self.history.clone().into_iter().map(Into::into).collect())
+    }
+
+    async fn get_script_history_with_retry(
+        &self,
+        _script: &lwk_wollet::elements::Script,
+        _retries: u64,
+    ) -> Result<Vec<lwk_wollet::History>> {
+        Ok(self.history.clone().into_iter().map(Into::into).collect())
     }
 
     async fn verify_tx(
@@ -58,11 +93,18 @@ impl LiquidChainService for MockLiquidChainService {
     }
 }
 
-pub(crate) struct MockBitcoinChainService {}
+pub(crate) struct MockBitcoinChainService {
+    history: Vec<MockHistory>,
+}
 
 impl MockBitcoinChainService {
     pub(crate) fn new() -> Self {
-        MockBitcoinChainService {}
+        MockBitcoinChainService { history: vec![] }
+    }
+
+    pub(crate) fn set_history(&mut self, history: Vec<MockHistory>) -> &mut Self {
+        self.history = history;
+        self
     }
 }
 
@@ -90,7 +132,15 @@ impl BitcoinChainService for MockBitcoinChainService {
         &self,
         _script: &boltz_client::bitcoin::Script,
     ) -> Result<Vec<lwk_wollet::History>> {
-        unimplemented!()
+        Ok(self.history.clone().into_iter().map(Into::into).collect())
+    }
+
+    async fn get_script_history_with_retry(
+        &self,
+        _script: &boltz_client::bitcoin::Script,
+        _retries: u64,
+    ) -> Result<Vec<lwk_wollet::History>> {
+        Ok(self.history.clone().into_iter().map(Into::into).collect())
     }
 
     fn script_get_balance(

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use anyhow::Result;
 use boltz_client::swaps::boltz::CreateReverseResponse;
 use rusqlite::{named_params, params, Connection, Row};
+use sdk_common::bitcoin::hashes::{hex::ToHex, sha256, Hash};
 use serde::{Deserialize, Serialize};
 
 use crate::ensure_sdk;
@@ -18,6 +19,7 @@ impl Persister {
             "
             INSERT INTO receive_swaps (
                 id,
+                id_hash,
                 preimage,
                 create_response_json,
                 claim_private_key,
@@ -30,10 +32,12 @@ impl Persister {
                 claim_tx_id,
                 state
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         )?;
+        let id_hash = sha256::Hash::hash(receive_swap.id.as_bytes()).to_hex();
         _ = stmt.execute((
             &receive_swap.id,
+            id_hash,
             &receive_swap.preimage,
             &receive_swap.create_response_json,
             &receive_swap.claim_private_key,
@@ -81,7 +85,7 @@ impl Persister {
 
     pub(crate) fn fetch_receive_swap_by_id(&self, id: &str) -> Result<Option<ReceiveSwap>> {
         let con: Connection = self.get_connection()?;
-        let query = Self::list_receive_swaps_query(vec!["id = ?1".to_string()]);
+        let query = Self::list_receive_swaps_query(vec!["id = ?1 or id_hash = ?1".to_string()]);
         let res = con.query_row(&query, [id], Self::sql_row_to_receive_swap);
 
         Ok(res.ok())

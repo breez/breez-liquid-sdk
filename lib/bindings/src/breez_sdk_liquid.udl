@@ -618,6 +618,12 @@ interface BindingLiquidSdk {
     LnUrlCallbackStatus lnurl_auth(LnUrlAuthRequestData req_data);
 
     [Throws=SdkError]
+    void register_webhook(string webhook_url);
+
+    [Throws=SdkError]
+    void unregister_webhook();
+
+    [Throws=SdkError]
     sequence<Rate> fetch_fiat_rates();
 
     [Throws=SdkError]

@@ -4,9 +4,11 @@ use std::{str::FromStr, sync::Arc};
 use anyhow::{anyhow, Result};
 use boltz_client::swaps::boltz::{self, SwapUpdateTxDetails};
 use boltz_client::swaps::{boltz::ChainSwapStates, boltz::CreateChainResponse};
-use boltz_client::Secp256k1;
+use boltz_client::{Secp256k1, ToHex};
 use log::{debug, error, info, warn};
-use lwk_wollet::elements::Transaction;
+use lwk_wollet::elements::hex::FromHex;
+use lwk_wollet::elements::{Script, Transaction};
+use lwk_wollet::History;
 use tokio::sync::{broadcast, watch, Mutex};
 use tokio::time::MissedTickBehavior;
 
@@ -209,13 +211,16 @@ impl ChainSwapStateHandler {
                             return Err(anyhow!("Unexpected payload from Boltz status stream"));
                         };
 
-                        if let Err(e) = self.verify_lockup_tx(swap, &transaction, false).await {
+                        if let Err(e) = self
+                            .verify_server_lockup_tx(swap, &transaction, false)
+                            .await
+                        {
                             warn!("Server lockup mempool transaction for incoming Chain Swap {} could not be verified. txid: {}, err: {}",
                                 swap.id,
                                 transaction.id,
                                 e);
                             return Err(anyhow!(
-                                "Could not verify transaction {}: {e}",
+                                "Could not verify server lockup transaction {}: {e}",
                                 transaction.id
                             ));
                         }
@@ -247,13 +252,19 @@ impl ChainSwapStateHandler {
                             return Err(anyhow!("Unexpected payload from Boltz status stream"));
                         };
 
-                        if let Err(e) = self.verify_lockup_tx(swap, &transaction, true).await {
+                        if let Err(e) = self.verify_user_lockup_tx(swap).await {
+                            warn!("User lockup transaction for incoming Chain Swap {} could not be verified. err: {}", swap.id, e);
+                            return Err(anyhow!("Could not verify user lockup transaction: {e}",));
+                        }
+
+                        if let Err(e) = self.verify_server_lockup_tx(swap, &transaction, true).await
+                        {
                             warn!("Server lockup transaction for incoming Chain Swap {} could not be verified. txid: {}, err: {}",
                                 swap.id,
                                 transaction.id,
                                 e);
                             return Err(anyhow!(
-                                "Could not verify transaction {}: {e}",
+                                "Could not verify server lockup transaction {}: {e}",
                                 transaction.id
                             ));
                         }
@@ -289,13 +300,13 @@ impl ChainSwapStateHandler {
                 match swap.refund_tx_id.clone() {
                     None => {
                         warn!("Chain Swap {id} is in an unrecoverable state: {swap_state:?}");
-                        match swap.user_lockup_tx_id {
-                            Some(_) => {
+                        match self.verify_user_lockup_tx(swap).await {
+                            Ok(_) => {
                                 info!("Chain Swap {id} user lockup tx was broadcast. Setting the swap to refundable.");
                                 self.update_swap_info(id, Refundable, None, None, None, None)
                                     .await?;
                             }
-                            None => {
+                            Err(_) => {
                                 info!("Chain Swap {id} user lockup tx was never broadcast. Resolving payment as failed.");
                                 self.update_swap_info(id, Failed, None, None, None, None)
                                     .await?;
@@ -383,13 +394,16 @@ impl ChainSwapStateHandler {
                             return Err(anyhow!("Unexpected payload from Boltz status stream"));
                         };
 
-                        if let Err(e) = self.verify_lockup_tx(swap, &transaction, false).await {
+                        if let Err(e) = self
+                            .verify_server_lockup_tx(swap, &transaction, false)
+                            .await
+                        {
                             warn!("Server lockup mempool transaction for outgoing Chain Swap {} could not be verified. txid: {}, err: {}",
                                 swap.id,
                                 transaction.id,
                                 e);
                             return Err(anyhow!(
-                                "Could not verify transaction {}: {e}",
+                                "Could not verify server lockup transaction {}: {e}",
                                 transaction.id
                             ));
                         }
@@ -421,13 +435,19 @@ impl ChainSwapStateHandler {
                             return Err(anyhow!("Unexpected payload from Boltz status stream"));
                         };
 
-                        if let Err(e) = self.verify_lockup_tx(swap, &transaction, true).await {
+                        if let Err(e) = self.verify_user_lockup_tx(swap).await {
+                            warn!("User lockup transaction for outgoing Chain Swap {} could not be verified. err: {}", swap.id, e);
+                            return Err(anyhow!("Could not verify user lockup transaction: {e}",));
+                        }
+
+                        if let Err(e) = self.verify_server_lockup_tx(swap, &transaction, true).await
+                        {
                             warn!("Server lockup transaction for outgoing Chain Swap {} could not be verified. txid: {}, err: {}",
                                 swap.id,
                                 transaction.id,
                                 e);
                             return Err(anyhow!(
-                                "Could not verify transaction {}: {e}",
+                                "Could not verify server lockup transaction {}: {e}",
                                 transaction.id
                             ));
                         }
@@ -463,8 +483,8 @@ impl ChainSwapStateHandler {
                 match swap.refund_tx_id.clone() {
                     None => {
                         warn!("Chain Swap {id} is in an unrecoverable state: {swap_state:?}");
-                        match swap.user_lockup_tx_id.clone() {
-                            Some(_) => {
+                        match self.verify_user_lockup_tx(swap).await {
+                            Ok(_) => {
                                 warn!("Chain Swap {id} user lockup tx has been broadcast. Attempting refund.");
                                 let refund_tx_id = self.refund_outgoing_swap(swap).await?;
                                 info!("Broadcast refund tx for Chain Swap {id}. Tx id: {refund_tx_id}");
@@ -478,7 +498,7 @@ impl ChainSwapStateHandler {
                                 )
                                 .await?;
                             }
-                            None => {
+                            Err(_) => {
                                 warn!("Chain Swap {id} user lockup tx was never broadcast. Resolving payment as failed.");
                                 self.update_swap_info(id, Failed, None, None, None, None)
                                     .await?;
@@ -778,7 +798,7 @@ impl ChainSwapStateHandler {
         }
     }
 
-    async fn verify_lockup_tx(
+    async fn verify_server_lockup_tx(
         &self,
         chain_swap: &ChainSwap,
         swap_update_tx: &SwapUpdateTxDetails,
@@ -786,17 +806,25 @@ impl ChainSwapStateHandler {
     ) -> Result<()> {
         match chain_swap.direction {
             Direction::Incoming => {
-                self.verify_incoming_lockup_tx(chain_swap, swap_update_tx, verify_confirmation)
-                    .await
+                self.verify_incoming_server_lockup_tx(
+                    chain_swap,
+                    swap_update_tx,
+                    verify_confirmation,
+                )
+                .await
             }
             Direction::Outgoing => {
-                self.verify_outgoing_lockup_tx(chain_swap, swap_update_tx, verify_confirmation)
-                    .await
+                self.verify_outgoing_server_lockup_tx(
+                    chain_swap,
+                    swap_update_tx,
+                    verify_confirmation,
+                )
+                .await
             }
         }
     }
 
-    async fn verify_incoming_lockup_tx(
+    async fn verify_incoming_server_lockup_tx(
         &self,
         chain_swap: &ChainSwap,
         swap_update_tx: &SwapUpdateTxDetails,
@@ -846,7 +874,7 @@ impl ChainSwapStateHandler {
         Ok(())
     }
 
-    async fn verify_outgoing_lockup_tx(
+    async fn verify_outgoing_server_lockup_tx(
         &self,
         chain_swap: &ChainSwap,
         swap_update_tx: &SwapUpdateTxDetails,
@@ -889,6 +917,70 @@ impl ChainSwapStateHandler {
             ));
         }
         Ok(())
+    }
+
+    async fn verify_user_lockup_tx(&self, chain_swap: &ChainSwap) -> Result<String> {
+        let script_history = match chain_swap.direction {
+            Direction::Incoming => self.fetch_incoming_user_script_history(chain_swap).await,
+            Direction::Outgoing => self.fetch_outgoing_user_script_history(chain_swap).await,
+        }?;
+
+        match chain_swap.user_lockup_tx_id.clone() {
+            Some(user_lockup_tx_id) => {
+                script_history
+                    .iter()
+                    .find(|h| h.txid.to_hex() == user_lockup_tx_id)
+                    .ok_or(anyhow!("Transaction was not found in script history"))?;
+                Ok(user_lockup_tx_id)
+            }
+            None => {
+                let txid = script_history
+                    .first()
+                    .ok_or(anyhow!("Script history has no transactions"))?
+                    .txid
+                    .to_hex();
+                self.update_swap_info(&chain_swap.id, Pending, None, Some(&txid), None, None)
+                    .await?;
+                Ok(txid)
+            }
+        }
+    }
+
+    async fn fetch_incoming_user_script_history(
+        &self,
+        chain_swap: &ChainSwap,
+    ) -> Result<Vec<History>> {
+        let swap_script = chain_swap.get_lockup_swap_script()?;
+        let address = swap_script
+            .as_bitcoin_script()?
+            .to_address(self.config.network.as_bitcoin_chain())
+            .map_err(|e| anyhow!("Failed to get swap script address {e:?}"))?;
+        let script_pubkey = address.script_pubkey();
+        let script = script_pubkey.as_script();
+        self.bitcoin_chain_service
+            .lock()
+            .await
+            .get_script_history_with_retry(script, 5)
+            .await
+    }
+
+    async fn fetch_outgoing_user_script_history(
+        &self,
+        chain_swap: &ChainSwap,
+    ) -> Result<Vec<History>> {
+        let swap_script = chain_swap.get_lockup_swap_script()?;
+        let address = swap_script
+            .as_liquid_script()?
+            .to_address(self.config.network.into())
+            .map_err(|e| anyhow!("Failed to get swap script address {e:?}"))?
+            .to_unconfidential();
+        let script = Script::from_hex(hex::encode(address.script_pubkey().as_bytes()).as_str())
+            .map_err(|e| anyhow!("Failed to get script from address {e:?}"))?;
+        self.liquid_chain_service
+            .lock()
+            .await
+            .get_script_history_with_retry(&script, 5)
+            .await
     }
 }
 

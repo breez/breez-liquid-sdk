@@ -433,6 +433,26 @@ class RNBreezSDKLiquid: RCTEventEmitter {
         }
     }
 
+    @objc(registerWebhook:resolve:reject:)
+    func registerWebhook(_ webhookUrl: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        do {
+            try getBindingLiquidSdk().registerWebhook(webhookUrl: webhookUrl)
+            resolve(["status": "ok"])
+        } catch let err {
+            rejectErr(err: err, reject: reject)
+        }
+    }
+
+    @objc(unregisterWebhook:reject:)
+    func unregisterWebhook(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        do {
+            try getBindingLiquidSdk().unregisterWebhook()
+            resolve(["status": "ok"])
+        } catch let err {
+            rejectErr(err: err, reject: reject)
+        }
+    }
+
     @objc(fetchFiatRates:reject:)
     func fetchFiatRates(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         do {

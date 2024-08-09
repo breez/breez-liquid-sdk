@@ -55,7 +55,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.0.0';
 
   @override
-  int get rustContentHash => -119028624;
+  int get rustContentHash => 1772954819;
 
   static const kDefaultExternalLibraryLoaderConfig = ExternalLibraryLoaderConfig(
     stem: 'breez_sdk_liquid',
@@ -135,6 +135,9 @@ abstract class RustLibApi extends BaseApi {
   Future<RefundResponse> crateBindingsBindingLiquidSdkRefund(
       {required BindingLiquidSdk that, required RefundRequest req});
 
+  Future<void> crateBindingsBindingLiquidSdkRegisterWebhook(
+      {required BindingLiquidSdk that, required String webhookUrl});
+
   Future<void> crateBindingsBindingLiquidSdkRescanOnchainSwaps({required BindingLiquidSdk that});
 
   void crateBindingsBindingLiquidSdkRestore({required BindingLiquidSdk that, required RestoreRequest req});
@@ -143,6 +146,8 @@ abstract class RustLibApi extends BaseApi {
       {required BindingLiquidSdk that, required PrepareSendResponse req});
 
   Future<void> crateBindingsBindingLiquidSdkSync({required BindingLiquidSdk that});
+
+  Future<void> crateBindingsBindingLiquidSdkUnregisterWebhook({required BindingLiquidSdk that});
 
   Future<void> crateBindingsBindingEventListenerOnEvent(
       {required BindingEventListener that, required SdkEvent e});
@@ -835,6 +840,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateBindingsBindingLiquidSdkRegisterWebhook(
+      {required BindingLiquidSdk that, required String webhookUrl}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 =
+            cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBindingLiquidSdk(
+                that);
+        var arg1 = cst_encode_String(webhookUrl);
+        return wire.wire__crate__bindings__BindingLiquidSdk_register_webhook(port_, arg0, arg1);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: dco_decode_sdk_error,
+      ),
+      constMeta: kCrateBindingsBindingLiquidSdkRegisterWebhookConstMeta,
+      argValues: [that, webhookUrl],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBindingsBindingLiquidSdkRegisterWebhookConstMeta => const TaskConstMeta(
+        debugName: "BindingLiquidSdk_register_webhook",
+        argNames: ["that", "webhookUrl"],
+      );
+
+  @override
   Future<void> crateBindingsBindingLiquidSdkRescanOnchainSwaps({required BindingLiquidSdk that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -930,6 +961,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateBindingsBindingLiquidSdkSyncConstMeta => const TaskConstMeta(
         debugName: "BindingLiquidSdk_sync",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> crateBindingsBindingLiquidSdkUnregisterWebhook({required BindingLiquidSdk that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        var arg0 =
+            cst_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBindingLiquidSdk(
+                that);
+        return wire.wire__crate__bindings__BindingLiquidSdk_unregister_webhook(port_, arg0);
+      },
+      codec: DcoCodec(
+        decodeSuccessData: dco_decode_unit,
+        decodeErrorData: dco_decode_sdk_error,
+      ),
+      constMeta: kCrateBindingsBindingLiquidSdkUnregisterWebhookConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBindingsBindingLiquidSdkUnregisterWebhookConstMeta => const TaskConstMeta(
+        debugName: "BindingLiquidSdk_unregister_webhook",
         argNames: ["that"],
       );
 
@@ -5663,6 +5718,9 @@ class BindingLiquidSdkImpl extends RustOpaque implements BindingLiquidSdk {
   Future<RefundResponse> refund({required RefundRequest req}) =>
       RustLib.instance.api.crateBindingsBindingLiquidSdkRefund(that: this, req: req);
 
+  Future<void> registerWebhook({required String webhookUrl}) =>
+      RustLib.instance.api.crateBindingsBindingLiquidSdkRegisterWebhook(that: this, webhookUrl: webhookUrl);
+
   Future<void> rescanOnchainSwaps() => RustLib.instance.api.crateBindingsBindingLiquidSdkRescanOnchainSwaps(
         that: this,
       );
@@ -5674,6 +5732,10 @@ class BindingLiquidSdkImpl extends RustOpaque implements BindingLiquidSdk {
       RustLib.instance.api.crateBindingsBindingLiquidSdkSendPayment(that: this, req: req);
 
   Future<void> sync() => RustLib.instance.api.crateBindingsBindingLiquidSdkSync(
+        that: this,
+      );
+
+  Future<void> unregisterWebhook() => RustLib.instance.api.crateBindingsBindingLiquidSdkUnregisterWebhook(
         that: this,
       );
 }

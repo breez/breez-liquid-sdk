@@ -83,6 +83,8 @@ abstract class BindingLiquidSdk implements RustOpaqueInterface {
 
   Future<RefundResponse> refund({required RefundRequest req});
 
+  Future<void> registerWebhook({required String webhookUrl});
+
   Future<void> rescanOnchainSwaps();
 
   void restore({required RestoreRequest req});
@@ -90,6 +92,8 @@ abstract class BindingLiquidSdk implements RustOpaqueInterface {
   Future<SendPaymentResponse> sendPayment({required PrepareSendResponse req});
 
   Future<void> sync();
+
+  Future<void> unregisterWebhook();
 }
 
 class AesSuccessActionDataDecrypted {

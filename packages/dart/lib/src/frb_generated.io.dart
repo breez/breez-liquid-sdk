@@ -3591,6 +3591,26 @@ class RustLibWire implements BaseWire {
       _wire__crate__bindings__BindingLiquidSdk_refundPtr
           .asFunction<void Function(int, int, ffi.Pointer<wire_cst_refund_request>)>();
 
+  void wire__crate__bindings__BindingLiquidSdk_register_webhook(
+    int port_,
+    int that,
+    ffi.Pointer<wire_cst_list_prim_u_8_strict> webhook_url,
+  ) {
+    return _wire__crate__bindings__BindingLiquidSdk_register_webhook(
+      port_,
+      that,
+      webhook_url,
+    );
+  }
+
+  late final _wire__crate__bindings__BindingLiquidSdk_register_webhookPtr = _lookup<
+          ffi.NativeFunction<
+              ffi.Void Function(ffi.Int64, ffi.UintPtr, ffi.Pointer<wire_cst_list_prim_u_8_strict>)>>(
+      'frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_register_webhook');
+  late final _wire__crate__bindings__BindingLiquidSdk_register_webhook =
+      _wire__crate__bindings__BindingLiquidSdk_register_webhookPtr
+          .asFunction<void Function(int, int, ffi.Pointer<wire_cst_list_prim_u_8_strict>)>();
+
   void wire__crate__bindings__BindingLiquidSdk_rescan_onchain_swaps(
     int port_,
     int that,
@@ -3660,6 +3680,22 @@ class RustLibWire implements BaseWire {
           'frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_sync');
   late final _wire__crate__bindings__BindingLiquidSdk_sync =
       _wire__crate__bindings__BindingLiquidSdk_syncPtr.asFunction<void Function(int, int)>();
+
+  void wire__crate__bindings__BindingLiquidSdk_unregister_webhook(
+    int port_,
+    int that,
+  ) {
+    return _wire__crate__bindings__BindingLiquidSdk_unregister_webhook(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire__crate__bindings__BindingLiquidSdk_unregister_webhookPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.UintPtr)>>(
+          'frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_unregister_webhook');
+  late final _wire__crate__bindings__BindingLiquidSdk_unregister_webhook =
+      _wire__crate__bindings__BindingLiquidSdk_unregister_webhookPtr.asFunction<void Function(int, int)>();
 
   void wire__crate__bindings__binding_event_listener_on_event(
     int port_,

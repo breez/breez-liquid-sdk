@@ -192,6 +192,17 @@ RCT_EXTERN_METHOD(
 )
 
 RCT_EXTERN_METHOD(
+    registerWebhook: (NSString*)webhookUrl
+    resolve: (RCTPromiseResolveBlock)resolve
+    reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+    unregisterWebhook: (RCTPromiseResolveBlock)resolve
+    reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
     fetchFiatRates: (RCTPromiseResolveBlock)resolve
     reject: (RCTPromiseRejectBlock)reject
 )

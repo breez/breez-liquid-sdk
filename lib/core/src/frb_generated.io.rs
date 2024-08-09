@@ -2677,6 +2677,15 @@ pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_re
 }
 
 #[no_mangle]
+pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_register_webhook(
+    port_: i64,
+    that: usize,
+    webhook_url: *mut wire_cst_list_prim_u_8_strict,
+) {
+    wire__crate__bindings__BindingLiquidSdk_register_webhook_impl(port_, that, webhook_url)
+}
+
+#[no_mangle]
 pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_rescan_onchain_swaps(
     port_: i64,
     that: usize,
@@ -2707,6 +2716,14 @@ pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_sy
     that: usize,
 ) {
     wire__crate__bindings__BindingLiquidSdk_sync_impl(port_, that)
+}
+
+#[no_mangle]
+pub extern "C" fn frbgen_breez_liquid_wire__crate__bindings__BindingLiquidSdk_unregister_webhook(
+    port_: i64,
+    that: usize,
+) {
+    wire__crate__bindings__BindingLiquidSdk_unregister_webhook_impl(port_, that)
 }
 
 #[no_mangle]

@@ -147,6 +147,10 @@ pub(crate) enum Command {
         /// LNURL-auth endpoint
         lnurl: String,
     },
+    /// Register a webhook URL
+    RegisterWebhook { url: String },
+    /// Unregister the webhook URL
+    UnregisterWebhook,
     /// List fiat currencies
     ListFiat {},
     /// Fetch available fiat rates
@@ -492,6 +496,14 @@ pub(crate) async fn handle_command(
             }?;
 
             command_result!(res)
+        }
+        Command::RegisterWebhook { url } => {
+            sdk.register_webhook(url).await?;
+            command_result!("Url registered successfully")
+        }
+        Command::UnregisterWebhook => {
+            sdk.unregister_webhook().await?;
+            command_result!("Url unregistered successfully")
         }
         Command::FetchFiatRates {} => {
             let res = sdk.fetch_fiat_rates().await?;

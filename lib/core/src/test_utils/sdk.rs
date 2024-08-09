@@ -24,6 +24,25 @@ pub(crate) fn new_liquid_sdk(
     swapper: Arc<MockSwapper>,
     status_stream: Arc<MockStatusStream>,
 ) -> Result<LiquidSdk> {
+    let liquid_chain_service = Arc::new(Mutex::new(MockLiquidChainService::new()));
+    let bitcoin_chain_service = Arc::new(Mutex::new(MockBitcoinChainService::new()));
+
+    new_liquid_sdk_with_chain_services(
+        persister,
+        swapper,
+        status_stream,
+        liquid_chain_service,
+        bitcoin_chain_service,
+    )
+}
+
+pub(crate) fn new_liquid_sdk_with_chain_services(
+    persister: Arc<Persister>,
+    swapper: Arc<MockSwapper>,
+    status_stream: Arc<MockStatusStream>,
+    liquid_chain_service: Arc<Mutex<MockLiquidChainService>>,
+    bitcoin_chain_service: Arc<Mutex<MockBitcoinChainService>>,
+) -> Result<LiquidSdk> {
     let mut config = Config::testnet();
     config.working_dir = persister
         .get_database_dir()
@@ -32,9 +51,6 @@ pub(crate) fn new_liquid_sdk(
         .to_string();
 
     let onchain_wallet = Arc::new(MockWallet::new());
-
-    let liquid_chain_service = Arc::new(Mutex::new(MockLiquidChainService::new()));
-    let bitcoin_chain_service = Arc::new(Mutex::new(MockBitcoinChainService::new()));
 
     let send_swap_state_handler = SendSwapStateHandler::new(
         config.clone(),

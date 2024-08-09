@@ -33,6 +33,13 @@ pub trait BitcoinChainService: Send + Sync {
     /// Get the transactions involved for a script
     fn get_script_history(&self, script: &Script) -> Result<Vec<History>>;
 
+    /// Get the transactions involved for a script
+    async fn get_script_history_with_retry(
+        &self,
+        script: &Script,
+        retries: u64,
+    ) -> Result<Vec<History>>;
+
     /// Return the confirmed and unconfirmed balances of a script hash
     fn script_get_balance(&self, script: &Script) -> Result<GetBalanceRes>;
 
@@ -71,35 +78,6 @@ impl HybridBitcoinChainService {
             tip,
             config,
         })
-    }
-
-    async fn get_script_history_with_retry(
-        &self,
-        script: &Script,
-        retries: u64,
-    ) -> Result<Vec<History>> {
-        let script_hash = sha256::Hash::hash(script.as_bytes())
-            .to_byte_array()
-            .to_hex();
-        info!("Fetching script history for {}", script_hash);
-        let mut script_history = vec![];
-
-        let mut retry = 0;
-        while retry <= retries {
-            script_history = self.get_script_history(script)?;
-            match script_history.is_empty() {
-                true => {
-                    retry += 1;
-                    info!(
-                        "Script history for {} got zero transactions, retrying in {} seconds...",
-                        script_hash, retry
-                    );
-                    thread::sleep(Duration::from_secs(retry));
-                }
-                false => break,
-            }
-        }
-        Ok(script_history)
     }
 }
 
@@ -152,6 +130,35 @@ impl BitcoinChainService for HybridBitcoinChainService {
             .into_iter()
             .map(Into::into)
             .collect())
+    }
+
+    async fn get_script_history_with_retry(
+        &self,
+        script: &Script,
+        retries: u64,
+    ) -> Result<Vec<History>> {
+        let script_hash = sha256::Hash::hash(script.as_bytes())
+            .to_byte_array()
+            .to_hex();
+        info!("Fetching script history for {}", script_hash);
+        let mut script_history = vec![];
+
+        let mut retry = 0;
+        while retry <= retries {
+            script_history = self.get_script_history(script)?;
+            match script_history.is_empty() {
+                true => {
+                    retry += 1;
+                    info!(
+                        "Script history for {} got zero transactions, retrying in {} seconds...",
+                        script_hash, retry
+                    );
+                    thread::sleep(Duration::from_secs(retry));
+                }
+                false => break,
+            }
+        }
+        Ok(script_history)
     }
 
     fn script_get_balance(&self, script: &Script) -> Result<GetBalanceRes> {

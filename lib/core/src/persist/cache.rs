@@ -5,6 +5,7 @@ use super::Persister;
 
 const KEY_SWAPPER_PROXY_URL: &str = "swapper_proxy_url";
 const KEY_IS_FIRST_SYNC_COMPLETE: &str = "is_first_sync_complete";
+const KEY_WEBHOOK_URL: &str = "webhook_url";
 
 impl Persister {
     pub fn get_cached_item(&self, key: &str) -> Result<Option<String>> {
@@ -51,6 +52,18 @@ impl Persister {
     pub fn get_is_first_sync_complete(&self) -> Result<Option<bool>> {
         self.get_cached_item(KEY_IS_FIRST_SYNC_COMPLETE)
             .map(|maybe_str| maybe_str.and_then(|val_str| bool::from_str(&val_str).ok()))
+    }
+
+    pub fn set_webhook_url(&self, webhook_url: String) -> Result<()> {
+        self.update_cached_item(KEY_WEBHOOK_URL, webhook_url)
+    }
+
+    pub fn remove_webhook_url(&self) -> Result<()> {
+        self.delete_cached_item(KEY_WEBHOOK_URL)
+    }
+
+    pub fn get_webhook_url(&self) -> Result<Option<String>> {
+        self.get_cached_item(KEY_WEBHOOK_URL)
     }
 }
 
