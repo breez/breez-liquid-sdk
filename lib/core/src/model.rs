@@ -210,8 +210,11 @@ pub struct PrepareReceivePaymentResponse {
 /// An argument when calling [crate::sdk::LiquidSdk::receive_payment].
 #[derive(Debug, Serialize)]
 pub struct ReceivePaymentRequest {
-    pub description: Option<String>,
     pub prepare_res: PrepareReceivePaymentResponse,
+    /// The description for this payment request.
+    pub description: Option<String>,
+    /// If set to true, then the hash of the description will be used.
+    pub use_description_hash: Option<bool>,
 }
 
 /// Returned when calling [crate::sdk::LiquidSdk::receive_payment].
